@@ -101,3 +101,51 @@ print("Beta:", beta)
 print("Cost of Equity (CAPM):", cost_of_equity)
 print("Cost of Debt (after tax):", after_tax_cost_of_debt)
 print("WACC:", wacc)
+
+
+print("Would you like to run a P/E to Price Projection (y/n): ")
+if input() == "y":
+    pe_input = float(input("Enter projected P/E ratio: "))
+    projected_price = pe_input*eps_ttm
+    print(f"Projected Price with a P/E ratio of {pe_input}: ", projected_price)
+elif input() == "n":
+    pass
+else:
+    print("Invalid input")
+
+
+
+# # Parameters for DCF
+# forecast_years = 5
+# terminal_growth_rate = 0.03  # 3% perpetual growth after 5 years
+#
+# # Use EBITDA or proxy for FCF - here simplified using EBITDA or EPS * sharesOutstanding as proxy for FCF
+# if latest_EBITDA is not None and EBITDA_3Y is not None and EBITDA_3Y > 0:
+#     initial_fcf = latest_EBITDA
+#     growth_rate = EBITDA_3Y / 100  # Convert % to decimal
+#
+#     # Forecast future FCFs
+#     fcf_forecasts = [initial_fcf * ((1 + growth_rate) ** year) for year in range(1, forecast_years + 1)]
+#
+#     # Discount each forecasted FCF to present value using WACC
+#     discounted_fcf = [fcf / ((1 + wacc) ** year) for year, fcf in enumerate(fcf_forecasts, start=1)]
+#
+#     # Calculate Terminal Value (perpetuity formula)
+#     terminal_value = fcf_forecasts[-1] * (1 + terminal_growth_rate) / (wacc - terminal_growth_rate)
+#     discounted_terminal_value = terminal_value / ((1 + wacc) ** forecast_years)
+#
+#     # Enterprise Value (DCF Value)
+#     dcf_value = sum(discounted_fcf) + discounted_terminal_value
+#
+#     # Optionally calculate equity value per share
+#     if shares_outstanding and shares_outstanding != 0:
+#         intrinsic_value_per_share = dcf_value / shares_outstanding
+#     else:
+#         intrinsic_value_per_share = None
+# else:
+#     dcf_value = intrinsic_value_per_share = None
+#
+# # Print DCF results
+# print("\n*** DCF Valuation ***")
+# print("DCF Enterprise Value:", dcf_value)
+# print("Intrinsic Value per Share:", intrinsic_value_per_share)
