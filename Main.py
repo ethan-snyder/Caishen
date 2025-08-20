@@ -12,6 +12,7 @@ eps_ttm = info.get("trailingEps")
 current_price = info.get("currentPrice")
 pe_ratio = info.get("trailingPE")
 expected_eps = info.get("forwardEps")
+dividends = info.get("dividendYield")
 
 # PEG ratio fix: Requires expected EPS growth percent (proxy: EBITDA CAGR)
 peg_ratio = None
@@ -87,6 +88,7 @@ except Exception:
 # Print results
 print("\n*** Valuation Metrics ***")
 print("Price:", price)
+print("Dividend Yield: ", dividends, "%")
 print("EPS (TTM):", eps_ttm)
 print("P/E Ratio:", pe_ratio)
 print("Expected EPS (Forward):", expected_eps)
@@ -103,15 +105,7 @@ print("Cost of Debt (after tax):", after_tax_cost_of_debt)
 print("WACC:", wacc)
 
 
-print("Would you like to run a P/E to Price Projection (y/n): ")
-if input() == "y":
-    pe_input = float(input("Enter projected P/E ratio: "))
-    projected_price = pe_input*eps_ttm
-    print(f"Projected Price with a P/E ratio of {pe_input}: ", projected_price)
-elif input() == "n":
-    pass
-else:
-    print("Invalid input")
+
 
 
 
