@@ -1,5 +1,9 @@
+import pandas as pd
+import numpy as np
 import yfinance as yf
 import fear_and_greed
+import requests
+from bs4 import BeautifulSoup
 
 # Ask user for ticker
 ticker = input("Enter stock ticker: ")
@@ -16,6 +20,8 @@ expected_eps = info.get("forwardEps")
 dividends = info.get("dividendYield")
 shares_outstanding = info.get("sharesOutstanding")
 dividend_paid = dividends * price * shares_outstanding
+stock_name = info.get("companyName")
+print(f"\n*** {stock_name} ***")
 
 # PEG ratio fix: Requires expected EPS growth percent (proxy: EBITDA CAGR)
 peg_ratio = None
@@ -99,12 +105,104 @@ cash_per_share = cash_and_cash_equivalents / shares_outstanding # Cash Per Share
 print("\n*** Technical Analysis ***")
 
 # General Market Info
-print("\n*** Technical Analysis ***")
+print("\n*** General Market Info ***")
 fear_and_greed_index = fear_and_greed.get()
 print("Fear/Greed Value: ", fear_and_greed_index.value)        # e.g., 31.4
 print("Fear/Greed Description: ",fear_and_greed_index.description)  # e.g., 'fear'
 print("Last Update to Fear/Greed Index: ",fear_and_greed_index.last_update)  # timestamp
 
+# --- Sentiment & Options Data Section ---
+
+# Calculate Put/Call Ratio using latest available expiry
+if hasattr(data, 'options') and data.options:
+    expiry = data.options[0]  # Get the nearest expiration date
+    opt = data.option_chain(expiry)
+    put_oi = opt.puts['openInterest'].sum()
+    call_oi = opt.calls['openInterest'].sum()
+    put_call_ratio = put_oi / call_oi if call_oi != 0 else None
+else:
+    put_call_ratio = None
+
+print("\nPut/Call Ratio (nearest expiry):", put_call_ratio)
+
+# --- High-Low Index ---
+
+# Example: Pull high and low data for index (e.g., S&P 500 via ^GSPC)
+sp500 = yf.Ticker("^GSPC").history(period="1y")
+new_highs = (sp500['High'] == sp500['High'].rolling(252).max()).sum()
+new_lows = (sp500['Low'] == sp500['Low'].rolling(252).min()).sum()
+if (new_highs + new_lows) != 0:
+    high_low_index = (new_highs / (new_highs + new_lows)) * 100
+else:
+    high_low_index = None
+
+print("S&P 500 High-Low Index (1 year):", high_low_index)
+
+# --- Bullish Percent Index (BPI) ---
+# This is a simplified version due to the complexity of true P&F signals.
+# Instead, we define a "bullish" position as current price above a moving average.
+sp500_constituents = [
+    # List of tickers, e.g. get from Wikipedia or file: ["AAPL", "MSFT", ...]
+]
+# Example: Simple BPI computation for illustration
+bullish_count = 0
+for sym in sp500_constituents:
+    try:
+        hist = yf.Ticker(sym).history(period="100d")
+        if len(hist) >= 50:
+            if hist['Close'].iloc[-1] > hist['Close'].rolling(50).mean().iloc[-1]:
+                bullish_count += 1
+    except Exception:
+        continue
+
+if sp500_constituents:
+    bpi = (bullish_count / len(sp500_constituents)) * 100
+else:
+    bpi = None
+
+print("Sample Bullish Percent Index (50-day MA):", bpi)
+
+# --- General Market Info ---
+fear_and_greed_index = fear_and_greed.get()
+print("Fear/Greed Value: ", fear_and_greed_index.value)
+print("Fear/Greed Description: ", fear_and_greed_index.description)
+print("Last Update to Fear/Greed Index: ", fear_and_greed_index.last_update)
+
+def get_index_price(ticker_symbol):
+    try:
+        idx_data = yf.Ticker(ticker_symbol).history(period="1d")
+        if not idx_data.empty:
+            return idx_data['Close'].iloc[-1]
+        else:
+            return None
+    except Exception:
+        return None
+
+sp500_price = get_index_price("^GSPC")   # S&P 500
+dow_price = get_index_price("^DJI")      # Dow Jones
+russell_2000_price = get_index_price("^RUT")  # Russell 2000
+
+print("\nMajor Market Indices Prices:")
+print(f"S&P 500 Price: {sp500_price}")
+print(f"Dow Jones Price: {dow_price}")
+print(f"Russell 2000 Price: {russell_2000_price}")
+
+
+# Volume Data: total volume for ticker over last trading day
+history = data.history(period="1d")
+volume = history['Volume'].iloc[-1] if not history.empty else None
+print(f"\nVolume for {ticker}: {volume}")
+
+# Social Media & News Sentiment: Simple example scraping Yahoo Finance news titles
+def get_news_sentiment(ticker_symbol):
+    url = f"https://finance.yahoo.com/quote/{ticker_symbol}/news"
+    headers = {"User-Agent": "Mozilla/5.0"}
+    response = requests.get(url, headers=headers)
+    soup = BeautifulSoup(response.content, "html.parser")
+    headlines = []
+    for item in soup.select('h3'):
+        headlines.append(item.text)
+    return headlines[:5]  # top 5 headlines
 
 # Print results
 print("\n*** Valuation Metrics ***")
@@ -128,6 +226,7 @@ print("Cost of Equity (CAPM):", cost_of_equity)
 print("Cost of Debt (after tax):", after_tax_cost_of_debt)
 print("WACC:", wacc)
 print("Cash per Share: ", cash_per_share)
+
 
 
 
