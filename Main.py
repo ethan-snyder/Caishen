@@ -4,6 +4,7 @@ import yfinance as yf
 import fear_and_greed
 import requests
 from bs4 import BeautifulSoup
+import datetime
 
 # Ask user for ticker
 ticker = input("Enter stock ticker: ")
@@ -21,6 +22,7 @@ dividends = info.get("dividendYield")
 shares_outstanding = info.get("sharesOutstanding")
 dividend_paid = dividends * price * shares_outstanding
 stock_name = info.get("companyName")
+current_year = datetime.datetime.now().year
 print(f"\n*** {stock_name} ***")
 
 # PEG ratio fix: Requires expected EPS growth percent (proxy: EBITDA CAGR)
