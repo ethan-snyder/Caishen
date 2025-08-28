@@ -13,6 +13,38 @@ data = yf.Ticker(ticker)
 # Pricing and earnings info
 info = data.info
 
+def print_heading(text):
+    pseudo_larger = '\n' + ' ' * 2  # Simulate extra size by padding
+    print(SEPERATOR.format(pseudo_larger + text.upper() + pseudo_larger))
+    print(SEPERATOR.format('=' * (len(text) + 4)))
+
+def input_ticker():
+    while True:
+        ticker = input(WHITE.format("Enter stock ticker: ")).strip().upper()
+        try:
+            data = yf.Ticker(ticker)
+            test_info = data.info
+            # "regularMarketPrice" is only present for valid tickers with current price data
+            if "regularMarketPrice" in test_info and test_info["regularMarketPrice"] is not None:
+                return ticker, data
+            else:
+                print(RED.format("Invalid ticker or no market data. Please try again."))
+        except Exception:
+            print(RED.format("Invalid ticker or ticker not found. Please try again."))
+
+# --- ANSI Styles ---
+WHITE      = '\033[97m{}\033[00m'
+BOLD       = '\033[1m{}\033[0m'
+RED        = '\033[91m{}\033[00m'
+GREEN      = '\033[92m{}\033[00m'
+YELLOW     = '\033[93m{}\033[00m'
+CYAN       = '\033[96m{}\033[00m'
+MAGENTA    = '\033[95m{}\033[00m'
+BLUE       = '\033[94m{}\033[00m'
+GREY       = '\033[90m{}\033[00m'
+SEPERATOR = '\033[1;97m{}\033[00m'
+
+
 price = info.get("regularMarketPrice")
 eps_ttm = info.get("trailingEps")
 current_price = info.get("currentPrice")
@@ -47,8 +79,11 @@ try:
 except (KeyError, IndexError, ZeroDivisionError):
     latest_EBITDA = prev_EBITDA = EBITDA_3Y = None
 
+print(f"\n{SEPERATOR.format('##############################################################################################################')}")
+
 # Balance sheet for WACC
 balance = data.balance_sheet
+print("Balance sheet:")
 print(balance)
 try:
     total_debt = 0
@@ -67,7 +102,7 @@ shares_outstanding = info.get("sharesOutstanding")
 
 # Cost of Equity (CAPM)
 risk_free_rate = 0.04
-market_return = 0.08
+market_return = 0.09
 beta = info.get("beta")
 if beta is not None:
     cost_of_equity = risk_free_rate + beta * (market_return - risk_free_rate)
@@ -103,9 +138,12 @@ except Exception:
 
 cash_per_share = cash_and_cash_equivalents / shares_outstanding # Cash Per Share calculation
 
+print(f"\n{SEPERATOR.format('##############################################################################################################')}")
+
 # Technicals & Indicators
 print("\n*** Technical Analysis ***")
 
+print(f"\n{SEPERATOR.format('##############################################################################################################')}")
 # General Market Info
 print("\n*** General Market Info ***")
 fear_and_greed_index = fear_and_greed.get()
@@ -113,6 +151,7 @@ print("Fear/Greed Value: ", fear_and_greed_index.value)        # e.g., 31.4
 print("Fear/Greed Description: ",fear_and_greed_index.description)  # e.g., 'fear'
 print("Last Update to Fear/Greed Index: ",fear_and_greed_index.last_update)  # timestamp
 
+print(f"\n{SEPERATOR.format('##############################################################################################################')}")
 # --- Sentiment & Options Data Section ---
 
 # Calculate Put/Call Ratio using latest available expiry
@@ -127,6 +166,7 @@ else:
 
 print("\nPut/Call Ratio (nearest expiry):", put_call_ratio)
 
+print(f"\n{SEPERATOR.format('##############################################################################################################')}")
 # --- High-Low Index ---
 
 # Example: Pull high and low data for index (e.g., S&P 500 via ^GSPC)
@@ -140,6 +180,7 @@ else:
 
 print("S&P 500 High-Low Index (1 year):", high_low_index)
 
+print(f"\n{SEPERATOR.format('##############################################################################################################')}")
 # --- Bullish Percent Index (BPI) ---
 # This is a simplified version due to the complexity of true P&F signals.
 # Instead, we define a "bullish" position as current price above a moving average.
@@ -190,6 +231,7 @@ print(f"Dow Jones Price: {dow_price}")
 print(f"Russell 2000 Price: {russell_2000_price}")
 
 
+print(f"\n{SEPERATOR.format('##############################################################################################################')}")
 # Volume Data: total volume for ticker over last trading day
 history = data.history(period="1d")
 volume = history['Volume'].iloc[-1] if not history.empty else None
@@ -205,6 +247,8 @@ def get_news_sentiment(ticker_symbol):
     for item in soup.select('h3'):
         headlines.append(item.text)
     return headlines[:5]  # top 5 headlines
+
+print("\n##############################################################################################################")
 
 # Print results
 print("\n*** Valuation Metrics ***")
@@ -228,44 +272,3 @@ print("Cost of Equity (CAPM):", cost_of_equity)
 print("Cost of Debt (after tax):", after_tax_cost_of_debt)
 print("WACC:", wacc)
 print("Cash per Share: ", cash_per_share)
-
-
-
-
-
-
-
-# # Parameters for DCF
-# forecast_years = 5
-# terminal_growth_rate = 0.03  # 3% perpetual growth after 5 years
-#
-# # Use EBITDA or proxy for FCF - here simplified using EBITDA or EPS * sharesOutstanding as proxy for FCF
-# if latest_EBITDA is not None and EBITDA_3Y is not None and EBITDA_3Y > 0:
-#     initial_fcf = latest_EBITDA
-#     growth_rate = EBITDA_3Y / 100  # Convert % to decimal
-#
-#     # Forecast future FCFs
-#     fcf_forecasts = [initial_fcf * ((1 + growth_rate) ** year) for year in range(1, forecast_years + 1)]
-#
-#     # Discount each forecasted FCF to present value using WACC
-#     discounted_fcf = [fcf / ((1 + wacc) ** year) for year, fcf in enumerate(fcf_forecasts, start=1)]
-#
-#     # Calculate Terminal Value (perpetuity formula)
-#     terminal_value = fcf_forecasts[-1] * (1 + terminal_growth_rate) / (wacc - terminal_growth_rate)
-#     discounted_terminal_value = terminal_value / ((1 + wacc) ** forecast_years)
-#
-#     # Enterprise Value (DCF Value)
-#     dcf_value = sum(discounted_fcf) + discounted_terminal_value
-#
-#     # Optionally calculate equity value per share
-#     if shares_outstanding and shares_outstanding != 0:
-#         intrinsic_value_per_share = dcf_value / shares_outstanding
-#     else:
-#         intrinsic_value_per_share = None
-# else:
-#     dcf_value = intrinsic_value_per_share = None
-#
-# # Print DCF results
-# print("\n*** DCF Valuation ***")
-# print("DCF Enterprise Value:", dcf_value)
-# print("Intrinsic Value per Share:", intrinsic_value_per_share)
