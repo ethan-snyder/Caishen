@@ -4,7 +4,7 @@
 **Key Features:**
 + Stock Projector: The stock projector is a simple use of the P/E ratio formula to calculate predicted stock price given expected P/E. Using the formula pe_ratio * EBITDA_3Y = stock_price, we can create an estimate based on the bull_case, base,_case, and bear_case.
 + General stock information (price, p/e, eps, etc.)
-+ Market info display (DJI price, fear/greed index, p/c ratio
++ Market info display (DJI price, fear/greed index, p/c ratio, etc.)
 
 While I have a lot of plans for explanding this program, please consult the issues tab for more information on future implementations.
 
