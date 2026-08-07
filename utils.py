@@ -110,20 +110,35 @@ def calculate_wacc(ticker_obj, capm_value, risk_free_rate):
 
 def normalize_pct(value):
     """
-    yfinance has historically been inconsistent about whether yield/growth
-    fields are returned as fractions (0.02) or already-scaled percents (2.0).
-    Heuristic: anything with magnitude > 1 is assumed already a percent and
-    is rescaled down to a fraction so fmt_pct() can treat everything the same.
+    DEPRECATED: this magnitude-based heuristic ("if > 1, assume it's already
+    a percent") turned out to be wrong in both directions in practice —
+    dividendYield comes back from yfinance already scaled as a percent even
+    when small (e.g. 0.44 meaning 0.44%, not a 44% fraction), while fields
+    like returnOnEquity or earningsGrowth are genuine fractions that can
+    legitimately exceed 1 (e.g. 1.5 meaning 150% ROE). No single heuristic
+    covers both. Left here only so old imports don't hard-crash; use
+    fmt_pct() directly for true-fraction fields, or fmt_pct_raw() for
+    fields yfinance already returns pre-scaled as a percent (currently just
+    dividendYield).
     """
-    if value is None:
-        return None
-    return value / 100 if abs(value) > 1 else value
+    return value
 
 
 def fmt_pct(value, decimals=2):
+    """For fields that are genuine fractions (e.g. 0.243 for 24.3%, or 1.5
+    for 150% -- yfinance's margin/return/growth fields all work this way)."""
     if value is None:
         return "N/A"
     return f"{value * 100:.{decimals}f}%"
+
+
+def fmt_pct_raw(value, decimals=2):
+    """For fields yfinance already returns pre-scaled as a percent (currently
+    just dividendYield, e.g. 0.44 meaning 0.44% -- not a 0.44 fraction).
+    Appends a % sign without any further scaling."""
+    if value is None:
+        return "N/A"
+    return f"{value:.{decimals}f}%"
 
 
 def fmt_num(value, decimals=2):
@@ -149,3 +164,36 @@ def fmt_large_num(value, is_money=True):
         if abs_v >= threshold:
             return f"{prefix}{value / threshold:,.2f}{suffix}"
     return f"{prefix}{value:,.2f}"
+
+
+# ----------------------------------------------------------------------
+# Terminal color helpers
+# ----------------------------------------------------------------------
+
+RESET_COLOR = "\033[0m"
+
+_DEEP_RED = (139, 0, 0)      # "extreme"/negative end of a gradient
+_DEEP_GREEN = (0, 100, 0)    # "extreme"/positive end of a gradient
+_WHITE = (255, 255, 255)     # neutral midpoint
+
+
+def gradient_color(value, neutral, max_dev, low_rgb=_DEEP_RED, high_rgb=_DEEP_GREEN, base_rgb=_WHITE):
+    """
+    24-bit ANSI foreground color escape code, interpolated from `base_rgb`
+    at value == neutral toward `low_rgb` as value falls `max_dev` below
+    neutral, or toward `high_rgb` as it rises `max_dev` above. Values beyond
+    +/- max_dev clamp to the full color. Returns "" if value is None (so it
+    can be safely concatenated without a None-check at the call site).
+
+    e.g. gradient_color(pct_change, neutral=0, max_dev=5) for a market index
+    move: 0% -> white, -5% or worse -> deep red, +5% or better -> deep green.
+    """
+    if value is None:
+        return ""
+    dev = value - neutral
+    t = min(abs(dev) / max_dev, 1.0) if max_dev else 1.0
+    target = high_rgb if dev >= 0 else low_rgb
+    r = round(base_rgb[0] + (target[0] - base_rgb[0]) * t)
+    g = round(base_rgb[1] + (target[1] - base_rgb[1]) * t)
+    b = round(base_rgb[2] + (target[2] - base_rgb[2]) * t)
+    return f"\033[38;2;{r};{g};{b}m"

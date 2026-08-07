@@ -12,10 +12,11 @@ historical sentiment spreadsheet) so it's available later for recreating
 each source's own charts, without a second round of fetching.
 
 Fear & Greed and put/call are unofficial/scraped sources with no public API
-and can change format without notice. AAII's data comes straight from their
-official downloadable spreadsheet, which is sturdier, but the parsing here
-is still defensive (matches columns by name rather than position) in case
-they adjust the sheet layout.
+and can change format without notice. AAII's data comes from their official
+downloadable spreadsheet -- sturdier, but still fetched defensively (proper
+browser-style headers, since AAII's WAF 403s bare/no-User-Agent requests
+like pandas' default Excel loader sends) with an HTML-scrape fallback if the
+spreadsheet pull ever stops working.
 """
 
 import re
@@ -24,6 +25,14 @@ import yfinance as yf
 import requests
 import pandas as pd
 
+try:
+    import colorama
+    colorama.init(autoreset=True)
+except ImportError:
+    pass
+
+from utils import gradient_color, RESET_COLOR
+
 INDEXES = {
     "Dow Jones (DJI)": "^DJI",
     "NASDAQ": "^IXIC",
@@ -31,11 +40,26 @@ INDEXES = {
     "Russell 2000": "^RUT",
     "Nikkei 225": "^N225",
     "KOSPI": "^KS11",
+    "TQQQ": "TQQQ",
+    "VIX": "^VIX",
 }
 
-HEADERS = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"}
+# A full "real browser" header set. AAII's site (and some others) will 403
+# requests that look like bare scripts -- pandas.read_excel(url) in
+# particular sends no headers at all, which is almost certainly why the
+# direct spreadsheet pull was getting blocked.
+BROWSER_HEADERS = {
+    "User-Agent": (
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+        "(KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
+    ),
+    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+    "Accept-Language": "en-US,en;q=0.9",
+    "Referer": "https://www.aaii.com/sentimentsurvey/sent_results",
+}
 
 AAII_XLS_URL = "https://www.aaii.com/files/surveys/sentiment.xls"
+AAII_RESULTS_URL = "https://www.aaii.com/sentimentsurvey/sent_results"
 
 
 # ----------------------------------------------------------------------
@@ -44,8 +68,8 @@ AAII_XLS_URL = "https://www.aaii.com/files/surveys/sentiment.xls"
 
 def _get_index_data(period="1y"):
     """
-    Returns {name: (last_price, change_pct, history_df)}. A full 1y history
-    is kept (not just the last close) so it can be charted later without a
+    Returns {name: {"last", "change_pct", "history"}}. A full 1y history is
+    kept (not just the last close) so it can be charted later without a
     second call.
     """
     results = {}
@@ -69,16 +93,14 @@ def _get_index_data(period="1y"):
 
 def _get_fear_greed_data():
     """
-    CNN Fear & Greed Index — unofficial internal endpoint CNN's own site uses
-    to power its gauge + trend chart. The response includes the current
-    score/rating, each of the 7 component indicators (market momentum, stock
-    price strength/breadth, put/call options, volatility, junk bond demand,
-    safe haven demand), and roughly a year of historical daily scores for
-    the headline index — everything needed to rebuild their chart later.
+    CNN Fear & Greed Index -- unofficial internal endpoint CNN's own site
+    uses to power its gauge + trend chart. The response includes the
+    current score/rating, each of the 7 component indicators, and roughly a
+    year of historical daily scores for the headline index.
     """
     url = "https://production.dataviz.cnn.io/index/fearandgreed/graphdata"
     try:
-        resp = requests.get(url, headers=HEADERS, timeout=10)
+        resp = requests.get(url, headers=BROWSER_HEADERS, timeout=10)
         resp.raise_for_status()
         return resp.json()
     except Exception as e:
@@ -115,13 +137,13 @@ def _parse_fear_greed(fg_data):
 def _get_put_call_ratio():
     """
     CBOE total put/call ratio. CBOE doesn't offer a stable free JSON API for
-    this, so this is a best-effort scrape of their market statistics page —
+    this, so this is a best-effort scrape of their market statistics page --
     it only yields the latest reading, not history. May need updating if
     CBOE changes their site structure.
     """
     url = "https://www.cboe.com/us/options/market_statistics/daily/"
     try:
-        resp = requests.get(url, headers=HEADERS, timeout=8)
+        resp = requests.get(url, headers=BROWSER_HEADERS, timeout=8)
         resp.raise_for_status()
         match = re.search(r"TOTAL PUT/CALL RATIO[^\d]*([\d.]+)", resp.text, re.IGNORECASE)
         return float(match.group(1)) if match else None
@@ -130,62 +152,115 @@ def _get_put_call_ratio():
 
 
 # ----------------------------------------------------------------------
-# AAII sentiment survey — official spreadsheet
+# AAII sentiment survey
 # ----------------------------------------------------------------------
 
-def _get_aaii_sentiment_data():
+def _find_col(columns, candidates):
+    for col in columns:
+        norm = str(col).lower().replace(" ", "")
+        for cand in candidates:
+            if cand in norm:
+                return col
+    return None
+
+
+def _extract_latest_from_df(df, date_col, bull_col, neutral_col, bear_col):
+    if date_col:
+        df = df.dropna(subset=[date_col])
+    keep_cols = [c for c in [date_col, bull_col, neutral_col, bear_col] if c]
+    if not keep_cols:
+        return None
+    subset = df[keep_cols].dropna(subset=[bull_col] if bull_col else keep_cols)
+    if subset.empty:
+        return None
+    row = subset.iloc[-1]
+    return {
+        "date": row.get(date_col) if date_col else None,
+        "bullish": row.get(bull_col) if bull_col else None,
+        "neutral": row.get(neutral_col) if neutral_col else None,
+        "bearish": row.get(bear_col) if bear_col else None,
+    }
+
+
+def _get_aaii_sentiment_spreadsheet():
     """
-    Pulls AAII's own downloadable historical spreadsheet instead of scraping
-    HTML. Gives us the full weekly Bull/Neutral/Bear time series (plus the
-    S&P 500 close AAII includes alongside it), which is what's needed to
-    recreate their history chart later.
+    AAII's official downloadable historical spreadsheet -- the full weekly
+    Bull/Neutral/Bear time series plus the S&P 500 close AAII includes
+    alongside it. Fetched via requests (with browser-style headers, since
+    pandas' default Excel loader sends none and gets 403'd by AAII's WAF)
+    and handed to pandas as raw bytes rather than a bare URL.
 
     AAII's sheet has a few explanatory rows above the real header, hence
     skiprows=3. Columns are matched by name (case/whitespace-insensitive)
-    rather than position, so small formatting shifts in the sheet don't
-    silently break this.
+    rather than position, so small formatting shifts don't silently break it.
     """
-    try:
-        df = pd.read_excel(AAII_XLS_URL, skiprows=3)
-    except Exception as e:
-        print(f"  [warn] Couldn't pull AAII spreadsheet ({e})")
-        return None
+    resp = requests.get(AAII_XLS_URL, headers=BROWSER_HEADERS, timeout=15)
+    resp.raise_for_status()
+    df = pd.read_excel(io.BytesIO(resp.content), skiprows=3)
 
     df.columns = [str(c).strip() for c in df.columns]
     df = df.dropna(how="all")
 
-    # Trim to the columns we actually care about if we can identify them,
-    # but don't fail hard if the sheet has extra/renamed columns.
-    def _find_col(candidates):
-        for col in df.columns:
-            norm = col.lower().replace(" ", "")
-            for cand in candidates:
-                if cand in norm:
-                    return col
+    date_col = _find_col(df.columns, ["date"])
+    bull_col = _find_col(df.columns, ["bullish"])
+    neutral_col = _find_col(df.columns, ["neutral"])
+    bear_col = _find_col(df.columns, ["bearish"])
+
+    latest = _extract_latest_from_df(df, date_col, bull_col, neutral_col, bear_col)
+    return {"raw": df, "latest": latest}
+
+
+def _get_aaii_sentiment_html_fallback():
+    """
+    Fallback if the spreadsheet pull fails: scrape the small recent-history
+    table AAII shows on their public results page. Only covers the last
+    ~20 weeks (vs. the full history the spreadsheet has), but keeps this
+    working even if the spreadsheet endpoint changes or gets blocked.
+    """
+    from bs4 import BeautifulSoup
+
+    resp = requests.get(AAII_RESULTS_URL, headers=BROWSER_HEADERS, timeout=10)
+    resp.raise_for_status()
+    soup = BeautifulSoup(resp.text, "html.parser")
+    table = soup.find("table")
+    if table is None:
         return None
 
-    date_col = _find_col(["date"])
-    bull_col = _find_col(["bullish"])
-    neutral_col = _find_col(["neutral"])
-    bear_col = _find_col(["bearish"])
+    rows = []
+    for tr in table.find_all("tr"):
+        cells = [td.get_text(strip=True) for td in tr.find_all(["td", "th"])]
+        if len(cells) == 4 and "bullish" not in cells[1].lower():
+            rows.append(cells)
+    if not rows:
+        return None
 
-    if date_col:
-        df = df.dropna(subset=[date_col])
+    def _pct_to_frac(s):
+        try:
+            return float(str(s).replace("%", "")) / 100
+        except ValueError:
+            return None
 
-    keep_cols = [c for c in [date_col, bull_col, neutral_col, bear_col] if c]
-    latest = None
-    if keep_cols:
-        subset = df[keep_cols].dropna(subset=[bull_col] if bull_col else keep_cols)
-        if not subset.empty:
-            row = subset.iloc[-1]
-            latest = {
-                "date": row.get(date_col) if date_col else None,
-                "bullish": row.get(bull_col) if bull_col else None,
-                "neutral": row.get(neutral_col) if neutral_col else None,
-                "bearish": row.get(bear_col) if bear_col else None,
-            }
+    date_str, bull_s, neutral_s, bear_s = rows[0]
+    latest = {
+        "date": date_str,
+        "bullish": _pct_to_frac(bull_s),
+        "neutral": _pct_to_frac(neutral_s),
+        "bearish": _pct_to_frac(bear_s),
+    }
+    raw_df = pd.DataFrame(rows, columns=["Reported Date", "Bullish", "Neutral", "Bearish"])
+    return {"raw": raw_df, "latest": latest}
 
-    return {"raw": df, "latest": latest}
+
+def _get_aaii_sentiment_data():
+    try:
+        return _get_aaii_sentiment_spreadsheet()
+    except Exception as e:
+        print(f"  [warn] AAII spreadsheet pull failed ({e}); trying HTML fallback")
+    try:
+        return _get_aaii_sentiment_html_fallback()
+    except Exception as e:
+        print(f"  [warn] AAII HTML fallback also failed ({e})")
+        return None
 
 
 def _fmt_aaii_pct(value):
@@ -195,8 +270,8 @@ def _fmt_aaii_pct(value):
         value = float(value)
     except (TypeError, ValueError):
         return None
-    # AAII's sheet stores these as fractions (0.37) — normalize just in case
-    # a future version switches to already-scaled percents.
+    # AAII's data is stored as fractions (0.37) -- normalize just in case a
+    # future version switches to already-scaled percents.
     if abs(value) <= 1:
         value *= 100
     return f"{value:.1f}%"
@@ -216,18 +291,21 @@ def market_info():
             print(f"  {name:<20} N/A")
         else:
             sign = "+" if d["change_pct"] >= 0 else ""
-            print(f"  {name:<20} {d['last']:,.2f}   ({sign}{d['change_pct']:.2f}%)")
+            color = gradient_color(d["change_pct"], neutral=0.0, max_dev=5.0)
+            print(f"  {name:<20} {d['last']:>12,.2f}   {color}({sign}{d['change_pct']:.2f}%){RESET_COLOR}")
 
     print("\n-- Sentiment Indicators --")
 
     fg_raw = _get_fear_greed_data()
     fg_score, fg_rating, fg_components = _parse_fear_greed(fg_raw)
     if fg_score is not None:
-        print(f"  Fear & Greed Index   {fg_score} ({fg_rating})")
+        color = gradient_color(fg_score, neutral=50.0, max_dev=50.0)
+        print(f"  Fear & Greed Index   {color}{fg_score} ({fg_rating}){RESET_COLOR}")
         for key, (score, rating) in fg_components.items():
             label = key.replace("_", " ").title()
             if score is not None:
-                print(f"    - {label:<28} {score} ({rating})")
+                c_color = gradient_color(score, neutral=50.0, max_dev=50.0)
+                print(f"    - {label:<28} {c_color}{score} ({rating}){RESET_COLOR}")
     else:
         print("  Fear & Greed Index   N/A")
 

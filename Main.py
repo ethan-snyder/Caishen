@@ -17,6 +17,7 @@ except ImportError:
 from stock_info import current_stock_info
 from projector import projector
 from market_info import market_info
+from portfolio import view_portfolio
 
 GREEN = "\033[32m"
 RESET = "\033[0m"
@@ -37,7 +38,8 @@ MENU = """
 1) Current Stock Info      (metrics for one ticker)
 2) Price Projector         (3-year bear/base/bull)
 3) Market Overview         (indexes & sentiment)
-4) Quit
+4) Portfolio                (view your holdings)
+5) Quit
 ===================================================
 """
 
@@ -46,7 +48,7 @@ def main():
     print(f"{GREEN}{BANNER}{RESET}")
     while True:
         print(MENU)
-        choice = input("Select an option (1-4): ").strip()
+        choice = input("Select an option (1-5): ").strip()
         if choice == "1":
             current_stock_info()
         elif choice == "2":
@@ -54,10 +56,12 @@ def main():
         elif choice == "3":
             market_info()
         elif choice == "4":
+            view_portfolio()
+        elif choice == "5":
             print("Goodbye!")
             break
         else:
-            print("Invalid choice, please select 1-4.")
+            print("Invalid choice, please select 1-5.")
 
 
 if __name__ == "__main__":

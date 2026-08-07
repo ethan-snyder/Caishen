@@ -2,10 +2,11 @@
 projector.py — projector()
 
 Walks the user through bear/base/bull assumptions (PE ratio + expected EPS)
-for each of the next 3 years, and maps out the implied stock price each year
-using Price = EPS x PE.
+for each of the next 3 calendar years, and maps out the implied stock price
+each year using Price = EPS x PE.
 """
 
+import datetime
 import yfinance as yf
 
 
@@ -39,30 +40,34 @@ def projector():
     else:
         print(f"Could not auto-fetch current EPS for {ticker_symbol}; that's fine, just for reference.")
 
+    current_year = datetime.date.today().year
+    target_years = [current_year + 1, current_year + 2, current_year + 3]
+
     scenarios = ["Bear", "Base", "Bull"]
     projections = {s: [] for s in scenarios}
 
     for scenario in scenarios:
         print(f"\n--- {scenario} Case ---")
-        for year in range(1, 4):
-            print(f" Year {year}:")
+        for year in target_years:
+            print(f" {year}:")
             pe = _prompt_float("   Expected PE ratio: ")
-            eps = _prompt_float("   Expected EPS: ")
+            eps = _prompt_float("   Expected EPS (TTM): ")
             price = eps * pe
             projections[scenario].append({"year": year, "pe": pe, "eps": eps, "price": price})
 
-    _print_projection_table(ticker_symbol, current_price, projections)
+    _print_projection_table(ticker_symbol, current_price, projections, target_years)
     return projections
 
 
-def _print_projection_table(ticker_symbol, current_price, projections):
-    print(f"\n===== {ticker_symbol} — 3-Year Price Projection =====")
+def _print_projection_table(ticker_symbol, current_price, projections, target_years):
+    span = f"{target_years[0]}-{target_years[-1]}"
+    print(f"\n===== {ticker_symbol} — {span} Price Projection =====")
     if current_price:
         print(f"Current Price: ${current_price:,.2f}")
     for scenario, years in projections.items():
         print(f"\n{scenario} Case:")
         for y in years:
-            print(f"  Year {y['year']}: EPS ${y['eps']:.2f}  x  PE {y['pe']:.1f}  =  ${y['price']:,.2f}")
+            print(f"  {y['year']}: EPS (TTM) ${y['eps']:.2f}  x  PE {y['pe']:.1f}  =  ${y['price']:,.2f}")
     print("\n" + "=" * 45)
 
 

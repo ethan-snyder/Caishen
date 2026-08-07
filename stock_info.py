@@ -23,10 +23,10 @@ from utils import (
     calculate_capm,
     calculate_wacc,
     fmt_pct,
+    fmt_pct_raw,
     fmt_num,
     fmt_money,
     fmt_large_num,
-    normalize_pct,
 )
 
 
@@ -100,7 +100,10 @@ def _build_core_metrics(tk, info, price):
     ps = _safe(info, "priceToSalesTrailing12Months")
     pb = _safe(info, "priceToBook")
     dividend_rate = _safe(info, "dividendRate")
-    dividend_yield = normalize_pct(_safe(info, "dividendYield"))
+    # yfinance returns dividendYield already scaled as a percent (e.g. 0.44
+    # meaning 0.44%, not a 0.44 fraction) -- format with fmt_pct_raw, which
+    # doesn't re-multiply by 100.
+    dividend_yield = _safe(info, "dividendYield")
     eps = _safe(info, "trailingEps")
     week_low = _safe(info, "fiftyTwoWeekLow")
     week_high = _safe(info, "fiftyTwoWeekHigh")
@@ -148,7 +151,7 @@ def _build_core_metrics(tk, info, price):
         "P/B Ratio": fmt_num(pb),
         "WACC": fmt_pct(wacc_value),
         "Dividend ($)": fmt_money(dividend_rate) if dividend_rate else "N/A",
-        "Dividend Yield": fmt_pct(dividend_yield),
+        "Dividend Yield": fmt_pct_raw(dividend_yield),
         "EPS (TTM)": fmt_num(eps),
         "52W Range": f"{fmt_money(week_low)} - {fmt_money(week_high)}" if week_low and week_high else "N/A",
         "Cash Per Share": fmt_money(cash_per_share),
@@ -285,19 +288,25 @@ def _build_analyst_info(info):
 # ----------------------------------------------------------------------
 
 def _build_financial_highlights(info):
-    profit_margin = normalize_pct(_safe(info, "profitMargins"))
-    operating_margin = normalize_pct(_safe(info, "operatingMargins"))
-    roa = normalize_pct(_safe(info, "returnOnAssets"))
-    roe = normalize_pct(_safe(info, "returnOnEquity"))
+    # profitMargins/operatingMargins/returnOnAssets/returnOnEquity/revenueGrowth/
+    # earningsGrowth are genuine fractions from yfinance (e.g. 0.243 for
+    # 24.3%, or 1.5 for a legitimate 150% ROE) -- use fmt_pct directly rather
+    # than trying to guess-rescale, since ROE/growth can exceed 100%
+    # entirely validly and a ">1 means already-percent" heuristic misreads
+    # that as a scaling issue.
+    profit_margin = _safe(info, "profitMargins")
+    operating_margin = _safe(info, "operatingMargins")
+    roa = _safe(info, "returnOnAssets")
+    roe = _safe(info, "returnOnEquity")
 
     revenue = _safe(info, "totalRevenue")
     revenue_per_share = _safe(info, "revenuePerShare")
-    qtr_rev_growth = normalize_pct(_safe(info, "revenueGrowth"))
+    qtr_rev_growth = _safe(info, "revenueGrowth")
     gross_profit = _safe(info, "grossProfits")
     ebitda = _safe(info, "ebitda")
     net_income = _safe(info, "netIncomeToCommon")
     diluted_eps = _safe(info, "trailingEps")
-    qtr_earnings_growth = normalize_pct(_safe(info, "earningsGrowth"))
+    eps_growth = _safe(info, "earningsGrowth")
 
     total_cash = _safe(info, "totalCash")
     total_debt = _safe(info, "totalDebt")
@@ -313,7 +322,7 @@ def _build_financial_highlights(info):
         "return_on_assets": roa, "return_on_equity": roe, "revenue": revenue,
         "revenue_per_share": revenue_per_share, "quarterly_revenue_growth": qtr_rev_growth,
         "gross_profit": gross_profit, "ebitda": ebitda, "net_income": net_income,
-        "diluted_eps": diluted_eps, "quarterly_earnings_growth": qtr_earnings_growth,
+        "diluted_eps": diluted_eps, "eps_growth": eps_growth,
         "total_cash": total_cash, "total_debt": total_debt,
         "debt_to_equity": debt_to_equity, "current_ratio": current_ratio,
         "book_value_per_share": book_value_per_share,
@@ -332,19 +341,19 @@ def _build_financial_highlights(info):
     if revenue is not None:
         display["Revenue (TTM)"] = fmt_large_num(revenue)
     if revenue_per_share is not None:
-        display["Revenue Per Share"] = fmt_money(revenue_per_share)
+        display["Revenue Per Share (TTM)"] = fmt_money(revenue_per_share)
     if qtr_rev_growth is not None:
         display["Qtrly Revenue Growth (YoY)"] = fmt_pct(qtr_rev_growth)
     if gross_profit is not None:
-        display["Gross Profit"] = fmt_large_num(gross_profit)
+        display["Gross Profit (TTM)"] = fmt_large_num(gross_profit)
     if ebitda is not None:
-        display["EBITDA"] = fmt_large_num(ebitda)
+        display["EBITDA (TTM)"] = fmt_large_num(ebitda)
     if net_income is not None:
-        display["Net Income"] = fmt_large_num(net_income)
+        display["Net Income (TTM)"] = fmt_large_num(net_income)
     if diluted_eps is not None:
-        display["Diluted EPS"] = fmt_num(diluted_eps)
-    if qtr_earnings_growth is not None:
-        display["Qtrly Earnings Growth (YoY)"] = fmt_pct(qtr_earnings_growth)
+        display["Diluted EPS (TTM)"] = fmt_num(diluted_eps)
+    if eps_growth is not None:
+        display["EPS Growth (YoY)"] = fmt_pct(eps_growth)
     if total_cash is not None:
         display["Total Cash"] = fmt_large_num(total_cash)
     if total_debt is not None:
@@ -380,11 +389,27 @@ def _get_price_history(tk, period="1y"):
 # ----------------------------------------------------------------------
 
 def _print_table(title, display_dict):
-    print(f"===== {title} =====")
-    width = max(len(k) for k in display_dict) + 2
-    for k, v in display_dict.items():
-        print(f"  {k:<{width}} {v}")
-    print("=" * 40)
+    if not display_dict:
+        return
+
+    label_width = max(len(k) for k in display_dict) + 2
+    lines = [f"  {k:<{label_width}} {v}" for k, v in display_dict.items()]
+    content_width = max((len(line) for line in lines), default=0)
+
+    title_str = f" {title} "
+    total_width = max(content_width, len(title_str) + 2)
+
+    pad = total_width - len(title_str)
+    left = pad // 2
+    right = pad - left
+
+    top = "=" * left + title_str + "=" * right
+    bottom = "=" * total_width
+
+    print(top)
+    for line in lines:
+        print(line)
+    print(bottom)
     print()
 
 
