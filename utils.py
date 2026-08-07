@@ -136,3 +136,16 @@ def fmt_money(value, decimals=2):
     if value is None:
         return "N/A"
     return f"${value:,.{decimals}f}"
+
+
+def fmt_large_num(value, is_money=True):
+    """Compact form for big numbers, e.g. 3228000000000 -> '$3.23T'."""
+    if value is None:
+        return "N/A"
+    prefix = "$" if is_money else ""
+    value = float(value)
+    abs_v = abs(value)
+    for threshold, suffix in ((1e12, "T"), (1e9, "B"), (1e6, "M"), (1e3, "K")):
+        if abs_v >= threshold:
+            return f"{prefix}{value / threshold:,.2f}{suffix}"
+    return f"{prefix}{value:,.2f}"

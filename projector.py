@@ -1,9 +1,9 @@
 """
 projector.py — projector()
 
-Walks the user through bear/base/bull assumptions (PE ratio + either revenue/EPS
-growth or a direct EPS estimate) for each of the next 3 years, and maps out the
-implied stock price each year using Price = EPS x PE.
+Walks the user through bear/base/bull assumptions (PE ratio + expected EPS)
+for each of the next 3 years, and maps out the implied stock price each year
+using Price = EPS x PE.
 """
 
 import yfinance as yf
@@ -33,35 +33,21 @@ def projector():
     ticker_symbol = input("Enter stock ticker: ").strip().upper()
     starting_eps, current_price = _get_starting_eps(ticker_symbol)
 
-    if starting_eps is None:
-        print(f"Could not auto-fetch EPS for {ticker_symbol}.")
-        starting_eps = _prompt_float("Enter current/starting EPS manually: ")
-    else:
+    if starting_eps is not None:
         price_str = f"${current_price:,.2f}" if current_price else "N/A"
-        print(f"\nCurrent price: {price_str} | Starting EPS (TTM): ${starting_eps:.2f}")
-        use_default = input("Use this as your Year 0 baseline EPS? (y/n): ").strip().lower()
-        if use_default != "y":
-            starting_eps = _prompt_float("Enter starting EPS manually: ")
-
-    print("\nHow would you like to enter your yearly assumptions?")
-    print("  1) Revenue / EPS growth rate (%) each year")
-    print("  2) Direct EPS estimate each year")
-    input_mode = input("Choose 1 or 2: ").strip()
+        print(f"\nCurrent price: {price_str} | Current EPS (TTM): ${starting_eps:.2f}")
+    else:
+        print(f"Could not auto-fetch current EPS for {ticker_symbol}; that's fine, just for reference.")
 
     scenarios = ["Bear", "Base", "Bull"]
     projections = {s: [] for s in scenarios}
 
     for scenario in scenarios:
         print(f"\n--- {scenario} Case ---")
-        eps = starting_eps
         for year in range(1, 4):
             print(f" Year {year}:")
             pe = _prompt_float("   Expected PE ratio: ")
-            if input_mode == "2":
-                eps = _prompt_float("   Expected EPS: ")
-            else:
-                growth = _prompt_float("   Expected EPS/revenue growth (%): ") / 100
-                eps = eps * (1 + growth)
+            eps = _prompt_float("   Expected EPS: ")
             price = eps * pe
             projections[scenario].append({"year": year, "pe": pe, "eps": eps, "price": price})
 

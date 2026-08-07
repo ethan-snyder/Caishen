@@ -1,16 +1,33 @@
 """
 stock_info.py — current_stock_info()
 
-Pulls Price, PE, forward PE, PEG, P/S, P/B, WACC, Dividend, Dividend yield,
-EPS, 52-week range, Cash Per Share, and CAPM for a given ticker.
+Core metrics: Price, PE, forward PE, PEG, P/S, P/B, WACC, Dividend, Dividend
+yield, EPS, 52-week range, Cash Per Share, CAPM.
 
-Primary source is yfinance. A few fields (P/S, P/B, cash per share, PEG) are
-recomputed manually when the API's own field is missing or looks unreliable,
-and WACC/CAPM are always computed manually since no free API reports them.
+Also pulls (best-effort, skipped gracefully if unavailable): open/previous
+close, day range, market cap, volume/avg volume, most recent + next earnings
+dates, analyst price targets & recommendation, a set of Yahoo-style
+"financial highlights" (profitability, income statement, balance sheet, cash
+flow), and a year of price history for later charting. None of this extra
+section is critical — if a field can't be pulled it's just omitted rather
+than failing the whole call.
+
+Primary source is yfinance. A few core fields (P/S, P/B, cash per share,
+PEG) are recomputed manually when the API's own field is missing or looks
+unreliable, and WACC/CAPM are always computed manually since no free API
+reports them.
 """
 
 import yfinance as yf
-from utils import calculate_capm, calculate_wacc, fmt_pct, fmt_num, fmt_money, normalize_pct
+from utils import (
+    calculate_capm,
+    calculate_wacc,
+    fmt_pct,
+    fmt_num,
+    fmt_money,
+    fmt_large_num,
+    normalize_pct,
+)
 
 
 def _safe(info, *keys, default=None):
@@ -41,6 +58,42 @@ def current_stock_info(ticker_symbol=None):
         print(f"Could not find reliable data for '{ticker_symbol}'. Check the ticker symbol.")
         return None
 
+    core = _build_core_metrics(tk, info, price)
+    _print_table(f"{ticker_symbol} — Key Metrics", core["display"])
+
+    price_detail = _build_price_detail(info)
+    if price_detail["display"]:
+        _print_table("Price & Volume", price_detail["display"])
+
+    earnings = _build_earnings_info(tk)
+    if earnings["display"]:
+        _print_table("Earnings Dates", earnings["display"])
+
+    analyst = _build_analyst_info(info)
+    if analyst["display"]:
+        _print_table("Analyst Info", analyst["display"])
+
+    highlights = _build_financial_highlights(info)
+    if highlights["display"]:
+        _print_table("Financial Highlights", highlights["display"])
+
+    price_history = _get_price_history(tk)
+
+    return {
+        "core": core["raw"],
+        "price_detail": price_detail["raw"],
+        "earnings": earnings["raw"],
+        "analyst": analyst["raw"],
+        "financial_highlights": highlights["raw"],
+        "price_history": price_history,  # kept for later charting, not printed
+    }
+
+
+# ----------------------------------------------------------------------
+# Core metrics (always shown)
+# ----------------------------------------------------------------------
+
+def _build_core_metrics(tk, info, price):
     pe = _safe(info, "trailingPE")
     forward_pe = _safe(info, "forwardPE")
     peg = _safe(info, "trailingPegRatio", "pegRatio")
@@ -55,7 +108,6 @@ def current_stock_info(ticker_symbol=None):
     shares_out = _safe(info, "sharesOutstanding")
     beta = _safe(info, "beta")
 
-    # ---- manual fallbacks for fields that are often missing/unreliable ----
     if ps is None:
         market_cap = _safe(info, "marketCap")
         revenue = _safe(info, "totalRevenue")
@@ -76,11 +128,18 @@ def current_stock_info(ticker_symbol=None):
         if growth and growth > 0:
             peg = pe / (growth * 100)
 
-    # CAPM / WACC — always computed manually
     capm_value, rf = calculate_capm(beta)
     wacc_value = calculate_wacc(tk, capm_value, rf)
 
-    results = {
+    raw = {
+        "price": price, "pe": pe, "forward_pe": forward_pe, "peg": peg,
+        "ps": ps, "pb": pb, "wacc": wacc_value, "dividend_rate": dividend_rate,
+        "dividend_yield": dividend_yield, "eps": eps, "week_low": week_low,
+        "week_high": week_high, "cash_per_share": cash_per_share,
+        "capm": capm_value, "beta": beta,
+    }
+
+    display = {
         "Price": fmt_money(price),
         "PE Ratio": fmt_num(pe),
         "Forward PE": fmt_num(forward_pe),
@@ -95,17 +154,238 @@ def current_stock_info(ticker_symbol=None):
         "Cash Per Share": fmt_money(cash_per_share),
         "CAPM (Cost of Equity)": fmt_pct(capm_value),
     }
-
-    _print_table(ticker_symbol, results)
-    return results
+    return {"raw": raw, "display": display}
 
 
-def _print_table(ticker_symbol, results):
-    print(f"===== {ticker_symbol} — Key Metrics =====")
-    width = max(len(k) for k in results) + 2
-    for k, v in results.items():
+# ----------------------------------------------------------------------
+# Price / volume detail
+# ----------------------------------------------------------------------
+
+def _build_price_detail(info):
+    open_price = _safe(info, "open", "regularMarketOpen")
+    prev_close = _safe(info, "previousClose", "regularMarketPreviousClose")
+    day_low = _safe(info, "dayLow", "regularMarketDayLow")
+    day_high = _safe(info, "dayHigh", "regularMarketDayHigh")
+    market_cap = _safe(info, "marketCap")
+    volume = _safe(info, "volume", "regularMarketVolume")
+    avg_volume = _safe(info, "averageVolume", "averageVolume10days")
+
+    raw = {
+        "open": open_price, "previous_close": prev_close, "day_low": day_low,
+        "day_high": day_high, "market_cap": market_cap, "volume": volume,
+        "avg_volume": avg_volume,
+    }
+
+    display = {}
+    if open_price is not None:
+        display["Open"] = fmt_money(open_price)
+    if prev_close is not None:
+        display["Previous Close"] = fmt_money(prev_close)
+    if day_low is not None and day_high is not None:
+        display["Day Range"] = f"{fmt_money(day_low)} - {fmt_money(day_high)}"
+    if market_cap is not None:
+        display["Market Cap"] = fmt_large_num(market_cap)
+    if volume is not None:
+        display["Volume"] = fmt_large_num(volume, is_money=False)
+    if avg_volume is not None:
+        display["Avg Volume"] = fmt_large_num(avg_volume, is_money=False)
+
+    return {"raw": raw, "display": display}
+
+
+# ----------------------------------------------------------------------
+# Earnings dates
+# ----------------------------------------------------------------------
+
+def _build_earnings_info(tk):
+    """
+    Most recent (past) and next (future) earnings date, with EPS
+    estimate/actual/surprise when yfinance has them. Dates near-term are
+    usually accurate; dates far in the future are frequently still
+    provisional/unconfirmed by the company, so treat "next earnings" as an
+    estimate rather than a confirmed date.
+    """
+    raw = {"most_recent": None, "next": None}
+    display = {}
+    try:
+        edf = tk.get_earnings_dates(limit=12)
+        if edf is None or edf.empty:
+            return {"raw": raw, "display": display}
+
+        edf = edf.sort_index()
+        import pandas as pd
+        today = pd.Timestamp.now(tz=edf.index.tz)
+
+        past = edf[edf.index <= today]
+        future = edf[edf.index > today]
+
+        if not past.empty:
+            row = past.iloc[-1]
+            date = past.index[-1]
+            raw["most_recent"] = {
+                "date": date,
+                "eps_estimate": row.get("EPS Estimate"),
+                "eps_actual": row.get("Reported EPS"),
+                "surprise_pct": row.get("Surprise(%)"),
+            }
+            parts = [f"{date.date()}"]
+            if row.get("Reported EPS") is not None and pd.notna(row.get("Reported EPS")):
+                parts.append(f"Actual EPS ${row['Reported EPS']:.2f}")
+            if row.get("Surprise(%)") is not None and pd.notna(row.get("Surprise(%)")):
+                parts.append(f"Surprise {row['Surprise(%)']:.1f}%")
+            display["Most Recent Earnings"] = " | ".join(parts)
+
+        if not future.empty:
+            row = future.iloc[0]
+            date = future.index[0]
+            raw["next"] = {"date": date, "eps_estimate": row.get("EPS Estimate")}
+            parts = [f"{date.date()}"]
+            if row.get("EPS Estimate") is not None and pd.notna(row.get("EPS Estimate")):
+                parts.append(f"Est. EPS ${row['EPS Estimate']:.2f}")
+            display["Next Earnings (est.)"] = " | ".join(parts)
+
+    except Exception:
+        pass  # earnings dates are a nice-to-have, not critical
+
+    return {"raw": raw, "display": display}
+
+
+# ----------------------------------------------------------------------
+# Analyst info
+# ----------------------------------------------------------------------
+
+def _build_analyst_info(info):
+    target_mean = _safe(info, "targetMeanPrice")
+    target_high = _safe(info, "targetHighPrice")
+    target_low = _safe(info, "targetLowPrice")
+    recommendation = _safe(info, "recommendationKey")
+    num_analysts = _safe(info, "numberOfAnalystOpinions")
+
+    raw = {
+        "target_mean": target_mean, "target_high": target_high,
+        "target_low": target_low, "recommendation": recommendation,
+        "num_analysts": num_analysts,
+    }
+
+    display = {}
+    if target_mean is not None:
+        display["Analyst Target (mean)"] = fmt_money(target_mean)
+    if target_low is not None and target_high is not None:
+        display["Analyst Target Range"] = f"{fmt_money(target_low)} - {fmt_money(target_high)}"
+    if recommendation:
+        display["Recommendation"] = str(recommendation).replace("_", " ").title()
+    if num_analysts is not None:
+        display["# of Analysts"] = str(int(num_analysts))
+
+    return {"raw": raw, "display": display}
+
+
+# ----------------------------------------------------------------------
+# Financial highlights (Yahoo "Statistics"-style summary)
+# ----------------------------------------------------------------------
+
+def _build_financial_highlights(info):
+    profit_margin = normalize_pct(_safe(info, "profitMargins"))
+    operating_margin = normalize_pct(_safe(info, "operatingMargins"))
+    roa = normalize_pct(_safe(info, "returnOnAssets"))
+    roe = normalize_pct(_safe(info, "returnOnEquity"))
+
+    revenue = _safe(info, "totalRevenue")
+    revenue_per_share = _safe(info, "revenuePerShare")
+    qtr_rev_growth = normalize_pct(_safe(info, "revenueGrowth"))
+    gross_profit = _safe(info, "grossProfits")
+    ebitda = _safe(info, "ebitda")
+    net_income = _safe(info, "netIncomeToCommon")
+    diluted_eps = _safe(info, "trailingEps")
+    qtr_earnings_growth = normalize_pct(_safe(info, "earningsGrowth"))
+
+    total_cash = _safe(info, "totalCash")
+    total_debt = _safe(info, "totalDebt")
+    debt_to_equity = _safe(info, "debtToEquity")
+    current_ratio = _safe(info, "currentRatio")
+    book_value_per_share = _safe(info, "bookValue")
+
+    operating_cashflow = _safe(info, "operatingCashflow")
+    levered_fcf = _safe(info, "freeCashflow")
+
+    raw = {
+        "profit_margin": profit_margin, "operating_margin": operating_margin,
+        "return_on_assets": roa, "return_on_equity": roe, "revenue": revenue,
+        "revenue_per_share": revenue_per_share, "quarterly_revenue_growth": qtr_rev_growth,
+        "gross_profit": gross_profit, "ebitda": ebitda, "net_income": net_income,
+        "diluted_eps": diluted_eps, "quarterly_earnings_growth": qtr_earnings_growth,
+        "total_cash": total_cash, "total_debt": total_debt,
+        "debt_to_equity": debt_to_equity, "current_ratio": current_ratio,
+        "book_value_per_share": book_value_per_share,
+        "operating_cashflow": operating_cashflow, "levered_free_cashflow": levered_fcf,
+    }
+
+    display = {}
+    if profit_margin is not None:
+        display["Profit Margin"] = fmt_pct(profit_margin)
+    if operating_margin is not None:
+        display["Operating Margin"] = fmt_pct(operating_margin)
+    if roa is not None:
+        display["Return on Assets"] = fmt_pct(roa)
+    if roe is not None:
+        display["Return on Equity"] = fmt_pct(roe)
+    if revenue is not None:
+        display["Revenue (TTM)"] = fmt_large_num(revenue)
+    if revenue_per_share is not None:
+        display["Revenue Per Share"] = fmt_money(revenue_per_share)
+    if qtr_rev_growth is not None:
+        display["Qtrly Revenue Growth (YoY)"] = fmt_pct(qtr_rev_growth)
+    if gross_profit is not None:
+        display["Gross Profit"] = fmt_large_num(gross_profit)
+    if ebitda is not None:
+        display["EBITDA"] = fmt_large_num(ebitda)
+    if net_income is not None:
+        display["Net Income"] = fmt_large_num(net_income)
+    if diluted_eps is not None:
+        display["Diluted EPS"] = fmt_num(diluted_eps)
+    if qtr_earnings_growth is not None:
+        display["Qtrly Earnings Growth (YoY)"] = fmt_pct(qtr_earnings_growth)
+    if total_cash is not None:
+        display["Total Cash"] = fmt_large_num(total_cash)
+    if total_debt is not None:
+        display["Total Debt"] = fmt_large_num(total_debt)
+    if debt_to_equity is not None:
+        display["Debt / Equity"] = fmt_num(debt_to_equity)
+    if current_ratio is not None:
+        display["Current Ratio"] = fmt_num(current_ratio)
+    if book_value_per_share is not None:
+        display["Book Value / Share"] = fmt_money(book_value_per_share)
+    if operating_cashflow is not None:
+        display["Operating Cash Flow"] = fmt_large_num(operating_cashflow)
+    if levered_fcf is not None:
+        display["Levered Free Cash Flow"] = fmt_large_num(levered_fcf)
+
+    return {"raw": raw, "display": display}
+
+
+# ----------------------------------------------------------------------
+# Price history (for later charting — not printed)
+# ----------------------------------------------------------------------
+
+def _get_price_history(tk, period="1y"):
+    try:
+        hist = tk.history(period=period)
+        return hist if not hist.empty else None
+    except Exception:
+        return None
+
+
+# ----------------------------------------------------------------------
+# Printing
+# ----------------------------------------------------------------------
+
+def _print_table(title, display_dict):
+    print(f"===== {title} =====")
+    width = max(len(k) for k in display_dict) + 2
+    for k, v in display_dict.items():
         print(f"  {k:<{width}} {v}")
     print("=" * 40)
+    print()
 
 
 if __name__ == "__main__":
