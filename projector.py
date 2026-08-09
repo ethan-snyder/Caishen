@@ -8,6 +8,7 @@ each year using Price = EPS x PE.
 
 import datetime
 import yfinance as yf
+from logger import log_event
 
 
 def _prompt_float(prompt_text):
@@ -32,6 +33,7 @@ def _get_starting_eps(ticker_symbol):
 
 def projector():
     ticker_symbol = input("Enter stock ticker: ").strip().upper()
+    log_event(f"Running price projector for {ticker_symbol}")
     starting_eps, current_price = _get_starting_eps(ticker_symbol)
 
     if starting_eps is not None:
@@ -56,6 +58,7 @@ def projector():
             projections[scenario].append({"year": year, "pe": pe, "eps": eps, "price": price})
 
     _print_projection_table(ticker_symbol, current_price, projections, target_years)
+    log_event(f"Completed price projection for {ticker_symbol} ({target_years[0]}-{target_years[-1]})")
     return projections
 
 

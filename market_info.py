@@ -32,6 +32,7 @@ except ImportError:
     pass
 
 from utils import gradient_color, RESET_COLOR
+from logger import log_event, warn
 
 INDEXES = {
     "Dow Jones (DJI)": "^DJI",
@@ -104,7 +105,7 @@ def _get_fear_greed_data():
         resp.raise_for_status()
         return resp.json()
     except Exception as e:
-        print(f"  [warn] Couldn't fetch Fear & Greed data ({e})")
+        warn(f"Couldn't fetch Fear & Greed data ({e})")
         return None
 
 
@@ -255,11 +256,11 @@ def _get_aaii_sentiment_data():
     try:
         return _get_aaii_sentiment_spreadsheet()
     except Exception as e:
-        print(f"  [warn] AAII spreadsheet pull failed ({e}); trying HTML fallback")
+        warn(f"AAII spreadsheet pull failed ({e}); trying HTML fallback")
     try:
         return _get_aaii_sentiment_html_fallback()
     except Exception as e:
-        print(f"  [warn] AAII HTML fallback also failed ({e})")
+        warn(f"AAII HTML fallback also failed ({e})")
         return None
 
 
@@ -282,6 +283,7 @@ def _fmt_aaii_pct(value):
 # ----------------------------------------------------------------------
 
 def market_info():
+    log_event("Fetching market overview (indexes + sentiment)")
     print("\n===== Market Overview =====\n")
 
     print("-- Major Indexes --")
@@ -330,6 +332,7 @@ def market_info():
 
     # Full underlying data, kept for later chart-building rather than
     # discarded after the console summary.
+    log_event("Market overview fetch complete")
     return {
         "indexes": idx_data,
         "fear_greed": {"score": fg_score, "rating": fg_rating, "components": fg_components, "raw": fg_raw},

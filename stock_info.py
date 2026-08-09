@@ -28,6 +28,7 @@ from utils import (
     fmt_money,
     fmt_large_num,
 )
+from logger import log_event, log_error
 
 
 def _safe(info, *keys, default=None):
@@ -44,17 +45,20 @@ def current_stock_info(ticker_symbol=None):
     else:
         ticker_symbol = ticker_symbol.strip().upper()
 
+    log_event(f"Fetching current stock info for {ticker_symbol}")
     print(f"\nFetching data for {ticker_symbol}...\n")
     tk = yf.Ticker(ticker_symbol)
 
     try:
         info = tk.info
     except Exception as e:
+        log_error(f"Failed to fetch data for {ticker_symbol}", exc=e)
         print(f"Error fetching data for {ticker_symbol}: {e}")
         return None
 
     price = _safe(info, "currentPrice", "regularMarketPrice")
     if not info or price is None:
+        log_error(f"No reliable data found for {ticker_symbol}")
         print(f"Could not find reliable data for '{ticker_symbol}'. Check the ticker symbol.")
         return None
 
@@ -79,6 +83,7 @@ def current_stock_info(ticker_symbol=None):
 
     price_history = _get_price_history(tk)
 
+    log_event(f"Fetched current stock info for {ticker_symbol} (price={fmt_money(price)})")
     return {
         "core": core["raw"],
         "price_detail": price_detail["raw"],

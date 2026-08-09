@@ -15,6 +15,7 @@ pulls a live price for each ticker via yfinance, and prints a valued summary
 import os
 import yfinance as yf
 from utils import fmt_money, gradient_color, RESET_COLOR
+from logger import log_event, warn
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 PORTFOLIO_FILE = os.path.join(SCRIPT_DIR, "portfolio.txt")
@@ -77,7 +78,7 @@ def view_portfolio():
     holdings, errors = _parse_portfolio_file()
 
     if errors:
-        print(f"\n[warn] {len(errors)} line(s) in portfolio.txt couldn't be read:")
+        warn(f"{len(errors)} line(s) in portfolio.txt couldn't be read:")
         for e in errors:
             print(f"  - {e}")
 
@@ -86,6 +87,7 @@ def view_portfolio():
         print("Add lines like 'AAPL, 10' and try again.\n")
         return None
 
+    log_event(f"Viewing portfolio ({len(holdings)} holdings)")
     print(f"\n===== Portfolio ({len(holdings)} holdings) =====")
     rows = []
     total_value = 0.0
@@ -97,8 +99,8 @@ def view_portfolio():
             info = yf.Ticker(ticker).info
             price = info.get("currentPrice") or info.get("regularMarketPrice")
             prev_close = info.get("previousClose") or info.get("regularMarketPreviousClose")
-        except Exception:
-            pass
+        except Exception as e:
+            warn(f"Couldn't fetch {ticker} ({e})")
 
         if price is None:
             print(f"  {ticker:<8} qty {qty:<10.2f} price N/A (couldn't fetch — check the ticker)")
@@ -128,6 +130,7 @@ def view_portfolio():
     print("=" * 45)
     print()
 
+    log_event(f"Portfolio valued at {fmt_money(total_value)} across {len(rows)} holdings")
     return {"holdings": rows, "total_value": total_value}
 
 

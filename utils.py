@@ -9,6 +9,7 @@ Holds:
 """
 
 import yfinance as yf
+from logger import warn
 
 # Long-run historical U.S. equity risk premium. Reasonable people put this
 # anywhere from ~4.5% to ~6.5% depending on the lookback window; 5.5% is a
@@ -30,7 +31,7 @@ def get_risk_free_rate():
             raise ValueError("no data returned for ^TNX")
         return float(hist["Close"].iloc[-1]) / 100
     except Exception as e:
-        print(f"  [warn] Couldn't fetch live risk-free rate ({e}); using {FALLBACK_RISK_FREE_RATE:.1%} fallback")
+        warn(f"Couldn't fetch live risk-free rate ({e}); using {FALLBACK_RISK_FREE_RATE:.1%} fallback")
         return FALLBACK_RISK_FREE_RATE
 
 
@@ -104,7 +105,7 @@ def calculate_wacc(ticker_obj, capm_value, risk_free_rate):
 
         return e_weight * capm_value + d_weight * cost_of_debt * (1 - tax_rate)
     except Exception as e:
-        print(f"  [warn] WACC calculation failed: {e}")
+        warn(f"WACC calculation failed: {e}")
         return None
 
 
