@@ -1,0 +1,98 @@
+@import url('https://fonts.googleapis.com/css2?family=VT323&family=Share+Tech+Mono&family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+@import 'tailwindcss';
+
+@theme inline {
+  --color-background: #03080F;
+  --color-foreground: #C8FFD4;
+  --color-card: #060E18;
+  --color-card-foreground: #C8FFD4;
+  --color-primary: #00FF88;
+  --color-primary-foreground: #03080F;
+  --color-secondary: #081220;
+  --color-secondary-foreground: #4DCC88;
+  --color-muted: #060E18;
+  --color-muted-foreground: #2D6644;
+  --color-accent: #0A2418;
+  --color-accent-foreground: #00FF88;
+  --color-border: rgba(0,255,136,0.1);
+  --color-ring: #00FF88;
+  --color-positive: #00FF88;
+  --color-negative: #FF3B3B;
+  --radius: 0px;
+
+  --font-display: 'VT323', 'Courier New', monospace;
+  --font-sans: 'Share Tech Mono', 'Courier New', monospace;
+  --font-mono: 'JetBrains Mono', 'Courier New', monospace;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html, body, #root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: #03080F;
+  color: #C8FFD4;
+  font-family: 'Share Tech Mono', 'Courier New', monospace;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* CRT scanline overlay */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 0, 0, 0.08) 2px,
+    rgba(0, 0, 0, 0.08) 4px
+  );
+  pointer-events: none;
+  z-index: 9999;
+}
+
+/* Phosphor glow on key data */
+.glow {
+  text-shadow: 0 0 8px currentColor, 0 0 20px currentColor;
+}
+
+.glow-sm {
+  text-shadow: 0 0 4px currentColor, 0 0 10px currentColor;
+}
+
+/* Blink animation */
+@keyframes blink {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+
+.blink {
+  animation: blink 1s step-end infinite;
+}
+
+/* CRT flicker */
+@keyframes flicker {
+  0%, 100% { opacity: 1; }
+  92% { opacity: 0.97; }
+  93% { opacity: 0.87; }
+  94% { opacity: 0.97; }
+}
+
+#root {
+  animation: flicker 8s infinite;
+}
+
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(200,146,42,0.3); border-radius: 2px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(200,146,42,0.6); }
