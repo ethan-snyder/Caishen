@@ -1,0 +1,225 @@
+import { useState } from 'react'
+import StockInfo from './components/StockInfo'
+import Projector from './components/Projector'
+import MarketOverview from './components/MarketOverview'
+import Crypto from './components/Crypto'
+import Bonds from './components/Bonds'
+import Forex from './components/Forex'
+import Portfolio from './components/Portfolio'
+import Watchlist from './components/Watchlist'
+import Futures from './components/Futures'
+
+type Tab = 'stock' | 'projector' | 'market' | 'crypto' | 'bonds' | 'forex' | 'portfolio' | 'watchlist' | 'futures'
+
+const TABS: { id: Tab; label: string; icon: string; group: string }[] = [
+  { id: 'stock',     label: 'STOCK INFO',    icon: '▸', group: 'ANALYSIS' },
+  { id: 'projector', label: 'PROJECTOR',     icon: '▸', group: 'ANALYSIS' },
+  { id: 'market',    label: 'MARKET',        icon: '▸', group: 'ANALYSIS' },
+  { id: 'crypto',    label: 'CRYPTO',        icon: '▸', group: 'MARKETS' },
+  { id: 'bonds',     label: 'BONDS',         icon: '▸', group: 'MARKETS' },
+  { id: 'forex',     label: 'FOREX',         icon: '▸', group: 'MARKETS' },
+  { id: 'futures',   label: 'FUTURES',       icon: '▸', group: 'MARKETS' },
+  { id: 'portfolio', label: 'PORTFOLIO',     icon: '▸', group: 'TRACKING' },
+  { id: 'watchlist', label: 'WATCHLIST',     icon: '▸', group: 'TRACKING' },
+]
+
+const G = 'rgba(0,255,136,'
+const border = `1px solid ${G}0.12)`
+
+export default function App() {
+  const [active, setActive] = useState<Tab>('stock')
+  const [time] = useState(() => new Date().toLocaleTimeString('en-US', { hour12: false }))
+
+  const groups = ['ANALYSIS', 'MARKETS', 'TRACKING']
+
+  return (
+    <div style={{
+      display: 'flex',
+      minHeight: '100vh',
+      backgroundColor: '#03080F',
+      color: '#C8FFD4',
+    }}>
+      {/* ── Sidebar ── */}
+      <aside style={{
+        width: 200,
+        minHeight: '100vh',
+        backgroundColor: '#020710',
+        borderRight: border,
+        display: 'flex',
+        flexDirection: 'column',
+        flexShrink: 0,
+        position: 'sticky',
+        top: 0,
+        height: '100vh',
+        overflow: 'hidden',
+      }}>
+        {/* Logo */}
+        <div style={{
+          padding: '20px 16px 16px',
+          borderBottom: border,
+        }}>
+          <div style={{
+            fontFamily: "'VT323', monospace",
+            fontSize: 36,
+            color: '#00FF88',
+            lineHeight: 1,
+            textShadow: '0 0 10px #00FF88, 0 0 30px rgba(0,255,136,0.4)',
+            letterSpacing: 2,
+          }}>
+            CAISHEN
+          </div>
+          <div style={{
+            fontFamily: "'JetBrains Mono', monospace",
+            fontSize: 9,
+            color: '#2D6644',
+            letterSpacing: '0.12em',
+            marginTop: 3,
+          }}>
+            v0.1 // INVESTING TERMINAL
+          </div>
+        </div>
+
+        {/* Nav groups */}
+        <nav style={{ flex: 1, overflowY: 'auto', padding: '12px 0' }}>
+          {groups.map(group => (
+            <div key={group} style={{ marginBottom: 4 }}>
+              <div style={{
+                fontFamily: "'JetBrains Mono', monospace",
+                fontSize: 9,
+                color: '#1D4A30',
+                letterSpacing: '0.16em',
+                padding: '8px 16px 4px',
+              }}>
+                {group}
+              </div>
+              {TABS.filter(t => t.group === group).map(t => {
+                const isActive = active === t.id
+                return (
+                  <button
+                    key={t.id}
+                    onClick={() => setActive(t.id)}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 8,
+                      width: '100%',
+                      padding: '8px 16px',
+                      background: isActive ? 'rgba(0,255,136,0.07)' : 'transparent',
+                      borderLeft: isActive ? '2px solid #00FF88' : '2px solid transparent',
+                      borderTop: 'none',
+                      borderRight: 'none',
+                      borderBottom: 'none',
+                      cursor: 'pointer',
+                      fontFamily: "'Share Tech Mono', monospace",
+                      fontSize: 13,
+                      color: isActive ? '#00FF88' : '#2D6644',
+                      letterSpacing: '0.06em',
+                      textAlign: 'left',
+                      transition: 'all 0.1s',
+                    }}
+                    onMouseEnter={e => {
+                      if (!isActive) {
+                        e.currentTarget.style.color = '#4DCC88'
+                        e.currentTarget.style.background = 'rgba(0,255,136,0.03)'
+                      }
+                    }}
+                    onMouseLeave={e => {
+                      if (!isActive) {
+                        e.currentTarget.style.color = '#2D6644'
+                        e.currentTarget.style.background = 'transparent'
+                      }
+                    }}
+                  >
+                    <span style={{
+                      fontSize: 10,
+                      color: isActive ? '#00FF88' : '#1D4A30',
+                      textShadow: isActive ? '0 0 6px #00FF88' : 'none',
+                    }}>
+                      {isActive ? '▶' : '▷'}
+                    </span>
+                    <span style={{ textShadow: isActive ? '0 0 8px rgba(0,255,136,0.6)' : 'none' }}>
+                      {t.label}
+                    </span>
+                  </button>
+                )
+              })}
+            </div>
+          ))}
+        </nav>
+
+        {/* Footer status */}
+        <div style={{
+          borderTop: border,
+          padding: '10px 16px',
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 4 }}>
+            <span style={{ color: '#00FF88', fontSize: 8, textShadow: '0 0 6px #00FF88' }}>●</span>
+            <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 9, color: '#2D6644', letterSpacing: '0.08em' }}>
+              SYS ONLINE
+            </span>
+          </div>
+          <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 9, color: '#1D4A30' }}>
+            {time}
+            <span className="blink" style={{ color: '#00FF88', marginLeft: 2 }}>_</span>
+          </div>
+        </div>
+      </aside>
+
+      {/* ── Main ── */}
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0 }}>
+        {/* Top bar */}
+        <header style={{
+          borderBottom: border,
+          padding: '0 28px',
+          height: 44,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          backgroundColor: '#020710',
+          flexShrink: 0,
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <span style={{
+              fontFamily: "'JetBrains Mono', monospace",
+              fontSize: 10,
+              color: '#2D6644',
+              letterSpacing: '0.06em',
+            }}>
+              ROOT@CAISHEN:~$
+            </span>
+            <span style={{
+              fontFamily: "'VT323', monospace",
+              fontSize: 18,
+              color: '#00FF88',
+              letterSpacing: '0.06em',
+              textShadow: '0 0 6px rgba(0,255,136,0.5)',
+            }}>
+              {TABS.find(t => t.id === active)?.label}
+            </span>
+          </div>
+          <div style={{ display: 'flex', gap: 20, alignItems: 'center' }}>
+            {['yfinance', 'CNN F&G', 'CBOE', 'AAII'].map(src => (
+              <div key={src} style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
+                <span style={{ color: '#00FF88', fontSize: 6, textShadow: '0 0 4px #00FF88' }}>●</span>
+                <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 9, color: '#1D4A30' }}>{src}</span>
+              </div>
+            ))}
+          </div>
+        </header>
+
+        {/* Content */}
+        <main style={{ flex: 1, padding: '24px 28px', overflow: 'auto' }}>
+          {active === 'stock'     && <StockInfo />}
+          {active === 'projector' && <Projector />}
+          {active === 'market'    && <MarketOverview />}
+          {active === 'crypto'    && <Crypto />}
+          {active === 'bonds'     && <Bonds />}
+          {active === 'forex'     && <Forex />}
+          {active === 'futures'   && <Futures />}
+          {active === 'portfolio' && <Portfolio />}
+          {active === 'watchlist' && <Watchlist />}
+        </main>
+      </div>
+    </div>
+  )
+}
