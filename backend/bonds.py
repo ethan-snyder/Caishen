@@ -22,8 +22,8 @@ On corporate "issuers" specifically: individual corporate bond quotes
 (Apple's 2032s at X%) have no free, reliable data source -- that's a
 subscription-data product. What IS free, and is what those issuers
 actually price against, is the ICE BofA rating-tier benchmark curve. So
-the two corporate sections are organized by rating tier (AAA/AA/A/BBB and
-BB/B/CCC) rather than by named issuer, which is real data rather than
+the corporate bonds section is organized by rating tier (AAA/AA/A/BBB and
+BB/B/CCC-D) rather than by named issuer, which is real data rather than
 fabricated per-company yields.
 """
 
@@ -403,10 +403,16 @@ CORPORATE_IG = [
     {"key": "bbb", "label": "BBB", "name": "Baa/BBB", "series": "BAMLC0A4CBBBEY"},
 ]
 
+# ICE BofA/FRED doesn't publish a separate "D" (defaulted) tier -- their
+# lowest bucket, "CCC & Lower", is explicitly defined to include CCC, CC,
+# C, *and* D-rated issues (defaulted bonds don't get their own index;
+# they either fall in this bottom bucket or drop out of the index
+# entirely). So this tier is relabeled to say that directly rather than
+# adding a "D" row backed by a series that doesn't exist.
 CORPORATE_HY = [
-    {"key": "bb",  "label": "BB",  "name": "Ba/BB",       "series": "BAMLH0A1HYBBEY"},
-    {"key": "b",   "label": "B",   "name": "B",           "series": "BAMLH0A2HYBEY"},
-    {"key": "ccc", "label": "CCC", "name": "Caa/CCC & <", "series": "BAMLH0A3HYCEY"},
+    {"key": "bb",  "label": "BB",   "name": "Ba/BB",              "series": "BAMLH0A1HYBBEY"},
+    {"key": "b",   "label": "B",    "name": "B",                  "series": "BAMLH0A2HYBEY"},
+    {"key": "ccc", "label": "CCC-D", "name": "Caa/CCC & Lower (incl. D)", "series": "BAMLH0A3HYCEY"},
 ]
 
 

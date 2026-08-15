@@ -65,11 +65,14 @@ left out, substituted with a clearly-labeled equivalent, or explicitly
 marked as estimates:
 
 - **Per-issuer corporate bond quotes** (Bonds tab) — individual corporate
-  bond pricing is subscription-only data. The two corporate sections
-  instead show ICE BofA index effective yields **by rating tier**
-  (AAA/AA/A/BBB and BB/B/CCC & lower, daily via FRED) — the benchmark
-  curves those issuers actually price against, rather than invented
-  per-company yields.
+  bond pricing is subscription-only data. The Corporate Bonds section
+  instead shows ICE BofA index effective yields **by rating tier**
+  (AAA/AA/A/BBB and BB/B/CCC-D, daily via FRED) — the benchmark curves
+  those issuers actually price against, rather than invented per-company
+  yields. There's no separate free "D" (defaulted) series to add as its
+  own tier — ICE BofA's own methodology folds CCC, CC, C, and D-rated
+  issues into one "CCC & Lower" bucket — so that tier is labeled CCC-D
+  rather than fabricating a D-only row.
 - **U.S. Treasury curve** (Bonds tab) — the primary source is Treasury.gov's
   own daily par yield curve CSV (`bonds._us_treasury_curve`), which
   covers every requested tenor (1-MO through 30-YR) in one authoritative

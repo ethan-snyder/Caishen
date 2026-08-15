@@ -8,9 +8,7 @@ const border = '1px solid rgba(0,255,136,0.12)'
 
 const BOND_SECTIONS = [
   { id: 'curve', label: 'GOVERNMENT YIELD CURVES' },
-  { id: 'sovereigns', label: 'GLOBAL GOVERNMENT BONDS' },
-  { id: 'corporate_ig', label: 'TOP INVESTMENT-GRADE ISSUERS' },
-  { id: 'corporate_hy', label: 'TOP HIGH-YIELD & SPECULATIVE ISSUERS' },
+  { id: 'corporate', label: 'CORPORATE BONDS' },
 ]
 
 function SectionHeading({ children }: { children: React.ReactNode }) {
@@ -75,23 +73,27 @@ interface CurveEntry {
   points: { tenor: string; yield: number | null }[]
 }
 
-/** Curve tile whose width is proportional to how many tenors it has --
- * a 7-point curve renders roughly 3.5x as wide as a 2-point one, so tile
- * size reflects how much curve there actually is to show rather than
- * every tile claiming equal space regardless of content. All tiles in a
- * row still share the same height/padding/font sizing (uniform), just
- * not the same width. */
+// Fixed, non-shrinking dimensions for a curve point column and the bp gap
+// chip beside it -- every tile's width is just these summed up, so it's
+// deterministic (proportional to tenor count) instead of fighting other
+// tiles for space via flex-grow, which is what caused bars to compress
+// into each other when the row didn't have enough room.
+const POINT_WIDTH = 60
+const POINT_GAP = 8
+
+/** Curve tile sized to fit its own points exactly -- a 7-point curve is
+ * roughly 3.5x as wide as a 2-point one, so tile size reflects how much
+ * curve there actually is to show. Tiles never shrink below that content
+ * width; the row they sit in wraps instead of squeezing them. */
 function CurveTile({ entry }: { entry: CurveEntry }) {
   const { label, name, yieldValue, change, date, points } = entry
   const available = points.filter(p => p.yield !== null)
   const maxYield = available.length ? Math.max(...available.map(p => p.yield as number)) : 1
-  const pointCount = Math.max(points.length, 1)
 
   return (
     <div style={{
-      backgroundColor: '#03080F', border, padding: '20px 24px', height: '100%', minHeight: 264,
-      display: 'flex', flexDirection: 'column',
-      flex: `${pointCount} 0 0`, minWidth: pointCount * 78,
+      backgroundColor: '#03080F', border, padding: '20px 24px', minHeight: 264,
+      display: 'flex', flexDirection: 'column', flex: '0 0 auto',
     }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', gap: 8, marginBottom: 10 }}>
         <span style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: 20, color: '#C8FFD4', letterSpacing: '0.04em' }}>
@@ -119,20 +121,20 @@ function CurveTile({ entry }: { entry: CurveEntry }) {
         </span>
       </div>
 
-      <div style={{ flex: 1, display: 'flex', alignItems: 'flex-end', gap: 10, minHeight: 90 }}>
+      <div style={{ flex: 1, display: 'flex', alignItems: 'flex-end', gap: POINT_GAP, minHeight: 90 }}>
         {points.length === 0 && (
           <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10, color: '#1D4A30' }}>
             {'// no curve data available'}
           </div>
         )}
         {points.map((p, i) => (
-          <div key={p.tenor} style={{ display: 'flex', alignItems: 'flex-end' }}>
+          <div key={p.tenor} style={{ display: 'flex', alignItems: 'flex-end', flexShrink: 0 }}>
             {i > 0 && <GapChip bp={formatBp(points[i - 1].yield, p.yield)} height={90} />}
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: 70 }}>
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: POINT_WIDTH, flexShrink: 0 }}>
               {/* Fixed-height box so every bar's bottom edge sits on the
                   same plane regardless of the value text above it. */}
               <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-end', width: '100%', height: 90 }}>
-                <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 11, color: '#00FF88', textShadow: '0 0 4px #00FF88', marginBottom: 4 }}>
+                <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 11, color: '#00FF88', textShadow: '0 0 4px #00FF88', marginBottom: 4, whiteSpace: 'nowrap' }}>
                   {p.yield !== null ? `${p.yield.toFixed(2)}%` : '—'}
                 </div>
                 <div style={{
@@ -152,7 +154,7 @@ function CurveTile({ entry }: { entry: CurveEntry }) {
                   )}
                 </div>
               </div>
-              <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 9, color: '#2D6644', letterSpacing: '0.06em', marginTop: 4 }}>{p.tenor}</div>
+              <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 9, color: '#2D6644', letterSpacing: '0.06em', marginTop: 4, whiteSpace: 'nowrap' }}>{p.tenor}</div>
             </div>
           </div>
         ))}
@@ -200,19 +202,24 @@ function CurveBars({ curve, barHeight }: { curve: FredYieldRow['curve']; barHeig
 }
 
 /** One yield row -- used for both sovereigns and corporate rating tiers.
- * Sovereign rows carry a `curve` (as many of 1-MO/3-MO/6-MO/1-YR/5-YR/
- * 10-YR/30-YR as a real free source publishes for that country); it
- * renders as a compact bar strip when present. Corporate rows never set
- * `curve`, so they render exactly as before. */
-function YieldTile({ row, showDate }: { row: FredYieldRow; showDate?: boolean }) {
+ * No sub-label -- just the rating/country code plus the number; `row.name`
+ * (the fuller "Aa/AA" / "Japan 10Y" description) is still there in the
+ * data for tooltips/accessibility elsewhere, just not rendered as a
+ * corner label here. Sovereign rows carry a `curve` (as many of
+ * 1-MO/3-MO/6-MO/1-YR/5-YR/10-YR/30-YR as a real free source publishes
+ * for that country); it renders as a compact bar strip when present.
+ * Corporate rows never set `curve`, so they render exactly as before.
+ * `square` fixes the tile to a square footprint (width = height) for the
+ * combined Corporate Bonds grid. */
+function YieldTile({ row, showDate, square }: { row: FredYieldRow; showDate?: boolean; square?: boolean }) {
   return (
-    <div style={{ backgroundColor: '#03080F', border, padding: '14px 16px', height: '100%' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', gap: 8, marginBottom: 8 }}>
+    <div style={{
+      backgroundColor: '#03080F', border, padding: '14px 16px', height: '100%',
+      ...(square ? { width: 110, aspectRatio: '1', display: 'flex', flexDirection: 'column', justifyContent: 'center' } : {}),
+    }}>
+      <div style={{ display: 'flex', alignItems: 'baseline', marginBottom: 8 }}>
         <span style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: 13, color: '#C8FFD4' }}>
           {row.label}
-        </span>
-        <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 9, color: '#2D6644' }}>
-          {row.name}
         </span>
       </div>
       <div style={{
@@ -254,70 +261,61 @@ export default function Bonds() {
 
   const sections = useSortableLayout('bonds.sections', BOND_SECTIONS)
 
-  // Foreign sovereigns are individually toggleable, and ship mostly
-  // hidden -- only JGBs are on by default (see bonds.py FOREIGN_SOVEREIGNS).
+  // Sovereigns other than JGB/GILT ship hidden by default (see
+  // bonds.py FOREIGN_SOVEREIGNS' default_hidden) -- individually
+  // toggleable via the tray, same pattern as the old dedicated section.
+  // US Treasury isn't part of this: it's not a sovereign row and always
+  // shows.
   const sovereignItems = useMemo(
     () => (data?.sovereigns ?? []).map(s => ({
       id: s.key, label: s.name, defaultHidden: s.default_hidden,
     })),
     [data?.sovereigns],
   )
-  const sovereignTiles = useSortableLayout('bonds.sovereigns', sovereignItems)
+  const sovereignTiles = useSortableLayout('bonds.curve_countries', sovereignItems)
   const sovereignByKey = useMemo(
     () => new Map((data?.sovereigns ?? []).map(s => [s.key, s])),
     [data?.sovereigns],
   )
 
-  // US Treasury + JGB + GILT combined into one row of proportionally-sized
-  // curve tiles -- these three have the richest tenor coverage, so they
-  // get the shared "yield curves" treatment instead of uniform-size tiles.
-  const curveEntries: CurveEntry[] = useMemo(() => {
-    const entries: CurveEntry[] = []
-    if (treasuries.length > 0) {
-      const tenYear = treasuries.find(t => t.term === '10-YR')
-      entries.push({
-        key: 'us', label: 'US TREASURY', name: 'United States',
-        yieldValue: tenYear?.yield ?? null, change: tenYear?.change ?? null, date: null,
-        points: treasuries.map(t => ({ tenor: t.term, yield: t.yield })),
-      })
+  // US Treasury (always shown) + whichever sovereigns are toggled visible,
+  // all in one proportionally-sized row. Tile width scales with tenor count.
+  const usEntry: CurveEntry | null = useMemo(() => {
+    if (treasuries.length === 0) return null
+    const tenYear = treasuries.find(t => t.term === '10-YR')
+    return {
+      key: 'us', label: 'US TREASURY', name: 'United States',
+      yieldValue: tenYear?.yield ?? null, change: tenYear?.change ?? null, date: null,
+      points: treasuries.map(t => ({ tenor: t.term, yield: t.yield })),
     }
-    const jgb = sovereignByKey.get('jgb')
-    if (jgb) {
-      entries.push({
-        key: 'jgb', label: jgb.label, name: jgb.name,
-        yieldValue: jgb.yield, change: jgb.change, date: jgb.date,
-        points: jgb.curve ?? [],
-      })
-    }
-    const gilt = sovereignByKey.get('gilt')
-    if (gilt) {
-      entries.push({
-        key: 'gilt', label: gilt.label, name: gilt.name,
-        yieldValue: gilt.yield, change: gilt.change, date: gilt.date,
-        points: gilt.curve ?? [],
-      })
-    }
-    return entries
-  }, [treasuries, sovereignByKey])
+  }, [treasuries])
 
-  const igItems = useMemo(
-    () => (data?.corporate_ig ?? []).map(r => ({ id: r.key, label: `${r.label} — ${r.name}` })),
-    [data?.corporate_ig],
-  )
-  const igTiles = useSortableLayout('bonds.corporate_ig', igItems)
-  const igByKey = useMemo(
-    () => new Map((data?.corporate_ig ?? []).map(r => [r.key, r])),
-    [data?.corporate_ig],
+  const visibleSovereignEntries: CurveEntry[] = useMemo(
+    () => sovereignTiles.visible
+      .map(key => sovereignByKey.get(key))
+      .filter((s): s is FredYieldRow => !!s)
+      .map(s => ({
+        key: s.key, label: s.label, name: s.name,
+        yieldValue: s.yield, change: s.change, date: s.date,
+        points: s.curve ?? [],
+      })),
+    [sovereignTiles.visible, sovereignByKey],
   )
 
-  const hyItems = useMemo(
-    () => (data?.corporate_hy ?? []).map(r => ({ id: r.key, label: `${r.label} — ${r.name}` })),
-    [data?.corporate_hy],
+  // Investment-grade and high-yield tiers combined into one corporate
+  // bonds grid (was two separate sections).
+  const corporateRows = useMemo(
+    () => [...(data?.corporate_ig ?? []), ...(data?.corporate_hy ?? [])],
+    [data?.corporate_ig, data?.corporate_hy],
   )
-  const hyTiles = useSortableLayout('bonds.corporate_hy', hyItems)
-  const hyByKey = useMemo(
-    () => new Map((data?.corporate_hy ?? []).map(r => [r.key, r])),
-    [data?.corporate_hy],
+  const corporateItems = useMemo(
+    () => corporateRows.map(r => ({ id: r.key, label: `${r.label} — ${r.name}` })),
+    [corporateRows],
+  )
+  const corporateTiles = useSortableLayout('bonds.corporate', corporateItems)
+  const corporateByKey = useMemo(
+    () => new Map(corporateRows.map(r => [r.key, r])),
+    [corporateRows],
   )
 
   return (
@@ -336,80 +334,40 @@ export default function Bonds() {
           <Draggable key="curve" id="curve" label="GOVERNMENT YIELD CURVES" api={sections} variant="section">
             <div style={{ backgroundColor: '#060E18', border, padding: '18px', marginBottom: 14 }}>
               <SectionHeading>{'/// GOVERNMENT YIELD CURVES'}</SectionHeading>
-              <div style={{ display: 'flex', gap: 10, alignItems: 'stretch' }}>
-                {curveEntries.map(entry => <CurveTile key={entry.key} entry={entry} />)}
-              </div>
-              <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 9, color: '#1D4A30', marginTop: 10 }}>
-                {'// Tile width is proportional to how many tenors each curve actually has — US Treasury (Treasury.gov, daily, 1-MO-30-YR) is the widest since it has the most; JGB (Japan\'s MOF, daily, 1Y/5Y/10Y/30Y) is narrower; GILT (FRED/OECD, 3-MO + monthly-lagged 10-YR) narrower still. bp figures between bars are the gap to the next tenor (curve steepness), not day-over-day change.'}
-              </div>
-            </div>
-          </Draggable>
-        )
-
-        if (sectionId === 'sovereigns') return (
-          <Draggable key="sovereigns" id="sovereigns" label="GLOBAL GOVERNMENT BONDS" api={sections} variant="section">
-            <div style={{ backgroundColor: '#060E18', border, padding: '18px', marginBottom: 14 }}>
-              <SectionHeading>{'/// GLOBAL GOVERNMENT BONDS'}</SectionHeading>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(190px, 1fr))', gap: 6 }}>
-                {sovereignTiles.visible.filter(key => key !== 'jgb' && key !== 'gilt').map(key => {
-                  const row = sovereignByKey.get(key)
-                  if (!row) return null
-                  return (
-                    <Draggable key={row.key} id={row.key} label={row.name} api={sovereignTiles}>
-                      <YieldTile row={row} showDate />
-                    </Draggable>
-                  )
-                })}
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10, alignItems: 'stretch' }}>
+                {usEntry && <CurveTile entry={usEntry} />}
+                {visibleSovereignEntries.map(entry => (
+                  <Draggable key={entry.key} id={entry.key} label={entry.name} api={sovereignTiles}>
+                    <CurveTile entry={entry} />
+                  </Draggable>
+                ))}
               </div>
               <AddWidgetTray api={sovereignTiles} title="MORE COUNTRIES" />
               <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 9, color: '#1D4A30', marginTop: 10 }}>
-                {'// JGB and GILT (the two default-visible countries) render up in the Government Yield Curves section above, alongside the U.S. curve, since they have the richest data. Every tile here charts as much of a real curve as a free source publishes for that country — no invented tenors. 10-YR is OECD/FRED (monthly, lagged — the date shown); 3-MO is the OECD interbank rate. No free live source was found for 1-MO/6-MO/1-YR for BUND/ACGB — those gaps are left blank rather than guessed.'}
+                {'// US Treasury, JGB, and GILT show by default; other countries are hidden until added above. Tile width is proportional to tenor count. US Treasury (Treasury.gov, daily, 1-MO-30-YR) is widest; JGB (Japan MOF, 1Y/5Y/10Y/30Y) narrower; GILT (3-MO+10-YR) narrower still; BUND/CANGB/ACGB/BRA (mostly 3-MO+10-YR) smallest. All real data — no interpolation, no invented tenors. bp figures between bars are the gap to the next tenor (curve steepness), not day-over-day change.'}
               </div>
             </div>
           </Draggable>
         )
 
-        if (sectionId === 'corporate_ig') return (
-          <Draggable key="corporate_ig" id="corporate_ig" label="TOP INVESTMENT-GRADE ISSUERS" api={sections} variant="section">
+        if (sectionId === 'corporate') return (
+          <Draggable key="corporate" id="corporate" label="CORPORATE BONDS" api={sections} variant="section">
             <div style={{ backgroundColor: '#060E18', border, padding: '18px', marginBottom: 14 }}>
-              <SectionHeading>{'/// TOP INVESTMENT-GRADE ISSUERS'}</SectionHeading>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(190px, 1fr))', gap: 6 }}>
-                {igTiles.visible.map(key => {
-                  const row = igByKey.get(key)
+              <SectionHeading>{'/// CORPORATE BONDS'}</SectionHeading>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+                {corporateTiles.visible.map(key => {
+                  const row = corporateByKey.get(key)
                   if (!row) return null
                   return (
-                    <Draggable key={row.key} id={row.key} label={`${row.label} — ${row.name}`} api={igTiles}>
-                      <YieldTile row={row} />
+                    <Draggable key={row.key} id={row.key} label={`${row.label} — ${row.name}`} api={corporateTiles}>
+                      <YieldTile row={row} square />
                     </Draggable>
                   )
                 })}
               </div>
-              <AddWidgetTray api={igTiles} title="HIDDEN RATING TIERS" />
+              <AddWidgetTray api={corporateTiles} title="HIDDEN RATING TIERS" />
               <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 9, color: '#1D4A30', marginTop: 10 }}>
-                {'// ICE BofA investment-grade index effective yields by rating tier (daily, via FRED). Per-issuer bond quotes are subscription-only data, so these are the benchmark curves those issuers price against rather than invented per-company yields.'}
-              </div>
-            </div>
-          </Draggable>
-        )
-
-        if (sectionId === 'corporate_hy') return (
-          <Draggable key="corporate_hy" id="corporate_hy" label="TOP HIGH-YIELD & SPECULATIVE ISSUERS" api={sections} variant="section">
-            <div style={{ backgroundColor: '#060E18', border, padding: '18px', marginBottom: 14 }}>
-              <SectionHeading>{'/// TOP HIGH-YIELD & SPECULATIVE ISSUERS'}</SectionHeading>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(190px, 1fr))', gap: 6 }}>
-                {hyTiles.visible.map(key => {
-                  const row = hyByKey.get(key)
-                  if (!row) return null
-                  return (
-                    <Draggable key={row.key} id={row.key} label={`${row.label} — ${row.name}`} api={hyTiles}>
-                      <YieldTile row={row} />
-                    </Draggable>
-                  )
-                })}
-              </div>
-              <AddWidgetTray api={hyTiles} title="HIDDEN RATING TIERS" />
-              <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 9, color: '#1D4A30', marginTop: 10 }}>
-                {'// ICE BofA high-yield index effective yields by rating tier (daily, via FRED). CCC & lower is the distressed end — a widening gap vs. BB is a classic risk-off signal.'}
+                {'// ICE BofA index effective yields by rating tier (daily, via FRED) — investment-grade (AAA-BBB) through high-yield/speculative (BB-CCC-D). Per-issuer bond quotes are subscription-only data, so these are the benchmark curves those issuers actually price against rather than invented per-company yields. CCC-D is the distressed end (ICE BofA folds CCC/CC/C/D into one bucket, no free source publishes D separately) — a widening gap vs. BB is a classic risk-off signal.'}
               </div>
             </div>
           </Draggable>
