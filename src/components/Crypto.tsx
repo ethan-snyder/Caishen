@@ -1,7 +1,9 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { fetchCrypto, type CryptoCoin } from '@/lib/api'
 import { formatCryptoPrice, formatLargeNum, formatPct, posNegColor } from '@/lib/format'
 import { Loading, ErrorBlock } from './StatusBlock'
+import { useSortableLayout } from '@/lib/layout'
+import { Draggable, AddWidgetTray, EditHint } from './LayoutKit'
 
 const border = '1px solid rgba(0,255,136,0.12)'
 
@@ -26,6 +28,16 @@ export default function Crypto() {
   const totalMktCap =
     btc?.market_cap != null && btc?.dominance ? btc.market_cap / (btc.dominance / 100) : null
 
+  const items = useMemo(
+    () => (coins ?? []).map(c => ({ id: c.symbol, label: c.name })),
+    [coins],
+  )
+  const cards = useSortableLayout('crypto.coins', items)
+  const bySymbol = useMemo(
+    () => new Map((coins ?? []).map(c => [c.symbol, c])),
+    [coins],
+  )
+
   return (
     <div>
       <div style={{ display: 'flex', alignItems: 'baseline', gap: 16, marginBottom: 20, flexWrap: 'wrap' }}>
@@ -43,10 +55,16 @@ export default function Crypto() {
       {error && <ErrorBlock message={error} onRetry={load} />}
       {!error && !coins && <Loading label="PULLING TOP 10 BY MARKET CAP" />}
 
+      {coins && <EditHint />}
+
       {coins && (
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: 6 }}>
-          {coins.map(c => (
-            <div key={c.symbol} style={{ backgroundColor: '#060E18', border, padding: '16px' }}
+          {cards.visible.map(symbol => {
+            const c = bySymbol.get(symbol)
+            if (!c) return null
+            return (
+            <Draggable key={c.symbol} id={c.symbol} label={c.name} api={cards}>
+            <div style={{ backgroundColor: '#060E18', border, padding: '16px', height: '100%' }}
               onMouseEnter={e => (e.currentTarget.style.borderColor = 'rgba(0,255,136,0.3)')}
               onMouseLeave={e => (e.currentTarget.style.borderColor = 'rgba(0,255,136,0.12)')}
             >
@@ -85,9 +103,12 @@ export default function Crypto() {
                 ))}
               </div>
             </div>
-          ))}
+            </Draggable>
+            )
+          })}
         </div>
       )}
+      {coins && <AddWidgetTray api={cards} title="HIDDEN COINS" />}
 
       <div style={{ marginTop: 12, padding: '9px 12px', backgroundColor: 'rgba(0,255,136,0.02)', border: '1px solid rgba(0,255,136,0.07)', fontFamily: "'JetBrains Mono', monospace", fontSize: 10, color: '#1D4A30' }}>
         {'// DATA SOURCE: CoinGecko (free public API) · updates on tab load'}

@@ -1,10 +1,12 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import {
   fetchWatchlists, createWatchlist, addWatchlistTicker, removeWatchlistTicker,
   type WatchlistsData,
 } from '@/lib/api'
 import { posNegColor } from '@/lib/format'
 import { Loading, ErrorBlock } from './StatusBlock'
+import { useSortableLayout } from '@/lib/layout'
+import { Draggable, EditHint } from './LayoutKit'
 
 const border = '1px solid rgba(0,255,136,0.12)'
 
@@ -48,11 +50,22 @@ export default function Watchlist() {
     removeWatchlistTicker(active, ticker).then(setData).catch(e => setError(e.message))
   }
 
+  // Ticker order is saved per list, so reordering one watchlist doesn't
+  // disturb another. Rows aren't layout-hideable -- the ✕ on each row is
+  // the real "remove from watchlist" action against the backend.
+  const rawItems = active ? (data?.[active] ?? []) : []
+  const rowItems = useMemo(
+    () => rawItems.map(i => ({ id: i.ticker, label: i.ticker })),
+    [rawItems],
+  )
+  const rows = useSortableLayout(`watchlist.items.${active ?? 'none'}`, rowItems)
+
   if (error && !data) return <ErrorBlock message={error} onRetry={load} />
   if (!data) return <Loading label="LOADING WATCHLISTS" />
 
   const listNames = Object.keys(data)
   const items = active ? (data[active] ?? []) : []
+  const byTicker = new Map(items.map(i => [i.ticker, i]))
 
   return (
     <div>
@@ -91,7 +104,7 @@ export default function Watchlist() {
           {/* List tabs */}
           <div style={{ display: 'flex', gap: 4, marginBottom: 14, flexWrap: 'wrap' }}>
             {listNames.map(name => (
-              <button key={name} onClick={() => setActive(name)} style={{
+              <button key={name} type="button" onClick={() => setActive(name)} style={{
                 fontFamily: "'Share Tech Mono', monospace", fontSize: 12,
                 color: active === name ? '#00FF88' : '#2D6644',
                 background: active === name ? 'rgba(0,255,136,0.08)' : 'transparent',
@@ -128,6 +141,7 @@ export default function Watchlist() {
             </div>
           ) : (
             <>
+              <EditHint />
               {/* Header */}
               <div style={{ display: 'grid', gridTemplateColumns: '80px 1fr 90px 90px 70px 40px', gap: 6, padding: '0 14px 8px' }}>
                 {['TICKER', 'NAME', 'PRICE', 'CHANGE', 'P/E', ''].map(h => (
@@ -136,8 +150,12 @@ export default function Watchlist() {
               </div>
 
               <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-                {items.map(item => (
-                  <div key={item.ticker} style={{
+                {rows.visible.map(ticker => {
+                  const item = byTicker.get(ticker)
+                  if (!item) return null
+                  return (
+                  <Draggable key={item.ticker} id={item.ticker} label={item.ticker} api={rows} allowHide={false}>
+                  <div style={{
                     display: 'grid', gridTemplateColumns: '80px 1fr 90px 90px 70px 40px', gap: 6,
                     alignItems: 'center', backgroundColor: '#060E18', border, padding: '12px 14px', transition: 'border-color 0.1s',
                   }}
@@ -155,7 +173,7 @@ export default function Watchlist() {
                     <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: '#C8FFD4' }}>
                       {item.pe !== null && item.pe > 0 ? item.pe.toFixed(1) : '—'}
                     </div>
-                    <button onClick={() => handleRemove(item.ticker)} style={{
+                    <button type="button" onClick={() => handleRemove(item.ticker)} style={{
                       fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: '#1D4A30',
                       background: 'transparent', border: 'none', cursor: 'pointer', padding: '4px 8px',
                     }}
@@ -163,7 +181,9 @@ export default function Watchlist() {
                     onMouseLeave={e => (e.currentTarget.style.color = '#1D4A30')}
                     >✕</button>
                   </div>
-                ))}
+                  </Draggable>
+                  )
+                })}
               </div>
             </>
           )}

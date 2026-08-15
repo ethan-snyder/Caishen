@@ -1,7 +1,9 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { fetchFx, type FxPair } from '@/lib/api'
 import { formatPct, posNegColor } from '@/lib/format'
 import { Loading, ErrorBlock } from './StatusBlock'
+import { useSortableLayout } from '@/lib/layout'
+import { Draggable, AddWidgetTray, EditHint } from './LayoutKit'
 
 const border = '1px solid rgba(0,255,136,0.12)'
 
@@ -22,6 +24,16 @@ export default function Forex() {
 
   useEffect(load, [])
 
+  const items = useMemo(
+    () => (pairs ?? []).map(p => ({ id: p.pair, label: `${p.base}/${p.quote}` })),
+    [pairs],
+  )
+  const rows = useSortableLayout('forex.pairs', items)
+  const byPair = useMemo(
+    () => new Map((pairs ?? []).map(p => [p.pair, p])),
+    [pairs],
+  )
+
   return (
     <div>
       <span style={{ fontFamily: "'VT323', monospace", fontSize: 32, color: '#C8FFD4', letterSpacing: '0.04em', textShadow: '0 0 10px rgba(200,255,212,0.3)', display: 'block', marginBottom: 20 }}>
@@ -33,6 +45,7 @@ export default function Forex() {
 
       {pairs && (
         <>
+          <EditHint />
           <div style={{ display: 'grid', gridTemplateColumns: '140px 1fr 1fr 1fr 1fr 1fr', gap: 6, padding: '0 14px 8px', marginBottom: 4 }}>
             {['PAIR', 'RATE', 'CHANGE', 'BID', 'ASK', '24H'].map(h => (
               <div key={h} style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 9, color: '#1D4A30', letterSpacing: '0.12em' }}>{h}</div>
@@ -40,10 +53,13 @@ export default function Forex() {
           </div>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-            {pairs.map(p => {
+            {rows.visible.map(pairId => {
+              const p = byPair.get(pairId)
+              if (!p) return null
               const dec = rateDecimals(p.rate)
               return (
-                <div key={p.pair} style={{
+                <Draggable key={p.pair} id={p.pair} label={`${p.base}/${p.quote}`} api={rows}>
+                <div style={{
                   display: 'grid',
                   gridTemplateColumns: '140px 1fr 1fr 1fr 1fr 1fr',
                   gap: 6,
@@ -90,9 +106,11 @@ export default function Forex() {
                     {formatPct(p.change_pct)}
                   </div>
                 </div>
+                </Draggable>
               )
             })}
           </div>
+          <AddWidgetTray api={rows} title="HIDDEN PAIRS" />
         </>
       )}
 

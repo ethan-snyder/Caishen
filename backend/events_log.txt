@@ -127,3 +127,52 @@
 2026-08-14 22:14:23.248 [INFO] Session started
 2026-08-14 22:14:30.121 [INFO] Fetching market overview (full data)
 2026-08-14 22:14:40.984 [INFO] Fetching market overview (full data)
+2026-08-14 22:56:36.733 [INFO] Session started
+2026-08-14 22:56:41.499 [INFO] Fetching stock data (full) for AAPL
+2026-08-14 22:56:43.828 [INFO] Fetching market overview (full data)
+2026-08-14 22:56:52.639 [INFO] Fetching market overview (full data)
+2026-08-14 23:13:39.492 [INFO] Session started
+2026-08-14 23:13:42.860 [INFO] Fetching market overview (full data)
+2026-08-14 23:13:52.398 [INFO] Fetching market overview (full data)
+2026-08-14 23:14:01.413 [INFO] Fetching market overview (full data)
+2026-08-14 23:14:13.134 [INFO] Fetching market overview (full data)
+2026-08-14 23:14:23.510 [INFO] Fetching market overview (full data)
+2026-08-14 23:14:28.311 [INFO] Fetching market overview (full data)
+2026-08-14 23:14:31.842 [INFO] Fetching stock data (full) for AAPL
+2026-08-14 23:15:09.424 [INFO] Fetching market overview (full data)
+2026-08-14 23:15:22.957 [INFO] Fetching market overview (full data)
+2026-08-14 23:16:03.026 [INFO] Fetching top 10 cryptocurrencies (full data)
+2026-08-14 23:16:03.384 [INFO] Fetching top 10 cryptocurrencies (full data)
+2026-08-14 23:17:08.725 [INFO] Added portfolio holding: TQQQ, 10.0
+2026-08-14 23:21:31.987 [INFO] Session started
+2026-08-14 23:21:35.991 [INFO] Fetching market overview (full data)
+2026-08-14 23:21:45.410 [INFO] Fetching market overview (full data)
+2026-08-14 23:21:50.803 [INFO] Fetching market overview (full data)
+2026-08-14 23:22:02.156 [INFO] Fetching market overview (full data)
+2026-08-14 23:22:07.570 [INFO] Fetching market overview (full data)
+2026-08-14 23:22:08.923 [INFO] Fetching top 10 cryptocurrencies (full data)
+2026-08-14 23:22:09.426 [INFO] Fetching top 10 cryptocurrencies (full data)
+2026-08-14 23:22:16.304 [INFO] Fetching market overview (full data)
+2026-08-14 23:22:21.182 [INFO] Fetching market overview (full data)
+2026-08-14 23:22:32.830 [INFO] Fetching market overview (full data)
+2026-08-14 23:22:44.640 [INFO] Fetching top 10 cryptocurrencies (full data)
+2026-08-14 23:22:44.900 [WARNING] Couldn't fetch global crypto market cap for dominance calc (429 Client Error: Too Many Requests for url: https://api.coingecko.com/api/v3/global)
+2026-08-14 23:22:44.903 [INFO] Fetching top 10 cryptocurrencies (full data)
+2026-08-14 23:22:45.019 [WARNING] Couldn't fetch crypto data (429 Client Error: Too Many Requests for url: https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=10&page=1&sparkline=false&price_change_percentage=24h)
+2026-08-14 23:32:39.478 [INFO] Session started
+2026-08-14 23:32:42.926 [INFO] Fetching market overview (full data)
+2026-08-14 23:32:52.008 [INFO] Fetching market overview (full data)
+2026-08-14 23:33:02.336 [INFO] Fetching top 10 cryptocurrencies (full data)
+2026-08-14 23:33:02.645 [INFO] Fetching top 10 cryptocurrencies (full data)
+2026-08-14 23:35:49.820 [INFO] Fetching market overview (full data)
+2026-08-14 23:35:58.969 [INFO] Fetching market overview (full data)
+2026-08-14 23:36:17.964 [INFO] Fetching top 10 cryptocurrencies (full data)
+2026-08-14 23:36:18.251 [INFO] Fetching top 10 cryptocurrencies (full data)
+2026-08-14 23:36:25.123 [INFO] Fetching market overview (full data)
+2026-08-14 23:36:32.947 [INFO] Fetching market overview (full data)
+2026-08-14 23:36:43.234 [INFO] Fetching market overview (full data)
+2026-08-14 23:37:15.184 [INFO] Fetching stock data (full) for AAPL
+2026-08-14 23:37:48.880 [INFO] Fetching market overview (full data)
+2026-08-14 23:37:58.921 [INFO] Fetching market overview (full data)
+2026-08-14 23:38:07.414 [INFO] Fetching top 10 cryptocurrencies (full data)
+2026-08-14 23:38:07.960 [INFO] Fetching top 10 cryptocurrencies (full data)

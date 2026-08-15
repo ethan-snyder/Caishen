@@ -1,7 +1,9 @@
-import { useEffect, useState, type MouseEvent } from 'react'
+import { useEffect, useMemo, useState, type MouseEvent } from 'react'
 import { fetchMarket, type MarketData } from '@/lib/api'
 import { formatPct, posNegColor } from '@/lib/format'
 import { Loading, ErrorBlock } from './StatusBlock'
+import { useSortableLayout } from '@/lib/layout'
+import { Draggable, AddWidgetTray, EditHint } from './LayoutKit'
 
 const border = '1px solid rgba(0,255,136,0.12)'
 
@@ -232,6 +234,20 @@ const SENTIMENT_CARDS: SentimentCardConfig[] = [
   },
 ]
 
+const MARKET_SECTIONS = [
+  { id: 'indices', label: 'MAJOR INDICES' },
+  { id: 'sentiment', label: 'SENTIMENT INDICATORS' },
+  { id: 'macro', label: 'MACRO SENTIMENT' },
+]
+
+const SENTIMENT_TILES = [
+  { id: 'fear_greed', label: 'CNN FEAR & GREED' },
+  { id: 'put_call', label: 'CBOE PUT/CALL RATIO' },
+]
+
+const MACRO_TILE_ITEMS = SENTIMENT_CARDS.map(c => ({ id: c.key, label: c.title }))
+const MACRO_CARDS_BY_KEY = new Map(SENTIMENT_CARDS.map(c => [c.key as string, c]))
+
 export default function MarketOverview() {
   const [data, setData] = useState<MarketData | null>(null)
   const [error, setError] = useState<string | null>(null)
@@ -256,6 +272,23 @@ export default function MarketOverview() {
   const fg = data?.fear_greed
   const sentiment = data?.sentiment
 
+  const sections = useSortableLayout('market.sections', MARKET_SECTIONS)
+  // Index tiles are keyed by symbol, which is stable across reloads and
+  // independent of the ALL/US/ASIA filter -- the filter narrows what's
+  // rendered, the layout controls order/visibility of what survives it.
+  const indexItems = useMemo(
+    () => (data?.indexes ?? []).map(i => ({ id: i.symbol, label: i.name })),
+    [data?.indexes],
+  )
+  const indexTiles = useSortableLayout('market.indices', indexItems)
+  const sentimentTiles = useSortableLayout('market.sentiment', SENTIMENT_TILES)
+  const macroTiles = useSortableLayout('market.macro', MACRO_TILE_ITEMS)
+
+  const filteredBySymbol = useMemo(
+    () => new Map(filtered.map(i => [i.symbol, i])),
+    [filtered],
+  )
+
   return (
     <div>
       <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', marginBottom: 20, flexWrap: 'wrap', gap: 10 }}>
@@ -265,7 +298,7 @@ export default function MarketOverview() {
         }}>MARKET OVERVIEW</span>
         <div style={{ display: 'flex', gap: 4 }}>
           {(['ALL', 'US', 'ASIA'] as const).map(r => (
-            <button key={r} onClick={() => setRegion(r)} style={{
+            <button key={r} type="button" onClick={() => setRegion(r)} style={{
               fontFamily: "'Share Tech Mono', monospace",
               fontSize: 11,
               color: region === r ? '#00FF88' : '#2D6644',
@@ -285,16 +318,23 @@ export default function MarketOverview() {
 
       {data && (
         <>
-          {/* Indices */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(210px, 1fr))', gap: 6, marginBottom: 22 }}>
-            {filtered.map(idx => {
+          <EditHint />
+          {sections.visible.map(sectionId => {
+            if (sectionId === 'indices') return (
+              <Draggable key="indices" id="indices" label="MAJOR INDICES" api={sections} variant="section">
+                <div style={{ marginBottom: 22 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(210px, 1fr))', gap: 6 }}>
+            {indexTiles.visible.map(symbol => {
+              const idx = filteredBySymbol.get(symbol)
+              if (!idx) return null
               // VIX is a volatility reading, not a price -- everything else
               // in the US region trades as an actual dollar-denominated
               // price/index level. Foreign indices (Nikkei, KOSPI) are in
               // their local currency, not USD, so no $ there either.
               const isDollar = idx.region === 'US' && idx.symbol !== 'VIX'
               return (
-                <div key={idx.symbol} style={{ backgroundColor: '#060E18', border, padding: '14px 16px', transition: 'border-color 0.1s' }}
+                <Draggable key={idx.symbol} id={idx.symbol} label={idx.name} api={indexTiles}>
+                <div style={{ backgroundColor: '#060E18', border, padding: '14px 16px', transition: 'border-color 0.1s' }}
                   onMouseEnter={e => (e.currentTarget.style.borderColor = 'rgba(0,255,136,0.3)')}
                   onMouseLeave={e => (e.currentTarget.style.borderColor = 'rgba(0,255,136,0.12)')}
                 >
@@ -330,19 +370,29 @@ export default function MarketOverview() {
                       : '—'}
                   </div>
                 </div>
+                </Draggable>
               )
             })}
           </div>
+          <AddWidgetTray api={indexTiles} title="HIDDEN INDEX TILES" />
+                </div>
+              </Draggable>
+            )
 
-          {/* Sentiment */}
+            if (sectionId === 'sentiment') return (
+              <Draggable key="sentiment" id="sentiment" label="SENTIMENT INDICATORS" api={sections} variant="section">
+                <div style={{ marginBottom: 22 }}>
           <div style={{
             fontFamily: "'VT323', monospace", fontSize: 20, color: '#00FF88', letterSpacing: '0.1em',
             marginBottom: 10, textShadow: '0 0 8px rgba(0,255,136,0.5)',
           }}>{'/// SENTIMENT INDICATORS'}</div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginBottom: 22 }}>
-            {/* Fear & Greed */}
-            <div style={{ backgroundColor: '#060E18', border, padding: '16px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+            {sentimentTiles.visible.map(tileId => {
+              if (tileId === 'fear_greed') return (
+            /* Fear & Greed */
+            <Draggable key="fear_greed" id="fear_greed" label="CNN FEAR & GREED" api={sentimentTiles}>
+            <div style={{ backgroundColor: '#060E18', border, padding: '16px', height: '100%' }}>
               <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 9, color: '#2D6644', letterSpacing: '0.12em', marginBottom: 6 }}>
                 CNN FEAR {'&'} GREED INDEX
               </div>
@@ -350,9 +400,13 @@ export default function MarketOverview() {
                 <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 11, color: '#1D4A30', textAlign: 'center', padding: '30px 0' }}>N/A</div>
               )}
             </div>
+            </Draggable>
+              )
 
-            {/* Put/Call */}
-            <div style={{ backgroundColor: '#060E18', border, padding: '16px' }}>
+              if (tileId === 'put_call') return (
+            /* Put/Call */
+            <Draggable key="put_call" id="put_call" label="CBOE PUT/CALL RATIO" api={sentimentTiles}>
+            <div style={{ backgroundColor: '#060E18', border, padding: '16px', height: '100%' }}>
               <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 9, color: '#2D6644', letterSpacing: '0.12em', marginBottom: 12 }}>
                 CBOE PUT/CALL RATIO
               </div>
@@ -389,21 +443,34 @@ export default function MarketOverview() {
                 </div>
               )}
             </div>
+            </Draggable>
+              )
 
+              return null
+            })}
           </div>
+          <AddWidgetTray api={sentimentTiles} title="HIDDEN SENTIMENT TILES" />
+                </div>
+              </Draggable>
+            )
 
-          {/* Macro sentiment */}
+            if (sectionId === 'macro') return (
+              <Draggable key="macro" id="macro" label="MACRO SENTIMENT" api={sections} variant="section">
+                <div>
           <div style={{
             fontFamily: "'VT323', monospace", fontSize: 20, color: '#00FF88', letterSpacing: '0.1em',
             marginBottom: 10, textShadow: '0 0 8px rgba(0,255,136,0.5)',
           }}>{'/// MACRO SENTIMENT'}</div>
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(440px, 1fr))', gap: 20 }}>
-            {SENTIMENT_CARDS.map(cfg => {
+            {macroTiles.visible.map(tileKey => {
+              const cfg = MACRO_CARDS_BY_KEY.get(tileKey)
+              if (!cfg) return null
               const series = sentiment?.[cfg.key] ?? null
               const color = series ? cfg.color(series.value) : '#2D6644'
               return (
-                <div key={cfg.key} style={{ backgroundColor: '#060E18', border, padding: '32px' }}>
+                <Draggable key={cfg.key} id={cfg.key} label={cfg.title} api={macroTiles}>
+                <div style={{ backgroundColor: '#060E18', border, padding: '32px', height: '100%' }}>
                   <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: '#2D6644', letterSpacing: '0.12em', marginBottom: 20 }}>
                     {cfg.title}
                   </div>
@@ -426,9 +493,18 @@ export default function MarketOverview() {
                     </div>
                   )}
                 </div>
+                </Draggable>
               )
             })}
           </div>
+          <AddWidgetTray api={macroTiles} title="HIDDEN MACRO TILES" />
+                </div>
+              </Draggable>
+            )
+
+            return null
+          })}
+          <AddWidgetTray api={sections} title="HIDDEN SECTIONS" />
         </>
       )}
 

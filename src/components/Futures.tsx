@@ -1,7 +1,9 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { fetchFutures, type FuturesContract } from '@/lib/api'
 import { formatPct, posNegColor, formatLargeNum } from '@/lib/format'
 import { Loading, ErrorBlock } from './StatusBlock'
+import { useSortableLayout } from '@/lib/layout'
+import { Draggable, AddWidgetTray, EditHint } from './LayoutKit'
 
 const border = '1px solid rgba(0,255,136,0.12)'
 
@@ -17,6 +19,16 @@ export default function Futures() {
 
   useEffect(load, [])
 
+  const items = useMemo(
+    () => (contracts ?? []).map(c => ({ id: c.symbol, label: c.name })),
+    [contracts],
+  )
+  const rows = useSortableLayout('futures.rows', items)
+  const bySymbol = useMemo(
+    () => new Map((contracts ?? []).map(c => [c.symbol, c])),
+    [contracts],
+  )
+
   return (
     <div>
       <span style={{ fontFamily: "'VT323', monospace", fontSize: 32, color: '#C8FFD4', letterSpacing: '0.04em', textShadow: '0 0 10px rgba(200,255,212,0.3)', display: 'block', marginBottom: 20 }}>
@@ -28,6 +40,7 @@ export default function Futures() {
 
       {contracts && (
         <>
+          <EditHint />
           <div style={{ display: 'grid', gridTemplateColumns: '160px 1fr 90px 1fr 1fr 1fr', gap: 6, padding: '0 14px 8px' }}>
             {['CONTRACT', 'LAST', 'EXPIRY', 'CHANGE', 'VOLUME', '24H'].map(h => (
               <div key={h} style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 9, color: '#1D4A30', letterSpacing: '0.1em' }}>{h}</div>
@@ -35,8 +48,12 @@ export default function Futures() {
           </div>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-            {contracts.map(f => (
-              <div key={f.symbol} style={{
+            {rows.visible.map(symbol => {
+              const f = bySymbol.get(symbol)
+              if (!f) return null
+              return (
+              <Draggable key={f.symbol} id={f.symbol} label={f.name} api={rows}>
+              <div style={{
                 display: 'grid',
                 gridTemplateColumns: '160px 1fr 90px 1fr 1fr 1fr',
                 gap: 6,
@@ -72,8 +89,11 @@ export default function Futures() {
                   {formatPct(f.change_pct)}
                 </div>
               </div>
-            ))}
+              </Draggable>
+              )
+            })}
           </div>
+          <AddWidgetTray api={rows} title="HIDDEN CONTRACTS" />
         </>
       )}
 
