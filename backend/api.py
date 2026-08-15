@@ -198,6 +198,18 @@ def get_futures():
     return _safe_call(futures.get_futures_data_full)
 
 
+FUTURES_RANGES = set(futures.FUTURES_RANGE_SPECS.keys())
+
+
+@app.get("/api/futures/{symbol}/history")
+def get_futures_history(symbol: str, range: str = "24h"):
+    if range not in FUTURES_RANGES:
+        raise HTTPException(status_code=400, detail=f"range must be one of {sorted(FUTURES_RANGES)}")
+    if symbol not in futures.SYMBOL_BY_CONTRACT:
+        raise HTTPException(status_code=400, detail=f"symbol must be one of {sorted(futures.SYMBOL_BY_CONTRACT)}")
+    return _safe_call(futures.get_futures_history, symbol, range)
+
+
 @app.get("/api/bonds")
 def get_bonds():
     return _safe_call(bonds.get_bond_data_full)

@@ -248,15 +248,36 @@ export const fetchFxHistory = (pairKey: string, range: FxRange) =>
 export interface FuturesContract {
   name: string
   symbol: string
+  /** "$" for contracts genuinely quoted as a dollar price (oil, metals,
+   * grains); null for equity index futures, whose price is an index
+   * level rather than a literal dollar figure. */
+  currency_symbol: string | null
   expiry: string | null
   price: number | null
   change: number | null
   change_pct: number | null
+  year_change_pct: number | null
   volume: number | null
   open_interest: number | null
 }
 
 export const fetchFutures = () => request<FuturesContract[]>('/api/futures')
+
+export type FuturesRange = '1h' | '12h' | '24h' | '3mo' | '1y' | '3y' | '5y' | '10y' | 'all'
+
+export interface FuturesHistoryPoint {
+  date: string
+  value: number
+}
+
+export interface FuturesHistory {
+  symbol: string
+  range: FuturesRange
+  points: FuturesHistoryPoint[]
+}
+
+export const fetchFuturesHistory = (symbol: string, range: FuturesRange) =>
+  request<FuturesHistory>(`/api/futures/${encodeURIComponent(symbol)}/history?range=${range}`)
 
 export interface BondYield {
   term: string
