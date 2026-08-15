@@ -8,6 +8,10 @@ pandas>=2.0.0
 colorama>=0.4.6
 fredapi>=0.5.2
 python-dotenv>=1.0.0
+# Reads the Bank of England's published yield-curve Excel workbooks
+# (bonds.py's _gilt_curve_from_boe) -- BoE only ships this data as .xlsx,
+# no API.
+openpyxl>=3.1.0
 # Outbound client for the Coinbase Advanced Trade WS feed (coinbase_stream.py).
 # uvicorn[standard] already pulls this in transitively, but it's pinned
 # directly since the streaming feature depends on it explicitly.

@@ -24,7 +24,7 @@ Interactive API docs at `http://localhost:8000/docs` once running.
 | GET | `/api/crypto/{coin_id}/history?range=` | Price history for one coin. `range`: `1h,12h,24h,1w,1mo,3mo,6mo,1y,3y,5y,10y,all` |
 | GET | `/api/fx` | Major currency pairs |
 | GET | `/api/futures` | Major index/commodity futures |
-| GET | `/api/bonds` | U.S. Treasury yield curve |
+| GET | `/api/bonds` | U.S. Treasury curve (1-MO-30-YR) + foreign sovereign curves + corporate rating tiers |
 | GET | `/api/portfolio` | Valued holdings from `portfolio.txt` |
 | POST | `/api/portfolio` | `{ticker, qty, avg_cost?}` — add/append a holding |
 | DELETE | `/api/portfolio/{ticker}` | Remove a holding |
@@ -55,19 +55,54 @@ records fetch attempts/errors from API requests.
 ## What's real vs. what's deliberately left out
 
 Every number in this app comes from a real free source (yfinance, CoinGecko,
-CNN's Fear & Greed endpoint, CBOE's stats page, AAII's spreadsheet) — see
-each module's docstring for specifics and known fragility (e.g. CBOE/AAII
+Coinbase, CNN's Fear & Greed endpoint, CBOE's stats page, FRED, CFTC) — see
+each module's docstring for specifics and known fragility (e.g. CBOE/CNN
 have no official API and can break if those sites change structure).
 
 A few fields the original UI mockups included don't have a free, reliable
 source, and rather than fabricate plausible-looking numbers for them, they're
-left out or explicitly marked as estimates:
+left out, substituted with a clearly-labeled equivalent, or explicitly
+marked as estimates:
 
-- **Corporate bond quotes** (Bonds tab) — no free source found; the section
-  is a note rather than fake bond data.
-- **Non-U.S. sovereign yields** (Bonds tab) — same reason; scoped to the
-  U.S. Treasury curve (13-week, 5-year, 10-year, 30-year — the tenors
-  yfinance covers reliably).
+- **Per-issuer corporate bond quotes** (Bonds tab) — individual corporate
+  bond pricing is subscription-only data. The two corporate sections
+  instead show ICE BofA index effective yields **by rating tier**
+  (AAA/AA/A/BBB and BB/B/CCC & lower, daily via FRED) — the benchmark
+  curves those issuers actually price against, rather than invented
+  per-company yields.
+- **U.S. Treasury curve** (Bonds tab) — the primary source is Treasury.gov's
+  own daily par yield curve CSV (`bonds._us_treasury_curve`), which
+  covers every requested tenor (1-MO through 30-YR) in one authoritative
+  fetch. Falls back to the narrower yfinance-based curve
+  (3-MO/5-YR/10-YR/30-YR only, via ^IRX/^FVX/^TNX/^TYX) if Treasury.gov
+  itself is unreachable.
+- **Foreign sovereign yields** (Bonds tab) — every tile charts as much of
+  a real curve as a genuinely free, live source publishes for that
+  country; no tenor is ever interpolated or invented to fill a gap. The
+  10-YR baseline is OECD's government bond yield via FRED — **monthly and
+  published with a lag**, so each row also carries its own observation
+  date rather than presenting a month-old figure as today's quote. On top
+  of that, every sovereign gets a 3-month point (OECD's actual UK
+  Treasury-bill series for GILT, the OECD 3-month interbank rate
+  elsewhere, since no free bill series exists for those countries). JGB,
+  CANGB, and GILT each go further with a real primary source of their
+  own: Japan's Ministry of Finance publishes a live 1Y-40Y par-yield
+  curve as a plain CSV (`bonds._jgb_curve_from_mof`); the Bank of
+  Canada's Valet API publishes real daily 5Y/10Y/30Y benchmark yields
+  (`bonds._boc_curve`); and the Bank of England independently publishes
+  its own daily fitted gilt curve — 1-MO/6-MO/1Y/5Y/30Y — though only as
+  a ZIP of Excel workbooks with no documented layout, so
+  `bonds._gilt_curve_from_boe` scans for the maturity columns rather than
+  reading fixed cells, and **that scan is unverified from this
+  environment** (no outbound route to actually download and inspect the
+  file ahead of time) — it degrades to GILT's existing 3-MO+10-YR curve
+  if BoE ever changes the layout in a way the scan can't match, rather
+  than risk a silently-misread column; worth a look at `events_log.txt`
+  after the first real run to confirm it found real data. No free, live,
+  unauthenticated 1-MO/6-MO/1-YR series was found for BUND/ACGB, or for
+  1-MO/6-MO for CANGB/JGB — Germany's Bundesbank and Australia's RBA do
+  publish curves, but not through a simple stable free endpoint verified
+  here.
 - **Futures open interest** (Futures tab) — not available via yfinance for
   continuous contracts; shown as `—` rather than guessed.
 - **FX bid/ask spread** (Forex tab) — yfinance doesn't reliably expose live

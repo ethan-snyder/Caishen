@@ -237,7 +237,39 @@ export interface BondYield {
   prev: number | null
 }
 
-export const fetchBonds = () => request<BondYield[]>('/api/bonds')
+/**
+ * A FRED-sourced yield row -- either a foreign sovereign 10Y (monthly
+ * OECD data, hence the per-row `date`) or a corporate rating tier
+ * (ICE BofA, daily).
+ */
+export interface YieldCurvePoint {
+  tenor: string
+  yield: number | null
+}
+
+export interface FredYieldRow {
+  key: string
+  label: string
+  name: string
+  yield: number | null
+  change: number | null
+  /** Observation date of this reading -- important for the sovereign
+   * rows, which are monthly and published with a lag. */
+  date: string | null
+  default_hidden: boolean
+  /** Short-end + 10Y points, sovereigns only. Null when no short-end
+   * series exists for that country. */
+  curve: YieldCurvePoint[] | null
+}
+
+export interface BondData {
+  treasuries: BondYield[]
+  sovereigns: FredYieldRow[]
+  corporate_ig: FredYieldRow[]
+  corporate_hy: FredYieldRow[]
+}
+
+export const fetchBonds = () => request<BondData>('/api/bonds')
 
 // ---------------------------------------------------------------------
 // Portfolio

@@ -379,3 +379,91 @@
 2026-08-15 14:06:48.963 [WARNING] CoinGecko rate-limited us (https://api.coingecko.com/api/v3/coins/bitcoin/market_chart); backing off 13.0s (attempt 1/3)
 2026-08-15 14:06:52.175 [WARNING] CoinGecko rate-limited us (https://api.coingecko.com/api/v3/coins/ethereum/market_chart); backing off 9.0s (attempt 1/3)
 2026-08-15 14:07:05.271 [WARNING] Couldn't fetch price history for bitcoin (401 Client Error: Unauthorized for url: https://api.coingecko.com/api/v3/coins/bitcoin/market_chart?vs_currency=usd&days=3650)
+2026-08-15 14:20:02.046 [INFO] Session started
+2026-08-15 14:29:31.631 [INFO] Fetching bond data (full)
+2026-08-15 14:29:32.841 [WARNING] Couldn't fetch Brazil 10Y [IRLTLT01BRM156N] (Bad Request.  The series does not exist.)
+2026-08-15 14:29:34.707 [INFO] Fetching bond data (full)
+2026-08-15 14:29:35.128 [WARNING] Couldn't fetch Brazil 10Y [IRLTLT01BRM156N] (Bad Request.  The series does not exist.)
+2026-08-15 14:37:32.998 [INFO] Session started
+2026-08-15 14:37:45.391 [INFO] Session started
+2026-08-15 14:42:35.939 [INFO] Fetching bond data (full)
+2026-08-15 14:42:36.991 [WARNING] Couldn't fetch Brazil 10Y [IRLTLT01BRM156N] (Bad Request.  The series does not exist.)
+2026-08-15 14:42:39.073 [INFO] Fetching bond data (full)
+2026-08-15 14:42:39.503 [WARNING] Couldn't fetch Brazil 10Y [IRLTLT01BRM156N] (Bad Request.  The series does not exist.)
+2026-08-15 14:52:16.762 [INFO] Session started
+2026-08-15 14:52:33.647 [INFO] Session started
+2026-08-15 15:06:15.393 [INFO] Fetching bond data (full)
+2026-08-15 15:06:16.513 [WARNING] Couldn't fetch Brazil 10Y [IRLTLT01BRM156N] (Bad Request.  The series does not exist.)
+2026-08-15 15:06:18.788 [INFO] Fetching bond data (full)
+2026-08-15 15:06:19.137 [WARNING] Couldn't fetch Brazil 10Y [IRLTLT01BRM156N] (Bad Request.  The series does not exist.)
+2026-08-15 15:14:19.946 [INFO] Session started
+2026-08-15 15:14:40.157 [INFO] Session started
+2026-08-15 15:18:51.878 [INFO] Fetching bond data (full)
+2026-08-15 15:18:52.920 [WARNING] Couldn't fetch Brazil 10Y [IRLTLT01BRM156N] (Bad Request.  The series does not exist.)
+2026-08-15 15:18:55.070 [INFO] Fetching bond data (full)
+2026-08-15 15:18:55.434 [WARNING] Couldn't fetch Brazil 10Y [IRLTLT01BRM156N] (Bad Request.  The series does not exist.)
+2026-08-15 15:21:49.982 [INFO] Session started
+2026-08-15 15:21:52.808 [INFO] Fetching bond data (full)
+2026-08-15 15:21:53.669 [WARNING] Couldn't fetch Brazil 10Y [IRLTLT01BRM156N] (Bad Request.  The series does not exist.)
+2026-08-15 15:21:55.846 [INFO] Fetching bond data (full)
+2026-08-15 15:21:56.494 [WARNING] Couldn't fetch Brazil 10Y [IRLTLT01BRM156N] (Bad Request.  The series does not exist.)
+2026-08-15 15:22:13.098 [INFO] Fetching bond data (full)
+2026-08-15 15:22:13.649 [WARNING] Couldn't fetch Brazil 10Y [IRLTLT01BRM156N] (Bad Request.  The series does not exist.)
+2026-08-15 15:22:17.301 [INFO] Fetching bond data (full)
+2026-08-15 15:22:17.647 [WARNING] Couldn't fetch Brazil 10Y [IRLTLT01BRM156N] (Bad Request.  The series does not exist.)
+2026-08-15 15:25:21.903 [INFO] Session started
+2026-08-15 15:25:34.213 [INFO] Session started
+2026-08-15 15:25:55.529 [INFO] Session started
+2026-08-15 15:26:00.022 [INFO] Session started
+2026-08-15 15:26:23.002 [INFO] Session started
+2026-08-15 15:26:44.745 [INFO] Session started
+2026-08-15 15:30:30.401 [INFO] Fetching top 10 cryptocurrencies (full data)
+2026-08-15 15:30:30.529 [WARNING] Couldn't fetch Coinbase product list (401 Client Error: Unauthorized for url: https://api.coinbase.com/api/v3/brokerage/products)
+2026-08-15 15:30:30.685 [WARNING] Couldn't fetch Coinbase product list (401 Client Error: Unauthorized for url: https://api.coinbase.com/api/v3/brokerage/products)
+2026-08-15 15:30:30.686 [INFO] Fetching bond data (full)
+2026-08-15 15:30:31.872 [INFO] Fetching top 10 cryptocurrencies (full data)
+2026-08-15 15:30:40.826 [WARNING] Treasury.gov par yield curve unavailable, falling back to yfinance (HTTPSConnectionPool(host='home.treasury.gov', port=443): Read timed out. (read timeout=10))
+2026-08-15 15:30:41.816 [WARNING] Couldn't fetch Brazil 10Y [IRLTLT01BRM156N] (Bad Request.  The series does not exist.)
+2026-08-15 15:30:42.926 [WARNING] Couldn't fetch GILT curve from Bank of England (403 Client Error: Forbidden for url: https://www.bankofengland.co.uk/-/media/boe/files/statistics/yield-curves/latest-yield-curve-data.zip)
+2026-08-15 15:30:44.870 [INFO] Fetching bond data (full)
+2026-08-15 15:30:54.381 [WARNING] Couldn't fetch Brazil 10Y [IRLTLT01BRM156N] (Bad Request.  The series does not exist.)
+2026-08-15 15:30:54.813 [WARNING] Couldn't fetch GILT curve from Bank of England (403 Client Error: Forbidden for url: https://www.bankofengland.co.uk/-/media/boe/files/statistics/yield-curves/latest-yield-curve-data.zip)
+2026-08-15 16:00:44.564 [INFO] Session started
+2026-08-15 16:00:59.164 [INFO] Fetching bond data (full)
+2026-08-15 16:01:08.377 [WARNING] Couldn't fetch GILT curve from Bank of England (403 Client Error: Forbidden for url: https://www.bankofengland.co.uk/-/media/boe/files/statistics/yield-curves/latest-yield-curve-data.zip)
+2026-08-15 16:01:08.570 [WARNING] Couldn't fetch Brazil 10Y [IRLTLT01BRM156N] (Bad Request.  The series does not exist.)
+2026-08-15 16:01:11.222 [INFO] Fetching bond data (full)
+2026-08-15 16:01:20.621 [WARNING] Couldn't fetch Brazil 10Y [IRLTLT01BRM156N] (Bad Request.  The series does not exist.)
+2026-08-15 16:01:20.855 [WARNING] Couldn't fetch GILT curve from Bank of England (403 Client Error: Forbidden for url: https://www.bankofengland.co.uk/-/media/boe/files/statistics/yield-curves/latest-yield-curve-data.zip)
+2026-08-15 16:32:07.484 [INFO] Added portfolio holding: AAPL, 2.0
+2026-08-15 16:32:28.185 [INFO] Added portfolio holding: VTI, 3.0
+2026-08-15 16:52:41.645 [INFO] Fetching top 10 cryptocurrencies (full data)
+2026-08-15 16:52:41.790 [WARNING] Couldn't fetch Coinbase product list (401 Client Error: Unauthorized for url: https://api.coinbase.com/api/v3/brokerage/products)
+2026-08-15 16:52:41.893 [WARNING] Couldn't fetch Coinbase product list (401 Client Error: Unauthorized for url: https://api.coinbase.com/api/v3/brokerage/products)
+2026-08-15 16:52:43.131 [INFO] Fetching top 10 cryptocurrencies (full data)
+2026-08-15 16:52:43.856 [INFO] Fetching market overview (full data)
+2026-08-15 16:52:54.019 [INFO] Fetching market overview (full data)
+2026-08-15 17:44:40.375 [INFO] Session started
+2026-08-15 17:45:06.383 [INFO] Session started
+2026-08-15 17:45:13.200 [INFO] Session started
+2026-08-15 17:55:58.517 [INFO] Fetching bond data (full)
+2026-08-15 17:56:08.253 [WARNING] Couldn't fetch Brazil 10Y [IRLTLT01BRM156N] (Bad Request.  The series does not exist.)
+2026-08-15 17:56:10.009 [INFO] Fetching bond data (full)
+2026-08-15 17:56:20.111 [WARNING] Treasury.gov par yield curve unavailable, falling back to yfinance (HTTPSConnectionPool(host='home.treasury.gov', port=443): Read timed out. (read timeout=10))
+2026-08-15 17:56:21.089 [WARNING] Couldn't fetch Brazil 10Y [IRLTLT01BRM156N] (Bad Request.  The series does not exist.)
+2026-08-15 17:57:57.719 [INFO] Fetching top 10 cryptocurrencies (full data)
+2026-08-15 17:57:57.891 [WARNING] Couldn't fetch Coinbase product list (401 Client Error: Unauthorized for url: https://api.coinbase.com/api/v3/brokerage/products)
+2026-08-15 17:57:57.993 [WARNING] Couldn't fetch Coinbase product list (401 Client Error: Unauthorized for url: https://api.coinbase.com/api/v3/brokerage/products)
+2026-08-15 17:57:59.191 [INFO] Fetching top 10 cryptocurrencies (full data)
+2026-08-15 17:57:59.538 [WARNING] Couldn't fetch Coinbase product list (401 Client Error: Unauthorized for url: https://api.coinbase.com/api/v3/brokerage/products)
+2026-08-15 17:57:59.958 [INFO] Fetching bond data (full)
+2026-08-15 17:58:10.070 [WARNING] Treasury.gov par yield curve unavailable, falling back to yfinance (HTTPSConnectionPool(host='home.treasury.gov', port=443): Read timed out. (read timeout=10))
+2026-08-15 17:58:10.601 [WARNING] Couldn't fetch Brazil 10Y [IRLTLT01BRM156N] (Bad Request.  The series does not exist.)
+2026-08-15 17:58:13.124 [INFO] Fetching bond data (full)
+2026-08-15 17:58:22.548 [WARNING] Couldn't fetch Brazil 10Y [IRLTLT01BRM156N] (Bad Request.  The series does not exist.)
+2026-08-15 18:03:04.873 [INFO] Fetching bond data (full)
+2026-08-15 18:03:15.019 [WARNING] Treasury.gov par yield curve unavailable, falling back to yfinance (HTTPSConnectionPool(host='home.treasury.gov', port=443): Read timed out. (read timeout=10))
+2026-08-15 18:03:15.815 [WARNING] Couldn't fetch Brazil 10Y [IRLTLT01BRM156N] (Bad Request.  The series does not exist.)
+2026-08-15 18:03:19.458 [INFO] Fetching bond data (full)
+2026-08-15 18:03:29.563 [WARNING] Treasury.gov par yield curve unavailable, falling back to yfinance (HTTPSConnectionPool(host='home.treasury.gov', port=443): Read timed out. (read timeout=10))
+2026-08-15 18:03:30.122 [WARNING] Couldn't fetch Brazil 10Y [IRLTLT01BRM156N] (Bad Request.  The series does not exist.)
