@@ -12,11 +12,11 @@ Run:  uvicorn api:app --reload --port 8000
 
 import math
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
-from logger import setup_logging, log_error
+from logger import setup_logging, log_error, warn
 setup_logging()
 
 import stock_info
@@ -27,6 +27,7 @@ import crypto_info
 import forex
 import futures
 import bonds
+import coinbase_stream
 
 app = FastAPI(title="Caishen API")
 
@@ -114,6 +115,65 @@ def get_market():
 @app.get("/api/crypto")
 def get_crypto(n: int = 10):
     return _safe_call(crypto_info.get_top_cryptos_full, n)
+
+
+CRYPTO_RANGES = set(crypto_info.RANGE_DAYS.keys())
+
+
+@app.get("/api/crypto/{coin_id}/history")
+def get_crypto_history(coin_id: str, range: str = "24h"):
+    if range not in CRYPTO_RANGES:
+        raise HTTPException(status_code=400, detail=f"range must be one of {sorted(CRYPTO_RANGES)}")
+    return _safe_call(crypto_info.get_coin_history, coin_id, range)
+
+
+# ----------------------------------------------------------------------
+# Live crypto price streaming (Coinbase Advanced Trade WS relay)
+# ----------------------------------------------------------------------
+#
+# Client protocol, over /ws/crypto:
+#   -> {"action": "subscribe", "symbols": ["BTC", "ETH", ...]}
+#      Replaces this connection's entire desired symbol set (not
+#      additive) -- the frontend just resends its full list whenever it
+#      changes (a different coin expanded, the top-10 shifted).
+#   <- {"type": "subscribed", "symbols": [...], "unsupported": [...]}
+#      Acknowledges a subscribe request: `symbols` actually stream,
+#      `unsupported` have no matching Coinbase product (frontend keeps
+#      showing their existing static CoinGecko price for those).
+#   <- {"type": "tick", "product_id": "BTC-USD", "price": ..., ...}
+#      One per trade match on a subscribed product, relayed from
+#      Coinbase's ticker channel via coinbase_stream.CoinbaseStreamManager.
+@app.websocket("/ws/crypto")
+async def ws_crypto(websocket: WebSocket):
+    await websocket.accept()
+
+    async def send(payload: str):
+        await websocket.send_text(payload)
+
+    try:
+        while True:
+            try:
+                msg = await websocket.receive_json()
+            except ValueError:
+                # Malformed JSON from the client -- skip it, don't tear
+                # down an otherwise-healthy connection over one bad frame.
+                continue
+            if not isinstance(msg, dict) or msg.get("action") != "subscribe":
+                continue
+            symbols = [s for s in msg.get("symbols", []) if isinstance(s, str)]
+            supported, unsupported = coinbase_stream.symbols_to_products(symbols)
+            await coinbase_stream.manager.update_subscription(send, supported)
+            await websocket.send_json({
+                "type": "subscribed",
+                "symbols": sorted(supported.keys()),
+                "unsupported": sorted(unsupported),
+            })
+    except WebSocketDisconnect:
+        pass
+    except Exception as e:
+        warn(f"/ws/crypto connection error ({e})")
+    finally:
+        await coinbase_stream.manager.unregister(send)
 
 
 @app.get("/api/fx")

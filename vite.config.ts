@@ -37,6 +37,13 @@ export default defineConfig({
         target: process.env.API_PROXY_TARGET || 'http://localhost:8000',
         changeOrigin: true,
       },
+      // Same backend, but for the live crypto price stream (/ws/crypto) --
+      // needs `ws: true` since this is a WebSocket, not a plain HTTP proxy.
+      '/ws': {
+        target: process.env.API_PROXY_TARGET || 'http://localhost:8000',
+        changeOrigin: true,
+        ws: true,
+      },
     },
   },
   preview: {

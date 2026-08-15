@@ -8,3 +8,7 @@ pandas>=2.0.0
 colorama>=0.4.6
 fredapi>=0.5.2
 python-dotenv>=1.0.0
+# Outbound client for the Coinbase Advanced Trade WS feed (coinbase_stream.py).
+# uvicorn[standard] already pulls this in transitively, but it's pinned
+# directly since the streaming feature depends on it explicitly.
+websockets>=12.0

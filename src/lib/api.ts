@@ -74,14 +74,35 @@ export interface MarketIndex {
   name: string
   symbol: string
   region: string
+  /** How to render the number: '$' prefix, bare level, or '%' suffix. */
+  quote: 'usd' | 'level' | 'pct'
+  /** Ships available-but-off in the Market page's edit-layout tray. */
+  default_hidden: boolean
   value: number | null
   change: number | null
   change_pct: number | null
 }
 
+export interface FearGreedSeries {
+  label: string
+  points: SentimentSeriesPoint[]
+}
+
 export interface FearGreedComponent {
+  key: string
+  label: string
+  subtitle: string
+  /** How to render `value`: '%' suffix, bare 2dp, or thousands-separated. */
+  unit: 'pct' | 'ratio' | 'level'
+  /** Today's raw reading of the primary series (not the 0-100 score). */
+  value: number
   score: number | null
   rating: string | null
+  /**
+   * One or two lines. Momentum and volatility each carry their own moving
+   * average as a second series, charted together.
+   */
+  series: FearGreedSeries[]
 }
 
 export interface SentimentSeriesPoint {
@@ -100,7 +121,16 @@ export interface MarketData {
   fear_greed: {
     score: number | null
     rating: string | null
-    components: Record<string, FearGreedComponent>
+    /** Prior readings CNN shows beside its gauge. */
+    previous: {
+      close: number | null
+      week: number | null
+      month: number | null
+      year: number | null
+    }
+    /** ~1y of daily headline scores, for the trend chart. */
+    history: SentimentSeriesPoint[]
+    components: FearGreedComponent[]
   }
   put_call_ratio: number | null
   sentiment: {
@@ -122,18 +152,53 @@ export const fetchMarket = () => request<MarketData>('/api/market')
 // ---------------------------------------------------------------------
 
 export interface CryptoCoin {
+  id: string | null
   rank: number | null
   name: string
   symbol: string
+  image: string | null
   price: number | null
   change_24h: number | null
   change_pct_24h: number | null
+  change_pct_1h: number | null
+  change_pct_7d: number | null
+  change_pct_30d: number | null
+  change_pct_1y: number | null
   market_cap: number | null
+  market_cap_change_pct_24h: number | null
+  fully_diluted_valuation: number | null
   volume: number | null
   dominance: number | null
+  high_24h: number | null
+  low_24h: number | null
+  circulating_supply: number | null
+  total_supply: number | null
+  max_supply: number | null
+  ath: number | null
+  ath_change_pct: number | null
+  ath_date: string | null
+  atl: number | null
+  atl_change_pct: number | null
+  atl_date: string | null
 }
 
 export const fetchCrypto = (n = 10) => request<CryptoCoin[]>(`/api/crypto?n=${n}`)
+
+export type CryptoRange =
+  | '1h' | '12h' | '24h' | '1w' | '1mo' | '3mo' | '6mo' | '1y' | '3y' | '5y' | '10y' | 'all'
+
+export interface CryptoHistoryPoint {
+  date: string
+  value: number
+}
+
+export interface CryptoHistory {
+  prices: CryptoHistoryPoint[]
+  range: CryptoRange
+}
+
+export const fetchCryptoHistory = (coinId: string, range: CryptoRange) =>
+  request<CryptoHistory>(`/api/crypto/${encodeURIComponent(coinId)}/history?range=${range}`)
 
 export interface FxPair {
   pair: string

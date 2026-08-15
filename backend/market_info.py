@@ -24,6 +24,9 @@ can.
 import os
 import re
 import math
+from concurrent.futures import ThreadPoolExecutor
+from datetime import datetime, timezone
+
 import yfinance as yf
 import requests
 import pandas as pd
@@ -43,6 +46,10 @@ except ImportError:
 from utils import gradient_color, RESET_COLOR
 from logger import log_event, warn
 
+# The first block is what shows on the Market page out of the box. The
+# "extra" block below is fetched too, but ships hidden -- it's offered in
+# the page's EDIT LAYOUT tray so the board can be widened without cluttering
+# the default view.
 INDEXES = {
     "Dow Jones (DJI)": "^DJI",
     "NASDAQ": "^IXIC",
@@ -52,6 +59,22 @@ INDEXES = {
     "KOSPI": "^KS11",
     "TQQQ": "TQQQ",
     "VIX": "^VIX",
+    # -- available but hidden by default (see INDEX_META default_hidden) --
+    "NASDAQ 100": "^NDX",
+    "S&P MidCap 400": "^MID",
+    "Dow Transports": "^DJT",
+    "FTSE 100": "^FTSE",
+    "DAX": "^GDAXI",
+    "CAC 40": "^FCHI",
+    "Euro Stoxx 50": "^STOXX50E",
+    "Hang Seng": "^HSI",
+    "Shanghai Composite": "000001.SS",
+    "S&P/TSX": "^GSPTSE",
+    "Sensex": "^BSESN",
+    "ASX 200": "^AXJO",
+    "US Dollar Index": "DX-Y.NYB",
+    "10Y Treasury Yield": "^TNX",
+    "VXN (Nasdaq Vol)": "^VXN",
 }
 
 # A full "real browser" header set. Some scraped sources (CBOE, CNN) will
@@ -82,8 +105,8 @@ def _get_index_data(period="1y"):
     kept (not just the last close) so it can be charted later without a
     second call.
     """
-    results = {}
-    for name, symbol in INDEXES.items():
+    def fetch(item):
+        name, symbol = item
         try:
             hist = yf.Ticker(symbol).history(period=period)
             hist = hist.dropna(subset=["Close"])
@@ -94,10 +117,20 @@ def _get_index_data(period="1y"):
             if math.isnan(last) or math.isnan(prev) or prev == 0:
                 raise ValueError("NaN/zero close in history")
             change_pct = (last - prev) / prev * 100
-            results[name] = {"last": last, "change_pct": change_pct, "history": hist}
+            return name, {"last": last, "change_pct": change_pct, "history": hist}
         except Exception:
-            results[name] = {"last": None, "change_pct": None, "history": None}
-    return results
+            return name, {"last": None, "change_pct": None, "history": None}
+
+    # Fetched in parallel: this list is long enough now that doing it
+    # sequentially dominated the whole /api/market response time, and each
+    # fetch is independent network I/O.
+    with ThreadPoolExecutor(max_workers=8) as pool:
+        fetched = list(pool.map(fetch, INDEXES.items()))
+
+    # Rebuilt in INDEXES order so the payload order stays deterministic
+    # regardless of which network calls finished first.
+    by_name = dict(fetched)
+    return {name: by_name[name] for name in INDEXES if name in by_name}
 
 
 # ----------------------------------------------------------------------
@@ -141,6 +174,184 @@ def _parse_fear_greed(fg_data):
                 str(val.get("rating")).title() if val.get("rating") else None,
             )
     return score, rating, components
+
+
+# CNN's feed carries 9 raw series that present as 7 indicators: momentum and
+# volatility each ship an index alongside its own moving average, which
+# belong on one chart rather than two. This spec drives that merge and
+# records what each series' raw y-value actually *is* -- the 0-100 "score"
+# is a normalized reading, so the headline number on each card comes from
+# the raw series instead.
+#
+# unit: pct -> "%" suffix | ratio -> bare 2dp | level -> thousands-separated
+FG_INDICATORS = [
+    {
+        "key": "market_momentum",
+        "label": "Market Momentum",
+        "subtitle": "S&P 500 and its 125-day moving average",
+        "score_from": "market_momentum_sp500",
+        "unit": "level",
+        "series": [
+            ("S&P 500", "market_momentum_sp500"),
+            ("125-day MA", "market_momentum_sp125"),
+        ],
+    },
+    {
+        "key": "stock_price_strength",
+        "label": "Stock Price Strength",
+        "subtitle": "Net new 52-week highs vs lows on the NYSE",
+        "score_from": "stock_price_strength",
+        "unit": "pct",
+        "series": [("Net new highs", "stock_price_strength")],
+    },
+    {
+        "key": "stock_price_breadth",
+        "label": "Stock Price Breadth",
+        "subtitle": "McClellan Volume Summation Index",
+        "score_from": "stock_price_breadth",
+        "unit": "level",
+        "series": [("McClellan Volume Summation", "stock_price_breadth")],
+    },
+    {
+        "key": "put_call_options",
+        "label": "5-Day Average Put/Call Ratio",
+        "subtitle": "Put volume vs call volume, 5-session average",
+        "score_from": "put_call_options",
+        "unit": "ratio",
+        "series": [("Put/call ratio", "put_call_options")],
+    },
+    {
+        "key": "market_volatility",
+        "label": "Market Volatility",
+        "subtitle": "VIX and its 50-day moving average",
+        "score_from": "market_volatility_vix",
+        "unit": "level",
+        "series": [
+            ("VIX", "market_volatility_vix"),
+            ("50-day MA", "market_volatility_vix_50"),
+        ],
+    },
+    {
+        "key": "junk_bond_demand",
+        "label": "Junk Bond Demand",
+        "subtitle": "Yield spread: junk vs investment grade bonds",
+        "score_from": "junk_bond_demand",
+        "unit": "pct",
+        "series": [("Yield spread", "junk_bond_demand")],
+    },
+    {
+        "key": "safe_haven_demand",
+        "label": "Safe Haven Demand",
+        "subtitle": "Stock vs bond returns over the last 20 days",
+        "score_from": "safe_haven_demand",
+        "unit": "pct",
+        "series": [("Stocks minus bonds", "safe_haven_demand")],
+    },
+]
+
+
+def _fg_epoch_to_date(ms):
+    """CNN's chart x-values are epoch milliseconds (UTC)."""
+    try:
+        return datetime.fromtimestamp(float(ms) / 1000, tz=timezone.utc).strftime("%Y-%m-%d")
+    except Exception:
+        return None
+
+
+def _fg_series(raw_points, limit=None):
+    """Normalizes CNN's [{x, y, rating}] chart arrays into [{date, value}]."""
+    out = []
+    for pt in raw_points or []:
+        if not isinstance(pt, dict):
+            continue
+        date = _fg_epoch_to_date(pt.get("x"))
+        val = pt.get("y")
+        if date is None or val is None:
+            continue
+        try:
+            fval = float(val)
+        except (TypeError, ValueError):
+            continue
+        if math.isnan(fval) or math.isinf(fval):
+            continue
+        out.append({"date": date, "value": round(fval, 4)})
+    return out[-limit:] if limit else out
+
+
+def _build_fear_greed_payload(fg_data):
+    """
+    Frontend-shaped Fear & Greed payload: headline score/rating, the
+    prior-period readings CNN shows beside its gauge, ~1y of headline
+    history for the trend chart, and each component gauge with its own
+    score/rating/history for the expanded breakdown view.
+    """
+    if not fg_data:
+        return {
+            "score": None, "rating": None, "previous": {},
+            "history": [], "components": [],
+        }
+
+    current = fg_data.get("fear_and_greed", {}) or {}
+
+    def num(v):
+        try:
+            f = float(v)
+            return None if math.isnan(f) or math.isinf(f) else round(f, 1)
+        except (TypeError, ValueError):
+            return None
+
+    score = num(current.get("score"))
+    rating = str(current.get("rating")).title() if current.get("rating") else None
+
+    previous = {
+        "close": num(current.get("previous_close")),
+        "week": num(current.get("previous_1_week")),
+        "month": num(current.get("previous_1_month")),
+        "year": num(current.get("previous_1_year")),
+    }
+
+    historical = fg_data.get("fear_and_greed_historical", {}) or {}
+    history = _fg_series(historical.get("data"))
+
+    components = []
+    for spec in FG_INDICATORS:
+        # Each named series is optional: if CNN drops or renames one (say the
+        # 50-day VIX average), the indicator still renders with whatever
+        # series did arrive rather than vanishing entirely.
+        series = []
+        for s_label, s_key in spec["series"]:
+            raw = fg_data.get(s_key)
+            if not isinstance(raw, dict):
+                continue
+            points = _fg_series(raw.get("data"))
+            if points:
+                series.append({"label": s_label, "points": points})
+        if not series:
+            continue
+
+        scored = fg_data.get(spec["score_from"]) or {}
+        # Headline number is the latest *raw* reading of the primary series
+        # (today's %, ratio or level) -- not the normalized 0-100 score.
+        value = series[0]["points"][-1]["value"]
+
+        components.append({
+            "key": spec["key"],
+            "label": spec["label"],
+            "subtitle": spec["subtitle"],
+            "unit": spec["unit"],
+            "value": value,
+            "score": num(scored.get("score")),
+            "rating": str(scored.get("rating")).title() if scored.get("rating") else None,
+            "series": series,
+        })
+
+    return {
+        "score": round(score) if score is not None else None,
+        "rating": rating,
+        "previous": previous,
+        "history": history,
+        "components": components,
+    }
 
 
 # ----------------------------------------------------------------------
@@ -493,15 +704,36 @@ def market_info():
 
 # Symbol/region metadata for the frontend's index cards -- keyed the same
 # as INDEXES above so the two stay in sync.
+# "quote" tells the frontend how to render the number:
+#   usd   -> prefix with $      (US dollar-denominated prices)
+#   level -> bare number        (index levels, volatility readings, DXY)
+#   pct   -> suffix with %      (yields)
+# "default_hidden" ships the tile available-but-off in the page's edit tray.
 INDEX_META = {
-    "Dow Jones (DJI)":  {"symbol": "DJI",   "region": "US"},
-    "NASDAQ":           {"symbol": "IXIC",  "region": "US"},
-    "S&P 500":          {"symbol": "SPX",   "region": "US"},
-    "Russell 2000":     {"symbol": "RUT",   "region": "US"},
-    "Nikkei 225":       {"symbol": "N225",  "region": "Japan"},
-    "KOSPI":            {"symbol": "KOSPI", "region": "Korea"},
-    "TQQQ":             {"symbol": "TQQQ",  "region": "US"},
-    "VIX":              {"symbol": "VIX",   "region": "US"},
+    "Dow Jones (DJI)":     {"symbol": "DJI",       "region": "US",        "quote": "usd"},
+    "NASDAQ":              {"symbol": "IXIC",      "region": "US",        "quote": "usd"},
+    "S&P 500":             {"symbol": "SPX",       "region": "US",        "quote": "usd"},
+    "Russell 2000":        {"symbol": "RUT",       "region": "US",        "quote": "usd"},
+    "Nikkei 225":          {"symbol": "N225",      "region": "Japan",     "quote": "level"},
+    "KOSPI":               {"symbol": "KOSPI",     "region": "Korea",     "quote": "level"},
+    "TQQQ":                {"symbol": "TQQQ",      "region": "US",        "quote": "usd"},
+    "VIX":                 {"symbol": "VIX",       "region": "US",        "quote": "level"},
+
+    "NASDAQ 100":          {"symbol": "NDX",       "region": "US",        "quote": "usd",   "default_hidden": True},
+    "S&P MidCap 400":      {"symbol": "MID",       "region": "US",        "quote": "usd",   "default_hidden": True},
+    "Dow Transports":      {"symbol": "DJT",       "region": "US",        "quote": "usd",   "default_hidden": True},
+    "FTSE 100":            {"symbol": "FTSE",      "region": "UK",        "quote": "level", "default_hidden": True},
+    "DAX":                 {"symbol": "DAX",       "region": "Germany",   "quote": "level", "default_hidden": True},
+    "CAC 40":              {"symbol": "CAC",       "region": "France",    "quote": "level", "default_hidden": True},
+    "Euro Stoxx 50":       {"symbol": "SX5E",      "region": "Europe",    "quote": "level", "default_hidden": True},
+    "Hang Seng":           {"symbol": "HSI",       "region": "Hong Kong", "quote": "level", "default_hidden": True},
+    "Shanghai Composite":  {"symbol": "SSEC",      "region": "China",     "quote": "level", "default_hidden": True},
+    "S&P/TSX":             {"symbol": "GSPTSE",    "region": "Canada",    "quote": "level", "default_hidden": True},
+    "Sensex":              {"symbol": "BSESN",     "region": "India",     "quote": "level", "default_hidden": True},
+    "ASX 200":             {"symbol": "AXJO",      "region": "Australia", "quote": "level", "default_hidden": True},
+    "US Dollar Index":     {"symbol": "DXY",       "region": "US",        "quote": "level", "default_hidden": True},
+    "10Y Treasury Yield":  {"symbol": "TNX",       "region": "US",        "quote": "pct",   "default_hidden": True},
+    "VXN (Nasdaq Vol)":    {"symbol": "VXN",       "region": "US",        "quote": "level", "default_hidden": True},
 }
 
 
@@ -519,7 +751,7 @@ def get_market_data_full():
     idx_data = _get_index_data()
     indexes = []
     for name, d in idx_data.items():
-        meta = INDEX_META.get(name, {"symbol": name, "region": "US"})
+        meta = INDEX_META.get(name, {"symbol": name, "region": "US", "quote": "level"})
         change = None
         if d["last"] is not None and d["change_pct"] is not None:
             # last = prev * (1 + pct/100)  =>  change = last - prev
@@ -527,11 +759,12 @@ def get_market_data_full():
             change = d["last"] - prev
         indexes.append({
             "name": name, "symbol": meta["symbol"], "region": meta["region"],
+            "quote": meta.get("quote", "level"),
+            "default_hidden": bool(meta.get("default_hidden", False)),
             "value": d["last"], "change": change, "change_pct": d["change_pct"],
         })
 
     fg_raw = _get_fear_greed_data()
-    fg_score, fg_rating, fg_components = _parse_fear_greed(fg_raw)
 
     pc_ratio = _get_put_call_ratio()
 
@@ -539,14 +772,7 @@ def get_market_data_full():
 
     return {
         "indexes": indexes,
-        "fear_greed": {
-            "score": round(fg_score) if fg_score is not None else None,
-            "rating": fg_rating,
-            "components": {
-                k.replace("_", " ").title(): {"score": s, "rating": r}
-                for k, (s, r) in fg_components.items()
-            },
-        },
+        "fear_greed": _build_fear_greed_payload(fg_raw),
         "put_call_ratio": pc_ratio,
         "sentiment": sentiment,
     }

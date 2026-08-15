@@ -176,3 +176,206 @@
 2026-08-14 23:37:58.921 [INFO] Fetching market overview (full data)
 2026-08-14 23:38:07.414 [INFO] Fetching top 10 cryptocurrencies (full data)
 2026-08-14 23:38:07.960 [INFO] Fetching top 10 cryptocurrencies (full data)
+2026-08-14 23:42:05.304 [INFO] Session started
+2026-08-14 23:42:10.758 [INFO] Fetching market overview (full data)
+2026-08-14 23:42:19.326 [INFO] Fetching market overview (full data)
+2026-08-14 23:42:30.164 [INFO] Fetching top 10 cryptocurrencies (full data)
+2026-08-14 23:42:30.519 [INFO] Fetching top 10 cryptocurrencies (full data)
+2026-08-14 23:42:31.481 [INFO] Fetching market overview (full data)
+2026-08-14 23:43:19.972 [INFO] Fetching market overview (full data)
+2026-08-14 23:43:30.018 [INFO] Fetching market overview (full data)
+2026-08-14 23:45:16.398 [INFO] Fetching top 10 cryptocurrencies (full data)
+2026-08-14 23:45:16.682 [INFO] Fetching top 10 cryptocurrencies (full data)
+2026-08-14 23:46:08.363 [INFO] Fetching market overview (full data)
+2026-08-14 23:46:17.525 [INFO] Fetching market overview (full data)
+2026-08-14 23:49:22.793 [INFO] Fetching market overview (full data)
+2026-08-14 23:49:32.769 [INFO] Fetching market overview (full data)
+2026-08-14 23:50:59.760 [INFO] Session started
+2026-08-14 23:51:08.962 [INFO] Session started
+2026-08-14 23:51:17.605 [INFO] Session started
+2026-08-14 23:51:35.308 [INFO] Session started
+2026-08-14 23:51:50.455 [INFO] Session started
+2026-08-14 23:51:57.867 [INFO] Session started
+2026-08-14 23:52:01.619 [INFO] Session started
+2026-08-14 23:58:37.151 [INFO] Fetching market overview (full data)
+2026-08-14 23:58:44.910 [INFO] Fetching market overview (full data)
+2026-08-15 00:10:15.626 [INFO] Session started
+2026-08-15 00:10:25.328 [INFO] Session started
+2026-08-15 00:17:11.379 [INFO] Session started
+2026-08-15 00:17:15.633 [INFO] Fetching market overview (full data)
+2026-08-15 00:17:26.729 [INFO] Fetching market overview (full data)
+2026-08-15 12:33:14.671 [INFO] Session started
+2026-08-15 12:33:33.279 [INFO] Fetching top 10 cryptocurrencies (full data)
+2026-08-15 12:33:33.609 [INFO] Fetching top 10 cryptocurrencies (full data)
+2026-08-15 12:33:34.795 [INFO] Fetching market overview (full data)
+2026-08-15 12:33:51.025 [INFO] Fetching market overview (full data)
+2026-08-15 12:34:59.273 [INFO] Fetching top 10 cryptocurrencies (full data)
+2026-08-15 12:34:59.552 [INFO] Fetching top 10 cryptocurrencies (full data)
+2026-08-15 12:37:45.857 [INFO] Fetching market overview (full data)
+2026-08-15 12:37:55.711 [INFO] Fetching market overview (full data)
+2026-08-15 12:39:17.094 [INFO] Session started
+2026-08-15 12:39:21.600 [INFO] Session started
+2026-08-15 12:39:25.642 [INFO] Session started
+2026-08-15 12:39:44.158 [INFO] Session started
+2026-08-15 12:43:52.041 [INFO] Fetching market overview (full data)
+2026-08-15 12:43:54.395 [INFO] Fetching top 10 cryptocurrencies (full data)
+2026-08-15 12:43:54.855 [INFO] Fetching top 10 cryptocurrencies (full data)
+2026-08-15 12:43:57.562 [WARNING] Couldn't fetch price history for bitcoin (429 Client Error: Too Many Requests for url: https://api.coingecko.com/api/v3/coins/bitcoin/market_chart?vs_currency=usd&days=1)
+2026-08-15 12:44:00.294 [INFO] Fetching market overview (full data)
+2026-08-15 12:44:03.459 [WARNING] Couldn't fetch price history for ethereum (429 Client Error: Too Many Requests for url: https://api.coingecko.com/api/v3/coins/ethereum/market_chart?vs_currency=usd&days=1)
+2026-08-15 12:44:05.701 [WARNING] Couldn't fetch price history for bitcoin (429 Client Error: Too Many Requests for url: https://api.coingecko.com/api/v3/coins/bitcoin/market_chart?vs_currency=usd&days=1)
+2026-08-15 12:44:14.493 [WARNING] Couldn't fetch price history for bitcoin (429 Client Error: Too Many Requests for url: https://api.coingecko.com/api/v3/coins/bitcoin/market_chart?vs_currency=usd&days=1)
+2026-08-15 12:44:15.536 [WARNING] Couldn't fetch price history for bitcoin (429 Client Error: Too Many Requests for url: https://api.coingecko.com/api/v3/coins/bitcoin/market_chart?vs_currency=usd&days=1)
+2026-08-15 12:44:16.596 [WARNING] Couldn't fetch price history for bitcoin (429 Client Error: Too Many Requests for url: https://api.coingecko.com/api/v3/coins/bitcoin/market_chart?vs_currency=usd&days=7)
+2026-08-15 12:44:17.918 [WARNING] Couldn't fetch price history for ethereum (429 Client Error: Too Many Requests for url: https://api.coingecko.com/api/v3/coins/ethereum/market_chart?vs_currency=usd&days=7)
+2026-08-15 12:44:19.459 [WARNING] Couldn't fetch price history for bitcoin (429 Client Error: Too Many Requests for url: https://api.coingecko.com/api/v3/coins/bitcoin/market_chart?vs_currency=usd&days=7)
+2026-08-15 12:44:22.327 [INFO] Fetching top 10 cryptocurrencies (full data)
+2026-08-15 12:44:22.443 [WARNING] Couldn't fetch crypto data (429 Client Error: Too Many Requests for url: https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=10&page=1&sparkline=false&price_change_percentage=1h%2C24h%2C7d%2C30d%2C1y)
+2026-08-15 12:44:22.446 [INFO] Fetching top 10 cryptocurrencies (full data)
+2026-08-15 12:44:22.535 [WARNING] Couldn't fetch crypto data (429 Client Error: Too Many Requests for url: https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=10&page=1&sparkline=false&price_change_percentage=1h%2C24h%2C7d%2C30d%2C1y)
+2026-08-15 12:44:51.190 [INFO] Session started
+2026-08-15 12:44:58.146 [INFO] Fetching top 10 cryptocurrencies (full data)
+2026-08-15 12:44:58.543 [INFO] Fetching top 10 cryptocurrencies (full data)
+2026-08-15 12:45:01.373 [WARNING] Couldn't fetch price history for bitcoin (429 Client Error: Too Many Requests for url: https://api.coingecko.com/api/v3/coins/bitcoin/market_chart?vs_currency=usd&days=1)
+2026-08-15 12:45:03.191 [WARNING] Couldn't fetch price history for ethereum (429 Client Error: Too Many Requests for url: https://api.coingecko.com/api/v3/coins/ethereum/market_chart?vs_currency=usd&days=1)
+2026-08-15 12:45:04.397 [WARNING] Couldn't fetch price history for tether (429 Client Error: Too Many Requests for url: https://api.coingecko.com/api/v3/coins/tether/market_chart?vs_currency=usd&days=1)
+2026-08-15 12:45:07.352 [WARNING] Couldn't fetch price history for bitcoin (429 Client Error: Too Many Requests for url: https://api.coingecko.com/api/v3/coins/bitcoin/market_chart?vs_currency=usd&days=1)
+2026-08-15 12:45:07.670 [WARNING] Couldn't fetch price history for binancecoin (429 Client Error: Too Many Requests for url: https://api.coingecko.com/api/v3/coins/binancecoin/market_chart?vs_currency=usd&days=1)
+2026-08-15 12:45:09.510 [WARNING] Couldn't fetch price history for bitcoin (429 Client Error: Too Many Requests for url: https://api.coingecko.com/api/v3/coins/bitcoin/market_chart?vs_currency=usd&days=1)
+2026-08-15 12:45:11.171 [INFO] Fetching market overview (full data)
+2026-08-15 12:45:13.967 [INFO] Fetching top 10 cryptocurrencies (full data)
+2026-08-15 12:45:14.066 [WARNING] Couldn't fetch crypto data (429 Client Error: Too Many Requests for url: https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=10&page=1&sparkline=false&price_change_percentage=1h%2C24h%2C7d%2C30d%2C1y)
+2026-08-15 12:45:14.070 [INFO] Fetching top 10 cryptocurrencies (full data)
+2026-08-15 12:45:14.289 [WARNING] Couldn't fetch crypto data (429 Client Error: Too Many Requests for url: https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=10&page=1&sparkline=false&price_change_percentage=1h%2C24h%2C7d%2C30d%2C1y)
+2026-08-15 12:45:20.455 [INFO] Fetching top 10 cryptocurrencies (full data)
+2026-08-15 12:45:20.557 [WARNING] Couldn't fetch crypto data (429 Client Error: Too Many Requests for url: https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=10&page=1&sparkline=false&price_change_percentage=1h%2C24h%2C7d%2C30d%2C1y)
+2026-08-15 12:45:20.561 [INFO] Fetching top 10 cryptocurrencies (full data)
+2026-08-15 12:45:20.690 [WARNING] Couldn't fetch crypto data (429 Client Error: Too Many Requests for url: https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=10&page=1&sparkline=false&price_change_percentage=1h%2C24h%2C7d%2C30d%2C1y)
+2026-08-15 12:45:25.234 [INFO] Fetching top 10 cryptocurrencies (full data)
+2026-08-15 12:45:25.350 [WARNING] Couldn't fetch crypto data (429 Client Error: Too Many Requests for url: https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=10&page=1&sparkline=false&price_change_percentage=1h%2C24h%2C7d%2C30d%2C1y)
+2026-08-15 12:45:25.353 [INFO] Fetching top 10 cryptocurrencies (full data)
+2026-08-15 12:45:25.508 [WARNING] Couldn't fetch crypto data (429 Client Error: Too Many Requests for url: https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=10&page=1&sparkline=false&price_change_percentage=1h%2C24h%2C7d%2C30d%2C1y)
+2026-08-15 12:45:35.145 [INFO] Fetching market overview (full data)
+2026-08-15 12:45:43.128 [INFO] Fetching market overview (full data)
+2026-08-15 12:45:50.399 [INFO] Fetching top 10 cryptocurrencies (full data)
+2026-08-15 12:45:50.803 [WARNING] Couldn't fetch crypto data (429 Client Error: Too Many Requests for url: https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=10&page=1&sparkline=false&price_change_percentage=1h%2C24h%2C7d%2C30d%2C1y)
+2026-08-15 12:45:51.171 [INFO] Fetching top 10 cryptocurrencies (full data)
+2026-08-15 12:45:51.286 [WARNING] Couldn't fetch crypto data (429 Client Error: Too Many Requests for url: https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=10&page=1&sparkline=false&price_change_percentage=1h%2C24h%2C7d%2C30d%2C1y)
+2026-08-15 12:49:46.772 [INFO] Session started
+2026-08-15 12:49:57.090 [INFO] Fetching market overview (full data)
+2026-08-15 12:50:06.783 [INFO] Fetching market overview (full data)
+2026-08-15 12:50:07.643 [INFO] Fetching top 10 cryptocurrencies (full data)
+2026-08-15 12:50:08.497 [INFO] Fetching top 10 cryptocurrencies (full data)
+2026-08-15 12:50:12.326 [WARNING] Couldn't fetch price history for bitcoin (429 Client Error: Too Many Requests for url: https://api.coingecko.com/api/v3/coins/bitcoin/market_chart?vs_currency=usd&days=1)
+2026-08-15 12:50:15.070 [WARNING] Couldn't fetch price history for ethereum (429 Client Error: Too Many Requests for url: https://api.coingecko.com/api/v3/coins/ethereum/market_chart?vs_currency=usd&days=1)
+2026-08-15 12:50:16.713 [WARNING] Couldn't fetch price history for bitcoin (429 Client Error: Too Many Requests for url: https://api.coingecko.com/api/v3/coins/bitcoin/market_chart?vs_currency=usd&days=1)
+2026-08-15 12:52:43.183 [INFO] Fetching top 10 cryptocurrencies (full data)
+2026-08-15 12:52:43.599 [INFO] Fetching top 10 cryptocurrencies (full data)
+2026-08-15 12:52:45.058 [WARNING] Couldn't fetch price history for bitcoin (429 Client Error: Too Many Requests for url: https://api.coingecko.com/api/v3/coins/bitcoin/market_chart?vs_currency=usd&days=1)
+2026-08-15 12:52:47.792 [WARNING] Couldn't fetch price history for ethereum (429 Client Error: Too Many Requests for url: https://api.coingecko.com/api/v3/coins/ethereum/market_chart?vs_currency=usd&days=1)
+2026-08-15 12:52:48.537 [WARNING] Couldn't fetch price history for tether (429 Client Error: Too Many Requests for url: https://api.coingecko.com/api/v3/coins/tether/market_chart?vs_currency=usd&days=1)
+2026-08-15 12:52:49.659 [WARNING] Couldn't fetch price history for bitcoin (429 Client Error: Too Many Requests for url: https://api.coingecko.com/api/v3/coins/bitcoin/market_chart?vs_currency=usd&days=1)
+2026-08-15 12:52:56.028 [INFO] Fetching top 10 cryptocurrencies (full data)
+2026-08-15 12:52:56.158 [WARNING] Couldn't fetch crypto data with multi-period changes (429 Client Error: Too Many Requests for url: https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=10&page=1&sparkline=false&price_change_percentage=1h%2C24h%2C7d%2C30d%2C1y) -- retrying without them
+2026-08-15 12:52:56.261 [WARNING] Couldn't fetch crypto data (429 Client Error: Too Many Requests for url: https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=10&page=1&sparkline=false)
+2026-08-15 12:52:56.266 [INFO] Fetching top 10 cryptocurrencies (full data)
+2026-08-15 12:52:56.366 [WARNING] Couldn't fetch crypto data with multi-period changes (429 Client Error: Too Many Requests for url: https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=10&page=1&sparkline=false&price_change_percentage=1h%2C24h%2C7d%2C30d%2C1y) -- retrying without them
+2026-08-15 12:52:56.491 [WARNING] Couldn't fetch crypto data (429 Client Error: Too Many Requests for url: https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=10&page=1&sparkline=false)
+2026-08-15 12:53:00.069 [INFO] Fetching market overview (full data)
+2026-08-15 12:53:10.125 [INFO] Fetching market overview (full data)
+2026-08-15 12:53:12.876 [INFO] Fetching top 10 cryptocurrencies (full data)
+2026-08-15 12:53:12.991 [WARNING] Couldn't fetch crypto data with multi-period changes (429 Client Error: Too Many Requests for url: https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=10&page=1&sparkline=false&price_change_percentage=1h%2C24h%2C7d%2C30d%2C1y) -- retrying without them
+2026-08-15 12:53:13.121 [WARNING] Couldn't fetch crypto data (429 Client Error: Too Many Requests for url: https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=10&page=1&sparkline=false)
+2026-08-15 12:53:13.125 [INFO] Fetching top 10 cryptocurrencies (full data)
+2026-08-15 12:53:13.241 [WARNING] Couldn't fetch crypto data with multi-period changes (429 Client Error: Too Many Requests for url: https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=10&page=1&sparkline=false&price_change_percentage=1h%2C24h%2C7d%2C30d%2C1y) -- retrying without them
+2026-08-15 12:53:13.419 [WARNING] Couldn't fetch crypto data (429 Client Error: Too Many Requests for url: https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=10&page=1&sparkline=false)
+2026-08-15 12:53:28.893 [INFO] Session started
+2026-08-15 12:53:32.952 [INFO] Fetching top 10 cryptocurrencies (full data)
+2026-08-15 12:53:33.073 [WARNING] Couldn't fetch crypto data with multi-period changes (429 Client Error: Too Many Requests for url: https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=10&page=1&sparkline=false&price_change_percentage=1h%2C24h%2C7d%2C30d%2C1y) -- retrying without them
+2026-08-15 12:53:33.205 [WARNING] Couldn't fetch crypto data (429 Client Error: Too Many Requests for url: https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=10&page=1&sparkline=false)
+2026-08-15 12:53:33.216 [INFO] Fetching top 10 cryptocurrencies (full data)
+2026-08-15 12:53:33.336 [WARNING] Couldn't fetch crypto data with multi-period changes (429 Client Error: Too Many Requests for url: https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=10&page=1&sparkline=false&price_change_percentage=1h%2C24h%2C7d%2C30d%2C1y) -- retrying without them
+2026-08-15 12:53:33.486 [WARNING] Couldn't fetch crypto data (429 Client Error: Too Many Requests for url: https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=10&page=1&sparkline=false)
+2026-08-15 12:54:40.666 [INFO] Session started
+2026-08-15 12:54:51.800 [INFO] Session started
+2026-08-15 12:54:58.492 [INFO] Session started
+2026-08-15 12:55:10.616 [INFO] Session started
+2026-08-15 12:55:15.443 [INFO] Session started
+2026-08-15 12:55:51.123 [INFO] Session started
+2026-08-15 12:57:53.925 [INFO] Session started
+2026-08-15 12:58:07.190 [INFO] Fetching top 10 cryptocurrencies (full data)
+2026-08-15 12:58:07.680 [INFO] Fetching top 10 cryptocurrencies (full data)
+2026-08-15 12:58:28.985 [WARNING] Couldn't fetch price history for bitcoin (429 Client Error: Too Many Requests for url: https://api.coingecko.com/api/v3/coins/bitcoin/market_chart?vs_currency=usd&days=365)
+2026-08-15 12:58:30.319 [WARNING] Couldn't fetch price history for bitcoin (429 Client Error: Too Many Requests for url: https://api.coingecko.com/api/v3/coins/bitcoin/market_chart?vs_currency=usd&days=180)
+2026-08-15 12:58:31.901 [WARNING] Couldn't fetch price history for bitcoin (429 Client Error: Too Many Requests for url: https://api.coingecko.com/api/v3/coins/bitcoin/market_chart?vs_currency=usd&days=90)
+2026-08-15 12:58:34.672 [WARNING] Couldn't fetch price history for bitcoin (429 Client Error: Too Many Requests for url: https://api.coingecko.com/api/v3/coins/bitcoin/market_chart?vs_currency=usd&days=90)
+2026-08-15 12:58:36.503 [WARNING] Couldn't fetch price history for bitcoin (429 Client Error: Too Many Requests for url: https://api.coingecko.com/api/v3/coins/bitcoin/market_chart?vs_currency=usd&days=7)
+2026-08-15 12:58:38.635 [WARNING] Couldn't fetch price history for bitcoin (429 Client Error: Too Many Requests for url: https://api.coingecko.com/api/v3/coins/bitcoin/market_chart?vs_currency=usd&days=1)
+2026-08-15 12:58:41.197 [WARNING] Couldn't fetch price history for bitcoin (429 Client Error: Too Many Requests for url: https://api.coingecko.com/api/v3/coins/bitcoin/market_chart?vs_currency=usd&days=7)
+2026-08-15 12:58:43.879 [WARNING] Couldn't fetch price history for ethereum (429 Client Error: Too Many Requests for url: https://api.coingecko.com/api/v3/coins/ethereum/market_chart?vs_currency=usd&days=30)
+2026-08-15 12:58:45.244 [WARNING] Couldn't fetch price history for ethereum (429 Client Error: Too Many Requests for url: https://api.coingecko.com/api/v3/coins/ethereum/market_chart?vs_currency=usd&days=7)
+2026-08-15 12:58:46.555 [WARNING] Couldn't fetch price history for ethereum (429 Client Error: Too Many Requests for url: https://api.coingecko.com/api/v3/coins/ethereum/market_chart?vs_currency=usd&days=1)
+2026-08-15 12:58:47.254 [WARNING] Couldn't fetch price history for ethereum (429 Client Error: Too Many Requests for url: https://api.coingecko.com/api/v3/coins/ethereum/market_chart?vs_currency=usd&days=1)
+2026-08-15 12:58:48.386 [WARNING] Couldn't fetch price history for ethereum (429 Client Error: Too Many Requests for url: https://api.coingecko.com/api/v3/coins/ethereum/market_chart?vs_currency=usd&days=1)
+2026-08-15 12:58:53.419 [WARNING] Couldn't fetch price history for bitcoin (429 Client Error: Too Many Requests for url: https://api.coingecko.com/api/v3/coins/bitcoin/market_chart?vs_currency=usd&days=365)
+2026-08-15 12:58:54.662 [WARNING] Couldn't fetch price history for bitcoin (429 Client Error: Too Many Requests for url: https://api.coingecko.com/api/v3/coins/bitcoin/market_chart?vs_currency=usd&days=1095)
+2026-08-15 12:58:55.451 [WARNING] Couldn't fetch price history for bitcoin (429 Client Error: Too Many Requests for url: https://api.coingecko.com/api/v3/coins/bitcoin/market_chart?vs_currency=usd&days=180)
+2026-08-15 12:58:56.546 [WARNING] Couldn't fetch price history for bitcoin (429 Client Error: Too Many Requests for url: https://api.coingecko.com/api/v3/coins/bitcoin/market_chart?vs_currency=usd&days=90)
+2026-08-15 12:58:58.918 [WARNING] Couldn't fetch price history for bitcoin (429 Client Error: Too Many Requests for url: https://api.coingecko.com/api/v3/coins/bitcoin/market_chart?vs_currency=usd&days=7)
+2026-08-15 12:59:00.409 [WARNING] Couldn't fetch price history for bitcoin (429 Client Error: Too Many Requests for url: https://api.coingecko.com/api/v3/coins/bitcoin/market_chart?vs_currency=usd&days=1)
+2026-08-15 12:59:01.302 [WARNING] Couldn't fetch price history for bitcoin (429 Client Error: Too Many Requests for url: https://api.coingecko.com/api/v3/coins/bitcoin/market_chart?vs_currency=usd&days=1)
+2026-08-15 12:59:06.028 [WARNING] Couldn't fetch price history for ethereum (429 Client Error: Too Many Requests for url: https://api.coingecko.com/api/v3/coins/ethereum/market_chart?vs_currency=usd&days=30)
+2026-08-15 12:59:08.014 [WARNING] Couldn't fetch price history for ethereum (429 Client Error: Too Many Requests for url: https://api.coingecko.com/api/v3/coins/ethereum/market_chart?vs_currency=usd&days=7)
+2026-08-15 12:59:08.459 [WARNING] Couldn't fetch price history for ethereum (429 Client Error: Too Many Requests for url: https://api.coingecko.com/api/v3/coins/ethereum/market_chart?vs_currency=usd&days=1)
+2026-08-15 12:59:09.264 [WARNING] Couldn't fetch price history for ethereum (429 Client Error: Too Many Requests for url: https://api.coingecko.com/api/v3/coins/ethereum/market_chart?vs_currency=usd&days=1)
+2026-08-15 13:00:44.410 [WARNING] Couldn't fetch price history for ripple (401 Client Error: Unauthorized for url: https://api.coingecko.com/api/v3/coins/ripple/market_chart?vs_currency=usd&days=1095)
+2026-08-15 13:00:46.530 [WARNING] Couldn't fetch price history for ripple (401 Client Error: Unauthorized for url: https://api.coingecko.com/api/v3/coins/ripple/market_chart?vs_currency=usd&days=1825)
+2026-08-15 13:01:08.341 [INFO] Session started
+2026-08-15 13:01:22.601 [INFO] Session started
+2026-08-15 13:01:25.738 [INFO] Session started
+2026-08-15 13:01:31.071 [INFO] Session started
+2026-08-15 13:03:08.482 [INFO] Fetching top 10 cryptocurrencies (full data)
+2026-08-15 13:03:09.972 [INFO] Fetching top 10 cryptocurrencies (full data)
+2026-08-15 13:03:15.942 [WARNING] CoinGecko rate-limited us (https://api.coingecko.com/api/v3/coins/bitcoin/market_chart); backing off 60.0s (attempt 1/3)
+2026-08-15 13:06:24.733 [INFO] Session started
+2026-08-15 13:06:30.297 [INFO] Session started
+2026-08-15 13:11:05.622 [INFO] Fetching top 10 cryptocurrencies (full data)
+2026-08-15 13:11:07.104 [INFO] Fetching top 10 cryptocurrencies (full data)
+2026-08-15 13:11:31.151 [WARNING] Couldn't fetch price history for figure-heloc (401 Client Error: Unauthorized for url: https://api.coingecko.com/api/v3/coins/figure-heloc/market_chart?vs_currency=usd&days=1825)
+2026-08-15 13:11:33.483 [WARNING] CoinGecko rate-limited us (https://api.coingecko.com/api/v3/coins/figure-heloc/market_chart); backing off 60.0s (attempt 1/3)
+2026-08-15 13:12:07.476 [WARNING] CoinGecko rate-limited us (https://api.coingecko.com/api/v3/coins/bitcoin/market_chart); backing off 26.0s (attempt 1/3)
+2026-08-15 13:25:55.870 [INFO] Session started
+2026-08-15 13:26:05.633 [INFO] Session started
+2026-08-15 13:26:16.084 [INFO] Session started
+2026-08-15 13:26:28.255 [INFO] Session started
+2026-08-15 13:27:16.692 [INFO] Session started
+2026-08-15 13:27:19.713 [INFO] Session started
+2026-08-15 13:27:20.565 [INFO] Coinbase WS connected, subscribing to ['BTC-USD']
+2026-08-15 13:27:20.571 [INFO] Coinbase WS connected, subscribing to ['ETH-USD']
+2026-08-15 13:27:20.575 [INFO] Coinbase WS connected, subscribing to ['BTC-USD', 'ETH-USD']
+2026-08-15 13:27:30.052 [INFO] Session started
+2026-08-15 13:27:32.859 [INFO] Session started
+2026-08-15 13:27:33.494 [INFO] Coinbase WS connected, subscribing to ['BTC-USD']
+2026-08-15 13:27:33.498 [INFO] Coinbase WS connected, subscribing to ['ETH-USD']
+2026-08-15 13:27:33.503 [INFO] Coinbase WS connected, subscribing to ['BTC-USD', 'ETH-USD']
+2026-08-15 13:31:30.145 [INFO] Session started
+2026-08-15 13:31:30.769 [INFO] Coinbase WS connected, subscribing to ['BTC-USD']
+2026-08-15 13:31:30.775 [INFO] Coinbase WS connected, subscribing to ['ETH-USD']
+2026-08-15 13:31:30.778 [INFO] Coinbase WS connected, subscribing to ['BTC-USD', 'ETH-USD']
+2026-08-15 14:05:13.303 [INFO] Session started
+2026-08-15 14:05:48.175 [INFO] Fetching market overview (full data)
+2026-08-15 14:05:49.923 [INFO] Fetching top 10 cryptocurrencies (full data)
+2026-08-15 14:05:50.323 [WARNING] Couldn't fetch Coinbase product list (401 Client Error: Unauthorized for url: https://api.coinbase.com/api/v3/brokerage/products)
+2026-08-15 14:05:50.406 [WARNING] Couldn't fetch Coinbase product list (401 Client Error: Unauthorized for url: https://api.coinbase.com/api/v3/brokerage/products)
+2026-08-15 14:05:51.487 [WARNING] Couldn't fetch Coinbase product list (401 Client Error: Unauthorized for url: https://api.coinbase.com/api/v3/brokerage/products)
+2026-08-15 14:05:51.699 [INFO] Fetching top 10 cryptocurrencies (full data)
+2026-08-15 14:05:52.867 [WARNING] CFTC futures positioning fetch failed (503 Server Error: Service Temporarily Unavailable for url: https://publicreporting.cftc.gov/resource/gpe5-46if.json?%24where=contract_market_name%3D%27E-MINI+S%26P+500%27&%24order=report_date_as_yyyy_mm_dd+DESC&%24limit=26)
+2026-08-15 14:05:58.602 [INFO] Fetching market overview (full data)
+2026-08-15 14:06:00.241 [WARNING] Couldn't fetch price history for bitcoin (401 Client Error: Unauthorized for url: https://api.coingecko.com/api/v3/coins/bitcoin/market_chart?vs_currency=usd&days=max)
+2026-08-15 14:06:01.189 [WARNING] CFTC futures positioning fetch failed (503 Server Error: Service Temporarily Unavailable for url: https://publicreporting.cftc.gov/resource/gpe5-46if.json?%24where=contract_market_name%3D%27E-MINI+S%26P+500%27&%24order=report_date_as_yyyy_mm_dd+DESC&%24limit=26)
+2026-08-15 14:06:01.751 [WARNING] CoinGecko rate-limited us (https://api.coingecko.com/api/v3/coins/bitcoin/market_chart); backing off 60.0s (attempt 1/3)
+2026-08-15 14:06:41.373 [WARNING] CoinGecko rate-limited us (https://api.coingecko.com/api/v3/coins/bitcoin/market_chart); backing off 20.0s (attempt 1/3)
+2026-08-15 14:06:47.683 [WARNING] CoinGecko rate-limited us (https://api.coingecko.com/api/v3/coins/bitcoin/market_chart); backing off 14.0s (attempt 1/3)
+2026-08-15 14:06:48.963 [WARNING] CoinGecko rate-limited us (https://api.coingecko.com/api/v3/coins/bitcoin/market_chart); backing off 13.0s (attempt 1/3)
+2026-08-15 14:06:52.175 [WARNING] CoinGecko rate-limited us (https://api.coingecko.com/api/v3/coins/ethereum/market_chart); backing off 9.0s (attempt 1/3)
+2026-08-15 14:07:05.271 [WARNING] Couldn't fetch price history for bitcoin (401 Client Error: Unauthorized for url: https://api.coingecko.com/api/v3/coins/bitcoin/market_chart?vs_currency=usd&days=3650)

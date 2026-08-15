@@ -19,8 +19,9 @@ Interactive API docs at `http://localhost:8000/docs` once running.
 |---|---|---|
 | GET | `/api/stock/{ticker}` | Full metrics for one ticker |
 | GET | `/api/stock/{ticker}/quote` | Lightweight price/EPS lookup (used by the Projector) |
-| GET | `/api/market` | Indexes + Fear & Greed + put/call + AAII |
+| GET | `/api/market` | Indexes + Fear & Greed + put/call + FRED/CFTC sentiment panel |
 | GET | `/api/crypto?n=10` | Top N cryptocurrencies by market cap |
+| GET | `/api/crypto/{coin_id}/history?range=` | Price history for one coin. `range`: `1h,12h,24h,1w,1mo,3mo,6mo,1y,3y,5y,10y,all` |
 | GET | `/api/fx` | Major currency pairs |
 | GET | `/api/futures` | Major index/commodity futures |
 | GET | `/api/bonds` | U.S. Treasury yield curve |
@@ -79,9 +80,43 @@ left out or explicitly marked as estimates:
 
 ## Known fragility
 
-CNN's Fear & Greed endpoint, CBOE's put/call scrape, and AAII's sentiment
-pull are all unofficial (no public API from any of the three). Each is
-wrapped so a failure degrades to `null`/`N/A` in the response rather than
-taking down the rest of `/api/market`. If one starts returning consistently
-empty, the source most likely changed its page/endpoint structure — see the
-relevant function in `market_info.py`.
+CNN's Fear & Greed endpoint and CBOE's put/call scrape are both unofficial
+(no public API from either). Each is wrapped so a failure degrades to
+`null`/`N/A` in the response rather than taking down the rest of
+`/api/market`. If one starts returning consistently empty, the source most
+likely changed its page/endpoint structure — see the relevant function in
+`market_info.py`.
+
+## CoinGecko rate limits
+
+The Crypto tab (`/api/crypto` and `/api/crypto/{id}/history`) runs on
+CoinGecko's free, unauthenticated public API, which rate-limits hard —
+roughly 5-15 requests/minute, no key required but no headroom either.
+Clicking through several coins/ranges in a row without any protection is
+enough to trip a `429` and blank the tab, so `crypto_info.py` guards
+against that in two ways:
+
+- **Every outbound CoinGecko request is paced and retried.** All calls go
+  through a single `_coingecko_get()` choke point that enforces a minimum
+  gap between requests (`MIN_INTERVAL`, currently 1.3s) — including across
+  concurrent requests, since FastAPI runs sync route handlers in a thread
+  pool — and automatically backs off and retries a `429` a few times
+  (honoring CoinGecko's own `Retry-After` header when it sends one) before
+  giving up.
+- **Responses are cached in-process with a TTL**, so repeat requests within
+  the window cost nothing: the top-10 listing for 45s, the global market
+  cap used for dominance for 5 minutes, and — per the "check every 5
+  minutes" behavior the Crypto tab's chart uses — each coin+range's price
+  history for 5 minutes (`HISTORY_TTL_SECONDS`). Flipping back to a
+  range/coin you already looked at is instant; a genuinely new look only
+  hits CoinGecko once that coin+range's cache entry has expired. Failed
+  fetches are deliberately *not* cached, so a rate-limited request is
+  retried on the very next click rather than staying stuck failing for the
+  rest of the TTL window.
+
+This cache is a plain in-memory dict, scoped to one backend process — it
+resets on restart and isn't shared across multiple backend instances. If
+`/api/crypto` still 429s consistently even with this in place, CoinGecko's
+limit has likely tightened further; the fix is either backing off
+`MIN_INTERVAL` upward or, for real headroom, signing up for a free
+CoinGecko Demo API key and adding it as a header in `HEADERS`.
