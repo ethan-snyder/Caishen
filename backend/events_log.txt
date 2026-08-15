@@ -1,0 +1,129 @@
+2026-08-10 20:49:31.314 [INFO] Session started
+2026-08-10 20:49:36.061 [INFO] Session ended (KeyboardInterrupt)
+2026-08-10 20:53:41.387 [INFO] Session started
+2026-08-11 21:02:15.174 [INFO] Session started
+2026-08-11 21:02:54.070 [INFO] Fetching stock data (full) for AAPL
+2026-08-11 21:03:06.141 [INFO] Fetching stock data (full) for GOOG
+2026-08-11 21:07:55.406 [INFO] Session started
+2026-08-11 21:08:23.656 [INFO] Session started
+2026-08-11 21:09:20.952 [INFO] Fetching stock data (full) for AAPL
+2026-08-11 21:17:42.495 [INFO] Fetching market overview (full data)
+2026-08-11 21:17:45.914 [INFO] Fetching market overview (full data)
+2026-08-14 20:49:34.734 [INFO] Session started
+2026-08-14 20:50:04.064 [INFO] Fetching market overview (full data)
+2026-08-14 20:50:07.148 [INFO] Fetching market overview (full data)
+2026-08-14 20:50:16.350 [INFO] Fetching market overview (full data)
+2026-08-14 20:50:17.055 [INFO] Fetching stock data (full) for AAPL
+2026-08-14 20:50:17.715 [WARNING] AAII spreadsheet pull failed (Excel file format cannot be determined, you must specify an engine manually.); trying HTML fallback
+2026-08-14 20:50:18.046 [WARNING] AAII HTML fallback also failed (couldn't find a table on the results page with Bullish/Bearish headers)
+2026-08-14 20:50:19.450 [INFO] Fetching top 10 cryptocurrencies (full data)
+2026-08-14 20:50:19.773 [INFO] Fetching top 10 cryptocurrencies (full data)
+2026-08-14 20:50:21.568 [INFO] Fetching market overview (full data)
+2026-08-14 20:50:22.907 [WARNING] AAII spreadsheet pull failed (Excel file format cannot be determined, you must specify an engine manually.); trying HTML fallback
+2026-08-14 20:50:23.184 [WARNING] AAII HTML fallback also failed (couldn't find a table on the results page with Bullish/Bearish headers)
+2026-08-14 20:50:23.187 [INFO] Fetching market overview (full data)
+2026-08-14 20:50:24.262 [WARNING] AAII spreadsheet pull failed (Excel file format cannot be determined, you must specify an engine manually.); trying HTML fallback
+2026-08-14 20:50:24.477 [WARNING] AAII HTML fallback also failed (couldn't find a table on the results page with Bullish/Bearish headers)
+2026-08-14 20:50:50.469 [INFO] Session started
+2026-08-14 20:50:55.531 [INFO] Session started
+2026-08-14 20:50:58.671 [INFO] Fetching market overview (full data)
+2026-08-14 20:51:00.325 [WARNING] AAII spreadsheet pull failed (Excel file format cannot be determined, you must specify an engine manually.); trying HTML fallback
+2026-08-14 20:51:00.454 [INFO] Fetching market overview (full data)
+2026-08-14 20:51:01.348 [WARNING] AAII spreadsheet pull failed (Excel file format cannot be determined, you must specify an engine manually.); trying HTML fallback
+2026-08-14 20:53:41.731 [INFO] Session started
+2026-08-14 20:53:52.077 [INFO] Fetching market overview (full data)
+2026-08-14 20:53:53.756 [WARNING] AAII spreadsheet pull failed (Excel file format cannot be determined, you must specify an engine manually.); trying HTML fallback
+2026-08-14 20:53:53.883 [INFO] Fetching market overview (full data)
+2026-08-14 20:53:54.915 [WARNING] AAII spreadsheet pull failed (Excel file format cannot be determined, you must specify an engine manually.); trying HTML fallback
+2026-08-14 20:53:56.686 [INFO] Fetching top 10 cryptocurrencies (full data)
+2026-08-14 20:53:57.062 [INFO] Fetching top 10 cryptocurrencies (full data)
+2026-08-14 21:03:33.374 [INFO] Fetching market overview (full data)
+2026-08-14 21:03:35.613 [WARNING] AAII spreadsheet pull failed (Excel file format cannot be determined, you must specify an engine manually.); trying HTML fallback
+2026-08-14 21:03:35.734 [INFO] Fetching market overview (full data)
+2026-08-14 21:03:38.954 [WARNING] AAII spreadsheet pull failed (Excel file format cannot be determined, you must specify an engine manually.); trying HTML fallback
+2026-08-14 21:04:10.283 [INFO] Session started
+2026-08-14 21:04:13.205 [INFO] Fetching market overview (full data)
+2026-08-14 21:04:16.397 [WARNING] AAII spreadsheet pull failed (Excel file format cannot be determined, you must specify an engine manually.); trying HTML fallback
+2026-08-14 21:04:16.534 [INFO] Fetching market overview (full data)
+2026-08-14 21:04:17.601 [WARNING] AAII spreadsheet pull failed (Excel file format cannot be determined, you must specify an engine manually.); trying HTML fallback
+2026-08-14 21:07:09.902 [INFO] Session started
+2026-08-14 21:07:11.746 [INFO] Session started
+2026-08-14 21:07:16.139 [INFO] Session started
+2026-08-14 21:07:20.434 [INFO] Session started
+2026-08-14 21:07:32.386 [INFO] Session started
+2026-08-14 21:10:30.894 [INFO] Session started
+2026-08-14 21:10:42.916 [INFO] Fetching market overview (full data)
+2026-08-14 21:10:49.408 [WARNING] AAII spreadsheet pull failed (response wasn't a recognizable Excel file (first bytes: b'<!DOCTYPE html>\r')); trying HTML fallback
+2026-08-14 21:10:49.763 [INFO] Fetching market overview (full data)
+2026-08-14 21:10:52.237 [WARNING] AAII spreadsheet pull failed (response wasn't a recognizable Excel file (first bytes: b'<!DOCTYPE html>\r')); trying HTML fallback
+2026-08-14 21:13:56.377 [INFO] Session started
+2026-08-14 21:13:59.521 [INFO] Session started
+2026-08-14 21:14:02.083 [INFO] Session started
+2026-08-14 21:14:15.490 [INFO] Session started
+2026-08-14 21:16:20.826 [INFO] Session started
+2026-08-14 21:16:57.008 [INFO] Fetching market overview (full data)
+2026-08-14 21:16:58.467 [WARNING] AAII sentimentsurvey scrape failed ('This week's results' block not found on sentimentsurvey page); trying historical-table fallback
+2026-08-14 21:16:58.634 [INFO] Fetching market overview (full data)
+2026-08-14 21:16:59.960 [WARNING] AAII sentimentsurvey scrape failed ('This week's results' block not found on sentimentsurvey page); trying historical-table fallback
+2026-08-14 21:26:16.795 [INFO] Fetching market overview (full data)
+2026-08-14 21:26:24.527 [WARNING] AAII sentimentsurvey scrape failed ('This week's results' block not found on sentimentsurvey page); trying historical-table fallback
+2026-08-14 21:26:24.646 [INFO] Fetching market overview (full data)
+2026-08-14 21:26:26.050 [WARNING] AAII sentimentsurvey scrape failed ('This week's results' block not found on sentimentsurvey page); trying historical-table fallback
+2026-08-14 21:29:32.711 [INFO] Session started
+2026-08-14 21:29:35.382 [INFO] Session started
+2026-08-14 21:29:43.753 [INFO] Session started
+2026-08-14 21:30:22.065 [INFO] Session started
+2026-08-14 21:30:33.930 [INFO] Session started
+2026-08-14 21:30:46.964 [INFO] Session started
+2026-08-14 21:30:51.990 [INFO] Session started
+2026-08-14 21:33:30.129 [INFO] Session started
+2026-08-14 21:34:10.749 [INFO] Fetching market overview (full data)
+2026-08-14 21:34:13.606 [WARNING] FRED consumer sentiment (UMCSENT) fetch failed (FRED_API_KEY not set (get a free key at fred.stlouisfed.org/docs/api/api_key.html))
+2026-08-14 21:34:13.606 [WARNING] FRED financial stress index (STLFSI4) fetch failed (FRED_API_KEY not set (get a free key at fred.stlouisfed.org/docs/api/api_key.html))
+2026-08-14 21:34:13.607 [WARNING] FRED high-yield OAS spread (BAMLH0A0HYM2) fetch failed (FRED_API_KEY not set (get a free key at fred.stlouisfed.org/docs/api/api_key.html))
+2026-08-14 21:34:13.607 [WARNING] Nasdaq Data Link CFTC S&P 500 positioning fetch failed (NASDAQ_DATA_LINK_API_KEY not set (get a free key at data.nasdaq.com/sign-up))
+2026-08-14 21:34:13.610 [INFO] Fetching market overview (full data)
+2026-08-14 21:34:15.740 [WARNING] FRED consumer sentiment (UMCSENT) fetch failed (FRED_API_KEY not set (get a free key at fred.stlouisfed.org/docs/api/api_key.html))
+2026-08-14 21:34:15.740 [WARNING] FRED financial stress index (STLFSI4) fetch failed (FRED_API_KEY not set (get a free key at fred.stlouisfed.org/docs/api/api_key.html))
+2026-08-14 21:34:15.741 [WARNING] FRED high-yield OAS spread (BAMLH0A0HYM2) fetch failed (FRED_API_KEY not set (get a free key at fred.stlouisfed.org/docs/api/api_key.html))
+2026-08-14 21:34:15.741 [WARNING] Nasdaq Data Link CFTC S&P 500 positioning fetch failed (NASDAQ_DATA_LINK_API_KEY not set (get a free key at data.nasdaq.com/sign-up))
+2026-08-14 21:38:37.175 [INFO] Session started
+2026-08-14 21:43:45.417 [INFO] Session started
+2026-08-14 21:44:23.172 [INFO] Fetching market overview (full data)
+2026-08-14 21:44:24.853 [WARNING] FRED consumer sentiment (UMCSENT) fetch failed (No module named 'fredapi')
+2026-08-14 21:44:24.853 [WARNING] FRED financial stress index (STLFSI4) fetch failed (No module named 'fredapi')
+2026-08-14 21:44:24.854 [WARNING] FRED high-yield OAS spread (BAMLH0A0HYM2) fetch failed (No module named 'fredapi')
+2026-08-14 21:44:24.854 [WARNING] Nasdaq Data Link CFTC S&P 500 positioning fetch failed (No module named 'nasdaqdatalink')
+2026-08-14 21:44:24.858 [INFO] Fetching market overview (full data)
+2026-08-14 21:44:25.660 [WARNING] FRED consumer sentiment (UMCSENT) fetch failed (No module named 'fredapi')
+2026-08-14 21:44:25.660 [WARNING] FRED financial stress index (STLFSI4) fetch failed (No module named 'fredapi')
+2026-08-14 21:44:25.661 [WARNING] FRED high-yield OAS spread (BAMLH0A0HYM2) fetch failed (No module named 'fredapi')
+2026-08-14 21:44:25.661 [WARNING] Nasdaq Data Link CFTC S&P 500 positioning fetch failed (No module named 'nasdaqdatalink')
+2026-08-14 21:48:09.425 [INFO] Session started
+2026-08-14 21:48:18.677 [INFO] Fetching market overview (full data)
+2026-08-14 21:48:21.886 [WARNING] Nasdaq Data Link CFTC S&P 500 positioning fetch failed ((Status 403) Something went wrong. Please try again. If you continue to have problems, please contact us at connect@data.nasdaq.com.)
+2026-08-14 21:48:21.893 [INFO] Fetching market overview (full data)
+2026-08-14 21:48:24.101 [WARNING] Nasdaq Data Link CFTC S&P 500 positioning fetch failed ((Status 403) Something went wrong. Please try again. If you continue to have problems, please contact us at connect@data.nasdaq.com.)
+2026-08-14 21:53:11.365 [INFO] Session started
+2026-08-14 21:53:25.848 [INFO] Session started
+2026-08-14 21:53:29.051 [INFO] Session started
+2026-08-14 21:53:33.705 [INFO] Session started
+2026-08-14 21:53:39.513 [INFO] Session started
+2026-08-14 21:53:42.163 [INFO] Session started
+2026-08-14 21:53:45.258 [INFO] Session started
+2026-08-14 21:54:16.542 [INFO] Session started
+2026-08-14 21:54:59.220 [INFO] Session started
+2026-08-14 21:55:15.160 [INFO] Fetching market overview (full data)
+2026-08-14 21:55:19.162 [INFO] Fetching market overview (full data)
+2026-08-14 22:02:43.500 [INFO] Session started
+2026-08-14 22:02:53.050 [INFO] Session started
+2026-08-14 22:03:04.447 [INFO] Session started
+2026-08-14 22:04:25.551 [INFO] Session started
+2026-08-14 22:05:30.539 [INFO] Session started
+2026-08-14 22:05:37.786 [INFO] Fetching market overview (full data)
+2026-08-14 22:05:51.166 [INFO] Fetching market overview (full data)
+2026-08-14 22:07:41.248 [INFO] Fetching market overview (full data)
+2026-08-14 22:07:59.045 [INFO] Fetching market overview (full data)
+2026-08-14 22:14:23.248 [INFO] Session started
+2026-08-14 22:14:30.121 [INFO] Fetching market overview (full data)
+2026-08-14 22:14:40.984 [INFO] Fetching market overview (full data)
