@@ -204,17 +204,46 @@ export interface FxPair {
   pair: string
   base: string
   quote: string
-  base_flag: string | null
-  quote_flag: string | null
+  /** ISO 3166-1 alpha-2 country code (or "eu" for the euro) for building
+   * a flagcdn.com SVG URL -- replaces the old Unicode flag emoji, which
+   * had no reliable font support in this app. */
+  base_flag_code: string | null
+  quote_flag_code: string | null
+  base_symbol: string | null
+  quote_symbol: string | null
   rate: number | null
   change: number | null
   change_pct: number | null
+  high: number | null
+  low: number | null
+  /** Most FX tickers report no real volume (spot FX has no centralized
+   * tape) -- null rather than a misleading 0. */
+  volume: number | null
+  exchange: string | null
   bid: number | null
   ask: number | null
   bid_ask_is_estimate: boolean
 }
 
 export const fetchFx = () => request<FxPair[]>('/api/fx')
+
+export type FxRange = '1h' | '12h' | '24h' | '3mo' | '1y' | '3y' | '5y' | '10y' | 'all'
+
+export interface FxHistoryPoint {
+  date: string
+  value: number
+}
+
+export interface FxHistory {
+  pair: string
+  range: FxRange
+  points: FxHistoryPoint[]
+}
+
+/** `pairKey` is the no-separator form, e.g. "EURUSD" (matches
+ * `FxPair.base + FxPair.quote`) -- URL-safe unlike "EUR/USD". */
+export const fetchFxHistory = (pairKey: string, range: FxRange) =>
+  request<FxHistory>(`/api/fx/${encodeURIComponent(pairKey)}/history?range=${range}`)
 
 export interface FuturesContract {
   name: string

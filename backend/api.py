@@ -181,6 +181,18 @@ def get_fx():
     return _safe_call(forex.get_fx_data_full)
 
 
+FX_RANGES = set(forex.FX_RANGE_SPECS.keys())
+
+
+@app.get("/api/fx/{pair}/history")
+def get_fx_history(pair: str, range: str = "24h"):
+    if range not in FX_RANGES:
+        raise HTTPException(status_code=400, detail=f"range must be one of {sorted(FX_RANGES)}")
+    if pair not in forex.SYMBOL_BY_PAIR:
+        raise HTTPException(status_code=400, detail=f"pair must be one of {sorted(forex.SYMBOL_BY_PAIR)}")
+    return _safe_call(forex.get_fx_history, pair, range)
+
+
 @app.get("/api/futures")
 def get_futures():
     return _safe_call(futures.get_futures_data_full)

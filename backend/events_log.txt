@@ -480,3 +480,19 @@
 2026-08-15 18:37:18.770 [WARNING] Couldn't fetch Brazil 10Y [IRLTLT01BRM156N] (Bad Request.  The series does not exist.)
 2026-08-15 18:37:20.633 [INFO] Fetching bond data (full)
 2026-08-15 18:37:30.945 [WARNING] Couldn't fetch Brazil 10Y [IRLTLT01BRM156N] (Bad Request.  The series does not exist.)
+2026-08-15 18:47:48.055 [INFO] Session started
+2026-08-15 18:48:11.178 [ERROR] API call to get_fx_history failed: ValueError('no history returned for USDJPY (24h)')
+2026-08-15 18:48:11.204 [ERROR] API call to get_fx_history failed: ValueError('no history returned for USDJPY (24h)')
+2026-08-15 18:48:15.617 [ERROR] API call to get_fx_history failed: ValueError('no history returned for GBPUSD (24h)')
+2026-08-15 18:48:15.953 [ERROR] API call to get_fx_history failed: ValueError('no history returned for GBPUSD (24h)')
+2026-08-15 18:51:04.359 [INFO] Session started
+2026-08-15 18:51:11.587 [INFO] Session started
+2026-08-15 18:51:18.959 [INFO] Session started
+2026-08-15 18:52:22.772 [ERROR] API call to get_fx_history failed: ValueError('no history in the trimmed window for USDJPY (24h)')
+2026-08-15 18:52:22.997 [ERROR] API call to get_fx_history failed: ValueError('no history in the trimmed window for USDJPY (24h)')
+2026-08-15 18:52:29.113 [ERROR] API call to get_fx_history failed: ValueError('no history in the trimmed window for USDJPY (24h)')
+2026-08-15 18:52:36.790 [ERROR] API call to get_fx_history failed: ValueError('no history in the trimmed window for USDJPY (24h)')
+2026-08-15 18:52:38.061 [ERROR] API call to get_fx_history failed: ValueError('no history in the trimmed window for USDJPY (12h)')
+2026-08-15 18:52:38.613 [ERROR] API call to get_fx_history failed: ValueError('no history in the trimmed window for USDJPY (1h)')
+2026-08-15 18:52:40.404 [ERROR] API call to get_fx_history failed: ValueError('no history in the trimmed window for USDJPY (24h)')
+2026-08-15 18:54:39.264 [INFO] Session started

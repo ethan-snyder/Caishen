@@ -122,12 +122,25 @@ function PriceChart({ points, range, color, height = 140 }: {
             <polygon points={`0,${h} ${coords} ${w},${h}`} fill={`url(#${fillId})`} />
             <polyline points={coords} fill="none" stroke={lineColor} strokeWidth={1.5} opacity={0.9} vectorEffect="non-scaling-stroke" />
             {hover !== null && (
-              <>
-                <line x1={xAt(hover)} y1={0} x2={xAt(hover)} y2={h} stroke={lineColor} strokeWidth={0.75} strokeDasharray="2,2" opacity={0.5} />
-                <circle cx={xAt(hover)} cy={yAt(points[hover].value)} r={3.5} fill={lineColor} stroke="#060E18" strokeWidth={1} />
-              </>
+              <line x1={xAt(hover)} y1={0} x2={xAt(hover)} y2={h} stroke={lineColor} strokeWidth={0.75} strokeDasharray="2,2" opacity={0.5} />
             )}
           </svg>
+          {/* Hover dot is a CSS circle, not an SVG <circle> -- the SVG's
+              preserveAspectRatio="none" stretches x and y by different
+              factors to fill a wide, short container, which turns a
+              true SVG circle into a visible oval. Positioning a real
+              div circle by percentage (same trick already used for the
+              tooltip below) keeps it round regardless of that stretch. */}
+          {hover !== null && (
+            <div style={{
+              position: 'absolute',
+              left: `${(xAt(hover) / w) * 100}%`,
+              top: `${(yAt(points[hover].value) / h) * 100}%`,
+              width: 7, height: 7, borderRadius: '50%',
+              backgroundColor: lineColor, border: '1px solid #060E18',
+              transform: 'translate(-50%, -50%)', pointerEvents: 'none',
+            }} />
+          )}
           {hoverPoint && (
             <div style={{
               position: 'absolute', top: -6,
