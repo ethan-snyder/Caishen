@@ -66,7 +66,19 @@ function AppShell() {
     try { localStorage.setItem(ACTIVE_TAB_KEY, active) } catch { /* storage unavailable */ }
   }, [active])
 
-  const [time] = useState(() => new Date().toLocaleTimeString('en-US', { hour12: false }))
+  // Ticks once a second. This used to be a one-shot useState initialiser,
+  // which meant the sidebar clock froze at whatever time the page happened
+  // to load and then sat there indefinitely claiming to be the current
+  // time -- a clock that lies is worse than no clock.
+  const [time, setTime] = useState(() => new Date().toLocaleTimeString('en-US', { hour12: false }))
+
+  useEffect(() => {
+    const id = setInterval(
+      () => setTime(new Date().toLocaleTimeString('en-US', { hour12: false })),
+      1000,
+    )
+    return () => clearInterval(id)
+  }, [])
 
   // One sortable scope per sidebar group. Keeping groups separate (rather
   // than one flat list) means a drag can't accidentally fling a tab into
@@ -111,8 +123,8 @@ function AppShell() {
           </div>
           <div style={{
             fontFamily: "'JetBrains Mono', monospace",
-            fontSize: 9,
-            color: '#2D6644',
+            fontSize: 12,
+            color: '#52A877',
             letterSpacing: '0.12em',
             marginTop: 3,
           }}>
@@ -127,8 +139,8 @@ function AppShell() {
               <div style={{ marginBottom: 4 }}>
                 <div style={{
                   fontFamily: "'JetBrains Mono', monospace",
-                  fontSize: 9,
-                  color: '#1D4A30',
+                  fontSize: 12,
+                  color: '#3C8F5F',
                   letterSpacing: '0.16em',
                   padding: '8px 16px 4px',
                 }}>
@@ -147,12 +159,12 @@ function AppShell() {
           padding: '10px 16px',
         }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 4 }}>
-            <span style={{ color: '#00FF88', fontSize: 8, textShadow: '0 0 6px #00FF88' }}>●</span>
-            <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 9, color: '#2D6644', letterSpacing: '0.08em' }}>
+            <span style={{ color: '#00FF88', fontSize: 11, textShadow: '0 0 6px #00FF88' }}>●</span>
+            <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: '#52A877', letterSpacing: '0.08em' }}>
               SYS ONLINE
             </span>
           </div>
-          <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 9, color: '#1D4A30' }}>
+          <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: '#3C8F5F' }}>
             {time}
             <span className="blink" style={{ color: '#00FF88', marginLeft: 2 }}>_</span>
           </div>
@@ -241,8 +253,8 @@ function NavGroup({
                 borderBottom: 'none',
                 cursor: 'pointer',
                 fontFamily: "'Share Tech Mono', monospace",
-                fontSize: 13,
-                color: isActive ? '#00FF88' : '#2D6644',
+                fontSize: 15,
+                color: isActive ? '#00FF88' : '#52A877',
                 letterSpacing: '0.06em',
                 textAlign: 'left',
                 transition: 'all 0.1s',
@@ -255,14 +267,14 @@ function NavGroup({
               }}
               onMouseLeave={e => {
                 if (!isActive) {
-                  e.currentTarget.style.color = '#2D6644'
+                  e.currentTarget.style.color = '#52A877'
                   e.currentTarget.style.background = 'transparent'
                 }
               }}
             >
               <span style={{
-                fontSize: 10,
-                color: isActive ? '#00FF88' : '#1D4A30',
+                fontSize: 13,
+                color: isActive ? '#00FF88' : '#3C8F5F',
                 textShadow: isActive ? '0 0 6px #00FF88' : 'none',
               }}>
                 {isActive ? '▶' : '▷'}

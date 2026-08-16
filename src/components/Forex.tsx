@@ -4,28 +4,14 @@ import { formatPct, formatLargeNum, posNegColor } from '@/lib/format'
 import { Loading, ErrorBlock } from './StatusBlock'
 import { useSortableLayout } from '@/lib/layout'
 import { Draggable, AddWidgetTray, EditHint } from './LayoutKit'
+import { AxisLabels, GridLines } from './ChartGrid'
+import { Flag } from './Flag'
 
 const border = '1px solid rgba(0,255,136,0.12)'
 
 function rateDecimals(rate: number | null) {
   if (rate === null) return 4
   return rate > 10 ? 2 : 4
-}
-
-/** flagcdn.com SVG by ISO 3166-1 alpha-2 code (or "eu") -- no font
- * dependency, unlike the Unicode flag emoji this replaced, which had no
- * reliable glyph support anywhere in this app's font stack. */
-function Flag({ code, size = 16 }: { code: string | null; size?: number }) {
-  if (!code) return null
-  return (
-    <img
-      src={`https://flagcdn.com/${code}.svg`}
-      alt={code.toUpperCase()}
-      width={size}
-      height={size * 0.75}
-      style={{ display: 'inline-block', verticalAlign: 'middle', objectFit: 'cover', borderRadius: 2 }}
-    />
-  )
 }
 
 const RANGES: { key: FxRange; label: string }[] = [
@@ -57,7 +43,7 @@ function RateChart({ points, range, decimals, height = 130 }: {
     return (
       <div style={{
         height, display: 'flex', alignItems: 'center', justifyContent: 'center',
-        fontFamily: "'JetBrains Mono', monospace", fontSize: 11, color: '#1D4A30',
+        fontFamily: "'JetBrains Mono', monospace", fontSize: 14, color: '#3C8F5F',
       }}>
         not enough history for this range
       </div>
@@ -95,14 +81,7 @@ function RateChart({ points, range, decimals, height = 130 }: {
   return (
     <div>
       <div style={{ display: 'flex', gap: 10 }}>
-        <div style={{
-          display: 'flex', flexDirection: 'column', justifyContent: 'space-between',
-          fontFamily: "'JetBrains Mono', monospace", fontSize: 10, color: '#4a5a52',
-          textAlign: 'right', minWidth: 66, flexShrink: 0,
-        }}>
-          <span>{max.toFixed(decimals)}</span>
-          <span>{min.toFixed(decimals)}</span>
-        </div>
+        <AxisLabels min={min} max={max} height={h} minWidth={66} format={v => v.toFixed(decimals)} />
         <div style={{ position: 'relative', flex: 1 }}>
           <svg
             viewBox={`0 0 ${w} ${h}`} width="100%" height={h} preserveAspectRatio="none"
@@ -110,6 +89,7 @@ function RateChart({ points, range, decimals, height = 130 }: {
             onMouseLeave={() => setHover(null)}
             style={{ cursor: 'crosshair', display: 'block', overflow: 'visible' }}
           >
+            <GridLines w={w} h={h} />
             <defs>
               <linearGradient id={fillId} x1="0" y1="0" x2="0" y2="1">
                 <stop offset="0%" stopColor={lineColor} stopOpacity={0.25} />
@@ -144,18 +124,18 @@ function RateChart({ points, range, decimals, height = 130 }: {
               left: `${tooltipPct}%`,
               transform: tooltipPct > 65 ? 'translate(-100%, -100%)' : 'translate(0, -100%)',
               backgroundColor: '#0A1420', border: `1px solid ${lineColor}`, padding: '5px 10px',
-              fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: '#C8FFD4',
+              fontFamily: "'JetBrains Mono', monospace", fontSize: 15, color: '#C8FFD4',
               whiteSpace: 'nowrap', pointerEvents: 'none', zIndex: 10,
             }}>
               <div style={{ color: lineColor, fontWeight: 600 }}>{hoverPoint.value.toFixed(decimals)}</div>
-              <div style={{ fontSize: 10, color: '#4a5a52', marginTop: 1 }}>{formatHistoryDate(hoverPoint.date, range)}</div>
+              <div style={{ fontSize: 13, color: '#4a5a52', marginTop: 1 }}>{formatHistoryDate(hoverPoint.date, range)}</div>
             </div>
           )}
         </div>
       </div>
       <div style={{
         display: 'flex', justifyContent: 'space-between', marginLeft: 76,
-        fontFamily: "'JetBrains Mono', monospace", fontSize: 10, color: '#1D4A30', marginTop: 6,
+        fontFamily: "'JetBrains Mono', monospace", fontSize: 13, color: '#3C8F5F', marginTop: 6,
       }}>
         <span>{formatHistoryDate(points[0].date, range)}</span>
         <span>{formatHistoryDate(points[points.length - 1].date, range)}</span>
@@ -192,7 +172,7 @@ function ExpandedChart({ pair, decimals }: { pair: FxPair; decimals: number }) {
             type="button"
             onClick={() => setRange(r.key)}
             style={{
-              fontFamily: "'JetBrains Mono', monospace", fontSize: 10, letterSpacing: '0.06em',
+              fontFamily: "'JetBrains Mono', monospace", fontSize: 13, letterSpacing: '0.06em',
               padding: '3px 8px', cursor: 'pointer',
               backgroundColor: range === r.key ? 'rgba(0,255,136,0.15)' : 'transparent',
               border: `1px solid ${range === r.key ? 'rgba(0,255,136,0.4)' : 'rgba(0,255,136,0.12)'}`,
@@ -204,13 +184,13 @@ function ExpandedChart({ pair, decimals }: { pair: FxPair; decimals: number }) {
         ))}
       </div>
       {histError && (
-        <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10, color: '#FF3B3B' }}>
+        <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 13, color: '#FF3B3B' }}>
           {`// couldn't load history: ${histError}`}
         </div>
       )}
       {!histError && !history && (
         <div style={{ height: 130, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 11, color: '#1D4A30' }}>loading…</span>
+          <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 14, color: '#3C8F5F' }}>loading…</span>
         </div>
       )}
       {!histError && history && <RateChart points={history} range={range} decimals={decimals} />}
@@ -221,8 +201,8 @@ function ExpandedChart({ pair, decimals }: { pair: FxPair; decimals: number }) {
 function DataCell({ label, value }: { label: string; value: string }) {
   return (
     <div>
-      <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 8, color: '#1D4A30', letterSpacing: '0.1em', marginBottom: 2 }}>{label}</div>
-      <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: '#4DCC88' }}>{value}</div>
+      <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 11, color: '#3C8F5F', letterSpacing: '0.1em', marginBottom: 2 }}>{label}</div>
+      <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 15, color: '#4DCC88' }}>{value}</div>
     </div>
   )
 }
@@ -288,15 +268,15 @@ export default function Forex() {
                       {/* Left: flags + pair name + rate + change */}
                       <div style={{ display: 'flex', alignItems: 'center', gap: 14, flexWrap: 'wrap' }}>
                         <div style={{ minWidth: 130 }}>
-                          <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontFamily: "'Share Tech Mono', monospace", fontSize: 15, color: '#C8FFD4' }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontFamily: "'Share Tech Mono', monospace", fontSize: 16, color: '#C8FFD4' }}>
                             <Flag code={p.base_flag_code} />
                             <span>{p.base}</span>
-                            <span style={{ color: '#2D6644' }}>/</span>
+                            <span style={{ color: '#52A877' }}>/</span>
                             <Flag code={p.quote_flag_code} />
                             <span>{p.quote}</span>
                           </div>
                           {p.exchange && (
-                            <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 9, color: '#2D6644', letterSpacing: '0.06em', marginTop: 2 }}>
+                            <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: '#52A877', letterSpacing: '0.06em', marginTop: 2 }}>
                               {p.exchange}
                             </div>
                           )}
@@ -306,12 +286,12 @@ export default function Forex() {
                           {p.rate !== null ? p.rate.toFixed(dec) : '—'}
                         </div>
 
-                        <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 13, color: posNegColor(p.change) }}>
+                        <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 15, color: posNegColor(p.change) }}>
                           {p.change !== null ? `${p.change >= 0 ? '+' : ''}${p.change.toFixed(dec)}` : '—'}
                         </div>
 
                         <div style={{
-                          fontFamily: "'JetBrains Mono', monospace", fontSize: 12,
+                          fontFamily: "'JetBrains Mono', monospace", fontSize: 15,
                           color: posNegColor(p.change_pct),
                           backgroundColor: (p.change_pct ?? 0) >= 0 ? 'rgba(0,255,136,0.07)' : 'rgba(255,59,59,0.07)',
                           border: `1px solid ${(p.change_pct ?? 0) >= 0 ? 'rgba(0,255,136,0.2)' : 'rgba(255,59,59,0.2)'}`,
@@ -324,12 +304,12 @@ export default function Forex() {
                       {/* Top right: symbol/symbol badge + expand chevron */}
                       <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexShrink: 0 }}>
                         {(p.base_symbol || p.quote_symbol) && (
-                          <span style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: 15, color: '#4DCC88' }}>
+                          <span style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: 16, color: '#4DCC88' }}>
                             {p.base_symbol ?? '?'}/{p.quote_symbol ?? '?'}
                           </span>
                         )}
                         <span style={{
-                          fontFamily: "'JetBrains Mono', monospace", fontSize: 11, color: '#4DCC88',
+                          fontFamily: "'JetBrains Mono', monospace", fontSize: 14, color: '#4DCC88',
                           transform: isOpen ? 'rotate(180deg)' : 'none', transition: 'transform 0.12s', display: 'inline-block',
                         }}>
                           ▾
@@ -361,7 +341,7 @@ export default function Forex() {
         </>
       )}
 
-      <div style={{ marginTop: 12, padding: '9px 12px', backgroundColor: 'rgba(0,255,136,0.02)', border: '1px solid rgba(0,255,136,0.07)', fontFamily: "'JetBrains Mono', monospace", fontSize: 10, color: '#1D4A30' }}>
+      <div style={{ marginTop: 12, padding: '9px 12px', backgroundColor: 'rgba(0,255,136,0.02)', border: '1px solid rgba(0,255,136,0.07)', fontFamily: "'JetBrains Mono', monospace", fontSize: 13, color: '#3C8F5F' }}>
         {'// DATA SOURCE: yfinance · rate/change/high/low/history are live · bid/ask marked with ~ are estimated (no free live spread source) · volume is real but most FX tickers report none (no centralized tape for spot FX) · flags via flagcdn.com'}
       </div>
     </div>

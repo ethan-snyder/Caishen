@@ -4,6 +4,7 @@ import { formatPct, posNegColor, formatLargeNum } from '@/lib/format'
 import { Loading, ErrorBlock } from './StatusBlock'
 import { useSortableLayout } from '@/lib/layout'
 import { Draggable, AddWidgetTray, EditHint } from './LayoutKit'
+import { AxisLabels, GridLines } from './ChartGrid'
 
 const border = '1px solid rgba(0,255,136,0.12)'
 
@@ -52,7 +53,7 @@ function PriceChart({ points, range, decimals, currencySymbol, height = 130 }: {
     return (
       <div style={{
         height, display: 'flex', alignItems: 'center', justifyContent: 'center',
-        fontFamily: "'JetBrains Mono', monospace", fontSize: 11, color: '#1D4A30',
+        fontFamily: "'JetBrains Mono', monospace", fontSize: 14, color: '#3C8F5F',
       }}>
         not enough history for this range
       </div>
@@ -92,14 +93,7 @@ function PriceChart({ points, range, decimals, currencySymbol, height = 130 }: {
   return (
     <div>
       <div style={{ display: 'flex', gap: 10 }}>
-        <div style={{
-          display: 'flex', flexDirection: 'column', justifyContent: 'space-between',
-          fontFamily: "'JetBrains Mono', monospace", fontSize: 10, color: '#4a5a52',
-          textAlign: 'right', minWidth: 70, flexShrink: 0,
-        }}>
-          <span>{fmt(max)}</span>
-          <span>{fmt(min)}</span>
-        </div>
+        <AxisLabels min={min} max={max} height={h} minWidth={70} format={fmt} />
         <div style={{ position: 'relative', flex: 1 }}>
           <svg
             viewBox={`0 0 ${w} ${h}`} width="100%" height={h} preserveAspectRatio="none"
@@ -107,6 +101,7 @@ function PriceChart({ points, range, decimals, currencySymbol, height = 130 }: {
             onMouseLeave={() => setHover(null)}
             style={{ cursor: 'crosshair', display: 'block', overflow: 'visible' }}
           >
+            <GridLines w={w} h={h} />
             <defs>
               <linearGradient id={fillId} x1="0" y1="0" x2="0" y2="1">
                 <stop offset="0%" stopColor={lineColor} stopOpacity={0.25} />
@@ -135,18 +130,18 @@ function PriceChart({ points, range, decimals, currencySymbol, height = 130 }: {
               left: `${tooltipPct}%`,
               transform: tooltipPct > 65 ? 'translate(-100%, -100%)' : 'translate(0, -100%)',
               backgroundColor: '#0A1420', border: `1px solid ${lineColor}`, padding: '5px 10px',
-              fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: '#C8FFD4',
+              fontFamily: "'JetBrains Mono', monospace", fontSize: 15, color: '#C8FFD4',
               whiteSpace: 'nowrap', pointerEvents: 'none', zIndex: 10,
             }}>
               <div style={{ color: lineColor, fontWeight: 600 }}>{fmt(hoverPoint.value)}</div>
-              <div style={{ fontSize: 10, color: '#4a5a52', marginTop: 1 }}>{formatHistoryDate(hoverPoint.date, range)}</div>
+              <div style={{ fontSize: 13, color: '#4a5a52', marginTop: 1 }}>{formatHistoryDate(hoverPoint.date, range)}</div>
             </div>
           )}
         </div>
       </div>
       <div style={{
         display: 'flex', justifyContent: 'space-between', marginLeft: 80,
-        fontFamily: "'JetBrains Mono', monospace", fontSize: 10, color: '#1D4A30', marginTop: 6,
+        fontFamily: "'JetBrains Mono', monospace", fontSize: 13, color: '#3C8F5F', marginTop: 6,
       }}>
         <span>{formatHistoryDate(points[0].date, range)}</span>
         <span>{formatHistoryDate(points[points.length - 1].date, range)}</span>
@@ -182,7 +177,7 @@ function ExpandedChart({ contract, decimals }: { contract: FuturesContract; deci
             type="button"
             onClick={() => setRange(r.key)}
             style={{
-              fontFamily: "'JetBrains Mono', monospace", fontSize: 10, letterSpacing: '0.06em',
+              fontFamily: "'JetBrains Mono', monospace", fontSize: 13, letterSpacing: '0.06em',
               padding: '3px 8px', cursor: 'pointer',
               backgroundColor: range === r.key ? 'rgba(0,255,136,0.15)' : 'transparent',
               border: `1px solid ${range === r.key ? 'rgba(0,255,136,0.4)' : 'rgba(0,255,136,0.12)'}`,
@@ -194,13 +189,13 @@ function ExpandedChart({ contract, decimals }: { contract: FuturesContract; deci
         ))}
       </div>
       {histError && (
-        <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10, color: '#FF3B3B' }}>
+        <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 13, color: '#FF3B3B' }}>
           {`// couldn't load history: ${histError}`}
         </div>
       )}
       {!histError && !history && (
         <div style={{ height: 130, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 11, color: '#1D4A30' }}>loading…</span>
+          <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 14, color: '#3C8F5F' }}>loading…</span>
         </div>
       )}
       {!histError && history && (
@@ -213,8 +208,8 @@ function ExpandedChart({ contract, decimals }: { contract: FuturesContract; deci
 function DataCell({ label, value }: { label: string; value: string }) {
   return (
     <div>
-      <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 8, color: '#1D4A30', letterSpacing: '0.1em', marginBottom: 2 }}>{label}</div>
-      <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: '#4DCC88' }}>{value}</div>
+      <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 11, color: '#3C8F5F', letterSpacing: '0.1em', marginBottom: 2 }}>{label}</div>
+      <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 15, color: '#4DCC88' }}>{value}</div>
     </div>
   )
 }
@@ -279,8 +274,8 @@ export default function Futures() {
                     >
                       <div style={{ display: 'flex', alignItems: 'center', gap: 14, flexWrap: 'wrap' }}>
                         <div style={{ minWidth: 150 }}>
-                          <div style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: 15, color: '#C8FFD4', lineHeight: 1.2 }}>{f.name}</div>
-                          <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 9, color: '#2D6644', letterSpacing: '0.08em', marginTop: 2 }}>
+                          <div style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: 16, color: '#C8FFD4', lineHeight: 1.2 }}>{f.name}</div>
+                          <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: '#52A877', letterSpacing: '0.08em', marginTop: 2 }}>
                             {f.symbol}{f.expiry ? ` · ${f.expiry}` : ''}
                           </div>
                         </div>
@@ -289,12 +284,12 @@ export default function Futures() {
                           {formatPrice(f.price, f.currency_symbol)}
                         </div>
 
-                        <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 13, color: posNegColor(f.change) }}>
+                        <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 15, color: posNegColor(f.change) }}>
                           {f.change !== null ? `${f.change >= 0 ? '+' : ''}${f.change.toFixed(dec)}` : '—'}
                         </div>
 
                         <div style={{
-                          fontFamily: "'JetBrains Mono', monospace", fontSize: 12,
+                          fontFamily: "'JetBrains Mono', monospace", fontSize: 15,
                           color: posNegColor(f.change_pct),
                           backgroundColor: (f.change_pct ?? 0) >= 0 ? 'rgba(0,255,136,0.07)' : 'rgba(255,59,59,0.07)',
                           border: `1px solid ${(f.change_pct ?? 0) >= 0 ? 'rgba(0,255,136,0.2)' : 'rgba(255,59,59,0.2)'}`,
@@ -305,7 +300,7 @@ export default function Futures() {
 
                         {f.year_change_pct !== null && (
                           <div style={{
-                            fontFamily: "'JetBrains Mono', monospace", fontSize: 10,
+                            fontFamily: "'JetBrains Mono', monospace", fontSize: 13,
                             color: posNegColor(f.year_change_pct),
                           }} title="1-year change">
                             {`1Y ${formatPct(f.year_change_pct)}`}
@@ -314,7 +309,7 @@ export default function Futures() {
                       </div>
 
                       <span style={{
-                        fontFamily: "'JetBrains Mono', monospace", fontSize: 11, color: '#4DCC88',
+                        fontFamily: "'JetBrains Mono', monospace", fontSize: 14, color: '#4DCC88',
                         transform: isOpen ? 'rotate(180deg)' : 'none', transition: 'transform 0.12s', display: 'inline-block', flexShrink: 0,
                       }}>
                         ▾
@@ -336,7 +331,7 @@ export default function Futures() {
         </>
       )}
 
-      <div style={{ marginTop: 12, padding: '9px 12px', backgroundColor: 'rgba(0,255,136,0.02)', border: '1px solid rgba(0,255,136,0.07)', fontFamily: "'JetBrains Mono', monospace", fontSize: 10, color: '#1D4A30' }}>
+      <div style={{ marginTop: 12, padding: '9px 12px', backgroundColor: 'rgba(0,255,136,0.02)', border: '1px solid rgba(0,255,136,0.07)', fontFamily: "'JetBrains Mono', monospace", fontSize: 13, color: '#3C8F5F' }}>
         {'// DATA SOURCE: yfinance · price/change/volume/history are live · 1Y change is a single extra period=1y fetch, real but not shown if yfinance lacks enough history · open interest not available via free data, omitted rather than guessed · $ shown only for contracts genuinely quoted as a dollar price (equity index futures are index points, not dollars)'}
       </div>
     </div>

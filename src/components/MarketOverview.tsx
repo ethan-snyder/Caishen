@@ -4,6 +4,7 @@ import { formatPct, posNegColor } from '@/lib/format'
 import { Loading, ErrorBlock } from './StatusBlock'
 import { useSortableLayout } from '@/lib/layout'
 import { Draggable, AddWidgetTray, EditHint } from './LayoutKit'
+import { AxisLabels, GridLines } from './ChartGrid'
 
 const border = '1px solid rgba(0,255,136,0.12)'
 
@@ -149,7 +150,7 @@ function FearGreedGauge({ value }: { value: number }) {
               style={live ? { filter: `drop-shadow(0 0 7px ${b.color}aa)` } : undefined}
             />
             {fits ? (
-              <text fill={live ? b.color : '#2D6644'} style={labelStyle}>
+              <text fill={live ? b.color : '#52A877'} style={labelStyle}>
                 <textPath href={`#fg-lbl-${b.from}`} startOffset="50%" textAnchor="middle">
                   {b.label}
                 </textPath>
@@ -157,7 +158,7 @@ function FearGreedGauge({ value }: { value: number }) {
             ) : (
               <text
                 x={ox} y={oy} textAnchor="middle" dominantBaseline="central"
-                fill={live ? b.color : '#2D6644'} style={labelStyle}
+                fill={live ? b.color : '#52A877'} style={labelStyle}
               >
                 {b.label}
               </text>
@@ -171,13 +172,17 @@ function FearGreedGauge({ value }: { value: number }) {
         .filter(v => v % 25 !== 0)
         .map(v => {
           const [x, y] = dialPoint(v, D.rDot)
-          return <circle key={v} cx={x} cy={y} r={1.4} fill="#1D4A30" />
+          return <circle key={v} cx={x} cy={y} r={1.4} fill="#3C8F5F" />
         })}
       {[0, 25, 50, 75, 100].map(v => {
         const [x, y] = dialPoint(v, D.rNum)
         return (
           <text
-            key={v} x={x} y={y} textAnchor="middle" dominantBaseline="central" fill="#2D6644"
+            key={v} x={x} y={y} textAnchor="middle" dominantBaseline="central" fill="#52A877"
+            // viewBox units. The gauge has its own internal scale (see
+            // FG_LABEL_SIZE, which bandLabelFits() depends on for clipping),
+            // so it sits outside the page-wide type scale -- bumping only
+            // the tick numbers would make them outsize the band labels.
             style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12 }}
           >
             {v}
@@ -224,14 +229,14 @@ function PreviousReading({ label, value }: { label: string; value: number | null
       display: 'flex', alignItems: 'baseline', justifyContent: 'space-between',
       gap: 10, padding: '5px 0', borderBottom: '1px solid rgba(0,255,136,0.07)',
     }}>
-      <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 9, color: '#2D6644', letterSpacing: '0.1em' }}>
+      <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: '#52A877', letterSpacing: '0.1em' }}>
         {label}
       </span>
       <span style={{ display: 'flex', alignItems: 'baseline', gap: 6 }}>
-        <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 14, fontWeight: 600, color: band?.color ?? '#1D4A30' }}>
+        <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 16, fontWeight: 600, color: band?.color ?? '#3C8F5F' }}>
           {value !== null ? value.toFixed(1) : '—'}
         </span>
-        <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 8, color: '#2D6644', minWidth: 74, textAlign: 'right' }}>
+        <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 11, color: '#52A877', minWidth: 74, textAlign: 'right' }}>
           {band?.label ?? ''}
         </span>
       </span>
@@ -342,21 +347,14 @@ function LineChart({
                   opacity={l.dashed ? 0.75 : 1}
                 />
               </svg>
-              <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 9, color: '#4DCC88' }}>{l.label}</span>
+              <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: '#4DCC88' }}>{l.label}</span>
             </span>
           ))}
         </div>
       )}
 
       <div style={{ display: 'flex', gap: 8 }}>
-        <div style={{
-          display: 'flex', flexDirection: 'column', justifyContent: 'space-between',
-          fontFamily: "'JetBrains Mono', monospace", fontSize: 10, color: '#4a5a52',
-          textAlign: 'right', minWidth: 52, flexShrink: 0,
-        }}>
-          <span>{format(max)}</span>
-          <span>{format(min)}</span>
-        </div>
+        <AxisLabels min={min} max={max} height={h} minWidth={52} format={format} />
         <div style={{ position: 'relative', flex: 1 }}>
           <svg
             viewBox={`0 0 ${w} ${h}`} width="100%" height={h} preserveAspectRatio="none"
@@ -364,8 +362,9 @@ function LineChart({
             onMouseLeave={() => setHover(null)}
             style={{ cursor: 'crosshair', display: 'block', overflow: 'visible' }}
           >
+            <GridLines w={w} h={h} />
             {zeroLine && zeroY >= 0 && zeroY <= h && (
-              <line x1={0} y1={zeroY} x2={w} y2={zeroY} stroke="#2D6644" strokeWidth={0.5} strokeDasharray="2,2" />
+              <line x1={0} y1={zeroY} x2={w} y2={zeroY} stroke="#52A877" strokeWidth={0.5} strokeDasharray="2,2" />
             )}
             {drawn.map((l, li) => (
               <polyline
@@ -391,26 +390,40 @@ function LineChart({
                   x1={xAt(hover)} y1={0} x2={xAt(hover)} y2={h}
                   stroke={drawn[0].color} strokeWidth={0.75} strokeDasharray="2,2" opacity={0.5}
                 />
-                {drawn.map((l, li) => {
-                  const v = byDate[li].get(baseDates[hover])
-                  if (v === undefined) return null
-                  return (
-                    <circle
-                      key={l.label} cx={xAt(hover)} cy={yAt(v)} r={3}
-                      fill={l.color} stroke="#060E18" strokeWidth={1}
-                    />
-                  )
-                })}
               </>
             )}
           </svg>
+          {/* Hover dots are CSS circles, not SVG <circle>s. This SVG uses
+              preserveAspectRatio="none" to fill a wide, short container,
+              which scales x and y by different factors -- a true SVG
+              circle gets stretched into a visible oval. Positioning real
+              div circles by percentage (the same trick the tooltip below
+              already used) keeps them round at any container shape.
+              One per plotted series, since this chart can be multi-line. */}
+          {hover !== null && drawn.map((l, li) => {
+            const v = byDate[li].get(baseDates[hover])
+            if (v === undefined) return null
+            return (
+              <div
+                key={l.label}
+                style={{
+                  position: 'absolute',
+                  left: `${(xAt(hover) / w) * 100}%`,
+                  top: `${(yAt(v) / h) * 100}%`,
+                  width: 7, height: 7, borderRadius: '50%',
+                  backgroundColor: l.color, border: '1px solid #060E18',
+                  transform: 'translate(-50%, -50%)', pointerEvents: 'none',
+                }}
+              />
+            )
+          })}
           {hover !== null && hoverDate && (
             <div style={{
               position: 'absolute', top: -6,
               left: `${tooltipPct}%`,
               transform: tooltipPct > 65 ? 'translate(-100%, -100%)' : 'translate(0, -100%)',
               backgroundColor: '#0A1420', border: `1px solid ${drawn[0].color}`, padding: '4px 8px',
-              fontFamily: "'JetBrains Mono', monospace", fontSize: 11, color: '#C8FFD4',
+              fontFamily: "'JetBrains Mono', monospace", fontSize: 14, color: '#C8FFD4',
               whiteSpace: 'nowrap', pointerEvents: 'none', zIndex: 10,
             }}>
               {drawn.map((l, li) => {
@@ -418,19 +431,19 @@ function LineChart({
                 if (v === undefined) return null
                 return (
                   <div key={l.label} style={{ display: 'flex', gap: 8, justifyContent: 'space-between' }}>
-                    {multi && <span style={{ color: '#4a5a52', fontSize: 9 }}>{l.label}</span>}
+                    {multi && <span style={{ color: '#4a5a52', fontSize: 12 }}>{l.label}</span>}
                     <span style={{ color: l.color, fontWeight: 600 }}>{format(v)}</span>
                   </div>
                 )
               })}
-              <div style={{ fontSize: 9, color: '#4a5a52', marginTop: 1 }}>{formatAxisDate(hoverDate)}</div>
+              <div style={{ fontSize: 12, color: '#4a5a52', marginTop: 1 }}>{formatAxisDate(hoverDate)}</div>
             </div>
           )}
         </div>
       </div>
       <div style={{
         display: 'flex', justifyContent: 'space-between', marginLeft: 60,
-        fontFamily: "'JetBrains Mono', monospace", fontSize: 9, color: '#1D4A30', marginTop: 4,
+        fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: '#3C8F5F', marginTop: 4,
       }}>
         <span>{formatAxisDate(baseDates[0])}</span>
         <span>{formatAxisDate(baseDates[n - 1])}</span>
@@ -670,8 +683,8 @@ export default function MarketOverview() {
             This is that sign, deliberately small enough to ignore. */}
         {refreshing && data && (
           <span style={{
-            fontFamily: "'JetBrains Mono', monospace", fontSize: 9,
-            color: '#2D6644', letterSpacing: '0.12em', marginLeft: 12,
+            fontFamily: "'JetBrains Mono', monospace", fontSize: 12,
+            color: '#52A877', letterSpacing: '0.12em', marginLeft: 12,
           }}>
             <span className="blink">●</span> REFRESHING
           </span>
@@ -702,14 +715,14 @@ export default function MarketOverview() {
                           >
                             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8 }}>
                               <div>
-                                <div style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: 12, color: '#C8FFD4', marginBottom: 2 }}>{idx.name}</div>
-                                <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 9, color: '#2D6644', letterSpacing: '0.08em' }}>
+                                <div style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: 15, color: '#C8FFD4', marginBottom: 2 }}>{idx.name}</div>
+                                <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: '#52A877', letterSpacing: '0.08em' }}>
                                   {idx.symbol} · {idx.region}
                                 </div>
                               </div>
                               <div style={{
                                 fontFamily: "'JetBrains Mono', monospace",
-                                fontSize: 10,
+                                fontSize: 13,
                                 color: posNegColor(idx.change_pct),
                                 backgroundColor: (idx.change_pct ?? 0) >= 0 ? 'rgba(0,255,136,0.07)' : 'rgba(255,59,59,0.07)',
                                 border: `1px solid ${(idx.change_pct ?? 0) >= 0 ? 'rgba(0,255,136,0.2)' : 'rgba(255,59,59,0.2)'}`,
@@ -726,7 +739,7 @@ export default function MarketOverview() {
                             }}>
                               {idx.value !== null ? `${prefix}${idx.value.toLocaleString('en-US', { maximumFractionDigits: 2 })}${suffix}` : '—'}
                             </div>
-                            <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: posNegColor(idx.change) }}>
+                            <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 15, color: posNegColor(idx.change) }}>
                               {idx.change !== null
                                 ? `${idx.change >= 0 ? '+' : '-'}${prefix}${Math.abs(idx.change).toFixed(2)}${suffix}`
                                 : '—'}
@@ -755,11 +768,11 @@ export default function MarketOverview() {
                         <Draggable key="fear_greed" id="fear_greed" label="CNN FEAR & GREED" api={sentimentTiles}>
                           <div style={{ backgroundColor: '#060E18', border, padding: '16px 18px', height: '100%' }}>
                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 4 }}>
-                              <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 9, color: '#2D6644', letterSpacing: '0.12em' }}>
+                              <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: '#52A877', letterSpacing: '0.12em' }}>
                                 CNN FEAR {'&'} GREED INDEX
                               </span>
                               {fg?.history && fg.history.length > 0 && (
-                                <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 9, color: '#1D4A30' }}>
+                                <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: '#3C8F5F' }}>
                                   {fg.history[fg.history.length - 1].date}
                                 </span>
                               )}
@@ -791,7 +804,7 @@ export default function MarketOverview() {
 
                                 {fg.history && fg.history.length > 1 && (
                                   <div style={{ marginTop: 14 }}>
-                                    <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 9, color: '#2D6644', letterSpacing: '0.1em', marginBottom: 6 }}>
+                                    <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: '#52A877', letterSpacing: '0.1em', marginBottom: 6 }}>
                                       1-YEAR TREND
                                     </div>
                                     <SentimentChart
@@ -809,7 +822,7 @@ export default function MarketOverview() {
                                     onClick={() => setFgExpanded(v => !v)}
                                     style={{
                                       marginTop: 12, width: '100%',
-                                      fontFamily: "'Share Tech Mono', monospace", fontSize: 11,
+                                      fontFamily: "'Share Tech Mono', monospace", fontSize: 14,
                                       color: '#00FF88', background: 'rgba(0,255,136,0.06)',
                                       border: '1px solid rgba(0,255,136,0.25)', padding: '6px 12px',
                                       cursor: 'pointer', letterSpacing: '0.08em',
@@ -820,7 +833,7 @@ export default function MarketOverview() {
                                 )}
                               </>
                             ) : (
-                              <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 11, color: '#1D4A30', textAlign: 'center', padding: '40px 0' }}>
+                              <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 14, color: '#3C8F5F', textAlign: 'center', padding: '40px 0' }}>
                                 N/A
                               </div>
                             )}
@@ -831,7 +844,7 @@ export default function MarketOverview() {
                       if (tileId === 'put_call') return (
                         <Draggable key="put_call" id="put_call" label="CBOE PUT/CALL RATIO" api={sentimentTiles}>
                           <div style={{ backgroundColor: '#060E18', border, padding: '16px 18px', height: '100%' }}>
-                            <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 9, color: '#2D6644', letterSpacing: '0.12em', marginBottom: 12 }}>
+                            <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: '#52A877', letterSpacing: '0.12em', marginBottom: 12 }}>
                               CBOE PUT/CALL RATIO
                             </div>
                             {pc !== null && pcZone ? (
@@ -878,8 +891,8 @@ export default function MarketOverview() {
                                 <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 8, padding: '0 6px' }}>
                                   {PC_ZONES.map(z => (
                                     <span key={z.id} style={{
-                                      fontFamily: "'JetBrains Mono', monospace", fontSize: 9,
-                                      color: z.id === pcZone.id ? z.color : '#2D6644',
+                                      fontFamily: "'JetBrains Mono', monospace", fontSize: 12,
+                                      color: z.id === pcZone.id ? z.color : '#52A877',
                                       textShadow: z.id === pcZone.id ? `0 0 6px ${z.color}` : 'none',
                                       width: `${pcPct(z.to) - pcPct(z.from)}%`,
                                       textAlign: 'center',
@@ -887,15 +900,15 @@ export default function MarketOverview() {
                                   ))}
                                 </div>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 6, padding: '0 6px' }}>
-                                  <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 9, color: '#1D4A30' }}>{PC_MIN.toFixed(1)}</span>
-                                  <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 9, color: '#1D4A30' }}>{PC_MAX.toFixed(1)}</span>
+                                  <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: '#3C8F5F' }}>{PC_MIN.toFixed(1)}</span>
+                                  <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: '#3C8F5F' }}>{PC_MAX.toFixed(1)}</span>
                                 </div>
-                                <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 9, color: '#1D4A30', textAlign: 'center', marginTop: 10 }}>
+                                <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: '#3C8F5F', textAlign: 'center', marginTop: 10 }}>
                                   {'< 0.70 BULLISH · > 1.00 BEARISH'}
                                 </div>
                               </>
                             ) : (
-                              <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 11, color: '#1D4A30', textAlign: 'center', padding: '30px 0' }}>
+                              <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 14, color: '#3C8F5F', textAlign: 'center', padding: '30px 0' }}>
                                 N/A -- source may have changed structure
                               </div>
                             )}
@@ -923,18 +936,18 @@ export default function MarketOverview() {
                           return (
                             <div key={c.key} style={{ backgroundColor: '#060E18', border, padding: '14px 16px' }}>
                               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', gap: 8 }}>
-                                <span style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: 12, color: '#C8FFD4' }}>
+                                <span style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: 15, color: '#C8FFD4' }}>
                                   {c.label}
                                 </span>
                                 <span style={{
-                                  fontFamily: "'JetBrains Mono', monospace", fontSize: 9,
+                                  fontFamily: "'JetBrains Mono', monospace", fontSize: 12,
                                   color: lineColor, letterSpacing: '0.08em', whiteSpace: 'nowrap',
                                 }}>
                                   {c.rating ?? '—'}
                                 </span>
                               </div>
                               <div style={{
-                                fontFamily: "'JetBrains Mono', monospace", fontSize: 9, color: '#2D6644',
+                                fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: '#52A877',
                                 marginTop: 3, marginBottom: 10,
                               }}>
                                 {c.subtitle}
@@ -963,7 +976,7 @@ export default function MarketOverview() {
                         })}
                       </div>
                       <div style={{
-                        marginTop: 8, fontFamily: "'JetBrains Mono', monospace", fontSize: 9, color: '#1D4A30',
+                        marginTop: 8, fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: '#3C8F5F',
                       }}>
                         {'// Each card shows today\'s actual reading; the FEAR/GREED rating beside it is CNN\'s 0-100 normalization of that measure.'}
                       </div>
@@ -988,11 +1001,11 @@ export default function MarketOverview() {
                       const cfg = MACRO_CARDS_BY_KEY.get(tileKey)
                       if (!cfg) return null
                       const series = sentiment?.[cfg.key] ?? null
-                      const color = series ? cfg.color(series.value) : '#2D6644'
+                      const color = series ? cfg.color(series.value) : '#52A877'
                       return (
                         <Draggable key={cfg.key} id={cfg.key} label={cfg.title} api={macroTiles}>
                           <div style={{ backgroundColor: '#060E18', border, padding: '32px', height: '100%' }}>
-                            <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: '#2D6644', letterSpacing: '0.12em', marginBottom: 20 }}>
+                            <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 15, color: '#52A877', letterSpacing: '0.12em', marginBottom: 20 }}>
                               {cfg.title}
                             </div>
                             {series ? (
@@ -1004,12 +1017,12 @@ export default function MarketOverview() {
                                   {cfg.format(series.value)}
                                 </div>
                                 <SentimentChart points={series.history} color={color} zeroLine={cfg.zeroLine} format={cfg.format} height={90} />
-                                <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 11, color: '#1D4A30', marginTop: 14 }}>
+                                <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 14, color: '#3C8F5F', marginTop: 14 }}>
                                   LATEST {series.date} · {cfg.source}
                                 </div>
                               </>
                             ) : (
-                              <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 13, color: '#1D4A30', textAlign: 'center', padding: '40px 0' }}>
+                              <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 15, color: '#3C8F5F', textAlign: 'center', padding: '40px 0' }}>
                                 N/A -- {cfg.source} (missing API key or fetch failed)
                               </div>
                             )}
@@ -1034,7 +1047,7 @@ export default function MarketOverview() {
         backgroundColor: 'rgba(0,255,136,0.02)',
         border: '1px solid rgba(0,255,136,0.07)',
         fontFamily: "'JetBrains Mono', monospace",
-        fontSize: 10, color: '#1D4A30',
+        fontSize: 13, color: '#3C8F5F',
       }}>
         {'// INDICES: yfinance · SENTIMENT: CNN/CBOE scraped endpoints + FRED/CFTC APIs — may show N/A if providers change structure or FRED_API_KEY is unset'}
       </div>

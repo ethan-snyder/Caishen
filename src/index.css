@@ -11,7 +11,7 @@
   --color-secondary: #081220;
   --color-secondary-foreground: #4DCC88;
   --color-muted: #060E18;
-  --color-muted-foreground: #2D6644;
+  --color-muted-foreground: #52A877;
   --color-accent: #0A2418;
   --color-accent-foreground: #00FF88;
   --color-border: rgba(0,255,136,0.1);
@@ -75,6 +75,20 @@ body::after {
 
 .blink {
   animation: blink 1s step-end infinite;
+}
+
+/* Projector number fields (components/Projector.tsx) supply their own
+   on-theme triangle steppers, so the browser's native spinner is hidden --
+   it renders as a grey OS widget that ignores the palette entirely, and in
+   most browsers only appears on hover with a hit target a few pixels tall. */
+.proj-num::-webkit-outer-spin-button,
+.proj-num::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.proj-num {
+  -moz-appearance: textfield;
+  appearance: textfield;
 }
 
 /* Ticker tape (components/TickerTape.tsx). The track holds two identical

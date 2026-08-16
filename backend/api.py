@@ -90,6 +90,24 @@ def get_stock(ticker: str):
     return data
 
 
+STOCK_RANGES = set(stock_info.STOCK_RANGE_SPECS.keys())
+
+
+@app.get("/api/stock/{ticker}/history")
+def get_stock_history(ticker: str, range: str = "1y"):
+    if range not in STOCK_RANGES:
+        raise HTTPException(status_code=400, detail=f"range must be one of {sorted(STOCK_RANGES)}")
+    return _safe_call(stock_info.get_stock_history, ticker, range)
+
+
+@app.get("/api/stock/{ticker}/analysts")
+def get_stock_analysts(ticker: str):
+    """Price targets, the monthly recommendation trend and recent rating
+    changes. Any of the three can come back null for a ticker analysts
+    don't cover -- that's a legitimate answer, not an error."""
+    return _safe_call(stock_info.get_analyst_insights, ticker)
+
+
 @app.get("/api/stock/{ticker}/quote")
 def get_stock_quote(ticker: str):
     """Lightweight price+EPS lookup -- used by the Projector to seed its

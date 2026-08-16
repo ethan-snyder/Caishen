@@ -3,6 +3,7 @@ import { fetchBonds, type BondData, type FredYieldRow } from '@/lib/api'
 import { Loading, ErrorBlock } from './StatusBlock'
 import { useSortableLayout } from '@/lib/layout'
 import { Draggable, AddWidgetTray, EditHint } from './LayoutKit'
+import { Flag } from './Flag'
 
 const border = '1px solid rgba(0,255,136,0.12)'
 
@@ -23,7 +24,7 @@ function SectionHeading({ children }: { children: React.ReactNode }) {
 }
 
 const changeColor = (v: number | null) =>
-  v === null ? '#1D4A30' : v >= 0 ? '#00FF88' : '#FF3B3B'
+  v === null ? '#3C8F5F' : v >= 0 ? '#00FF88' : '#FF3B3B'
 
 /** "+45bp" / "-12bp" between two adjacent yields -- null if either side
  * is missing, so a gap in the curve just shows nothing rather than a
@@ -39,7 +40,7 @@ function formatBp(a: number | null, b: number | null): string | null {
  * the bar-box height it should center against (same as the bars it sits
  * between), so it reads at roughly the curve's baseline regardless of
  * tile size. */
-function GapChip({ bp, height, fontSize = 8 }: { bp: string | null; height: number; fontSize?: number }) {
+function GapChip({ bp, height, fontSize = 11 }: { bp: string | null; height: number; fontSize?: number }) {
   if (!bp) return <div style={{ width: 10 }} />
   const rising = bp.startsWith('+')
   return (
@@ -50,7 +51,7 @@ function GapChip({ bp, height, fontSize = 8 }: { bp: string | null; height: numb
       <div style={{ width: 1, flex: 1, backgroundColor: 'rgba(0,255,136,0.15)' }} />
       <div style={{
         fontFamily: "'JetBrains Mono', monospace", fontSize, whiteSpace: 'nowrap',
-        color: rising ? '#4FD98A' : bp === '+0bp' || bp === '0bp' ? '#2D6644' : '#D97A7A',
+        color: rising ? '#4FD98A' : bp === '+0bp' || bp === '0bp' ? '#52A877' : '#D97A7A',
         padding: '2px 0',
       }}>
         {bp}
@@ -81,14 +82,37 @@ interface CurveEntry {
 const POINT_WIDTH = 60
 const POINT_GAP = 8
 
+/**
+ * Country identity for each curve tile, keyed by the entry key the backend
+ * uses (see FOREIGN_SOVEREIGNS in bonds.py).
+ *
+ * The backend's `name` is a data-series description ("Japan 10Y", "U.K.
+ * 10Y") rather than a country -- accurate for the 10Y baseline it comes
+ * from, but the tile now shows a whole curve, so the tenor in the corner
+ * contradicted the bars underneath it. This maps to the plain country
+ * instead, and pairs it with a flag.
+ */
+const CURVE_COUNTRY: Record<string, { label: string; flag: string }> = {
+  us:    { label: 'United States', flag: 'us' },
+  jgb:   { label: 'Japan',         flag: 'jp' },
+  gilt:  { label: 'U.K.',          flag: 'gb' },
+  bund:  { label: 'Germany',       flag: 'de' },
+  cangb: { label: 'Canada',        flag: 'ca' },
+  acgb:  { label: 'Australia',     flag: 'au' },
+  ntnb:  { label: 'Brazil',        flag: 'br' },
+}
+
 /** Curve tile sized to fit its own points exactly -- a 7-point curve is
  * roughly 3.5x as wide as a 2-point one, so tile size reflects how much
  * curve there actually is to show. Tiles never shrink below that content
  * width; the row they sit in wraps instead of squeezing them. */
 function CurveTile({ entry }: { entry: CurveEntry }) {
-  const { label, name, yieldValue, change, date, points } = entry
+  const { key, label, name, yieldValue, change, date, points } = entry
   const available = points.filter(p => p.yield !== null)
   const maxYield = available.length ? Math.max(...available.map(p => p.yield as number)) : 1
+  // Falls back to the backend's series name for any sovereign not in the
+  // map, so adding a country server-side can never blank the corner.
+  const country = CURVE_COUNTRY[key]
 
   return (
     <div style={{
@@ -99,31 +123,35 @@ function CurveTile({ entry }: { entry: CurveEntry }) {
         <span style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: 20, color: '#C8FFD4', letterSpacing: '0.04em' }}>
           {label}
         </span>
-        <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 11, color: '#2D6644' }}>
-          {name}
+        <span style={{
+          display: 'inline-flex', alignItems: 'center', gap: 7,
+          fontFamily: "'JetBrains Mono', monospace", fontSize: 14, color: '#52A877',
+        }}>
+          {country?.label ?? name}
+          <Flag code={country?.flag ?? null} size={20} />
         </span>
       </div>
 
       <div style={{ display: 'flex', alignItems: 'baseline', gap: 14, marginBottom: 14 }}>
         <div style={{
           fontFamily: "'JetBrains Mono', monospace", fontSize: 44, fontWeight: 600,
-          color: yieldValue !== null ? '#00FF88' : '#1D4A30',
+          color: yieldValue !== null ? '#00FF88' : '#3C8F5F',
           textShadow: yieldValue !== null ? '0 0 10px rgba(0,255,136,0.4)' : 'none',
           letterSpacing: '-0.02em', lineHeight: 1,
         }}>
           {yieldValue !== null ? `${yieldValue.toFixed(2)}%` : '—'}
         </div>
-        <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 13, color: changeColor(change) }}>
+        <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 15, color: changeColor(change) }}>
           {change !== null ? `${change >= 0 ? '+' : ''}${change.toFixed(2)}` : '—'}
         </span>
-        <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 9, color: '#1D4A30', marginLeft: 'auto' }}>
+        <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: '#3C8F5F', marginLeft: 'auto' }}>
           {date ?? ''}
         </span>
       </div>
 
       <div style={{ flex: 1, display: 'flex', alignItems: 'flex-end', gap: POINT_GAP, minHeight: 90 }}>
         {points.length === 0 && (
-          <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10, color: '#1D4A30' }}>
+          <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 13, color: '#3C8F5F' }}>
             {'// no curve data available'}
           </div>
         )}
@@ -134,7 +162,7 @@ function CurveTile({ entry }: { entry: CurveEntry }) {
               {/* Fixed-height box so every bar's bottom edge sits on the
                   same plane regardless of the value text above it. */}
               <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-end', width: '100%', height: 90 }}>
-                <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 11, color: '#00FF88', textShadow: '0 0 4px #00FF88', marginBottom: 4, whiteSpace: 'nowrap' }}>
+                <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 14, color: '#00FF88', textShadow: '0 0 4px #00FF88', marginBottom: 4, whiteSpace: 'nowrap' }}>
                   {p.yield !== null ? `${p.yield.toFixed(2)}%` : '—'}
                 </div>
                 <div style={{
@@ -154,7 +182,7 @@ function CurveTile({ entry }: { entry: CurveEntry }) {
                   )}
                 </div>
               </div>
-              <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 9, color: '#2D6644', letterSpacing: '0.06em', marginTop: 4, whiteSpace: 'nowrap' }}>{p.tenor}</div>
+              <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: '#52A877', letterSpacing: '0.06em', marginTop: 4, whiteSpace: 'nowrap' }}>{p.tenor}</div>
             </div>
           </div>
         ))}
@@ -175,9 +203,11 @@ function CurveBars({ curve, barHeight }: { curve: FredYieldRow['curve']; barHeig
     <div style={{ display: 'flex', alignItems: 'flex-end', gap: 2, marginTop: 6 }}>
       {points.map((p, i) => (
         <div key={p.tenor} style={{ display: 'flex', alignItems: 'flex-end', flex: i === 0 ? '0 0 auto' : 1, minWidth: 0 }}>
+          {/* The slot widened along with the type: these bp gaps were 6px
+              text in a 16px column, the least readable thing on the page. */}
           {i > 0 && (
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: barHeight, flexShrink: 0, width: 16 }}>
-              <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 6, color: '#2D6644', whiteSpace: 'nowrap' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: barHeight, flexShrink: 0, width: 26 }}>
+              <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 11, color: '#52A877', whiteSpace: 'nowrap' }}>
                 {formatBp(points[i - 1].yield, p.yield) ?? ''}
               </span>
             </div>
@@ -191,7 +221,7 @@ function CurveBars({ curve, barHeight }: { curve: FredYieldRow['curve']; barHeig
                 border: '1px solid rgba(0,255,136,0.3)',
               }} />
             </div>
-            <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 7, color: '#2D6644', letterSpacing: '0.02em', marginTop: 2, whiteSpace: 'nowrap' }}>
+            <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: '#52A877', letterSpacing: '0.02em', marginTop: 3, whiteSpace: 'nowrap' }}>
               {p.tenor}
             </div>
           </div>
@@ -218,24 +248,24 @@ function YieldTile({ row, showDate, square }: { row: FredYieldRow; showDate?: bo
       ...(square ? { width: 110, aspectRatio: '1', display: 'flex', flexDirection: 'column', justifyContent: 'center' } : {}),
     }}>
       <div style={{ display: 'flex', alignItems: 'baseline', marginBottom: 8 }}>
-        <span style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: 13, color: '#C8FFD4' }}>
+        <span style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: 15, color: '#C8FFD4' }}>
           {row.label}
         </span>
       </div>
       <div style={{
         fontFamily: "'JetBrains Mono', monospace", fontSize: 24, fontWeight: 600,
-        color: row.yield !== null ? '#00FF88' : '#1D4A30',
+        color: row.yield !== null ? '#00FF88' : '#3C8F5F',
         textShadow: row.yield !== null ? '0 0 8px rgba(0,255,136,0.35)' : 'none',
         letterSpacing: '-0.02em',
       }}>
         {row.yield !== null ? `${row.yield.toFixed(2)}%` : '—'}
       </div>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', gap: 8, marginTop: 4 }}>
-        <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 11, color: changeColor(row.change) }}>
+        <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 14, color: changeColor(row.change) }}>
           {row.change !== null ? `${row.change >= 0 ? '+' : ''}${row.change.toFixed(2)}` : '—'}
         </span>
         {showDate && (
-          <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 8, color: '#1D4A30' }}>
+          <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 11, color: '#3C8F5F' }}>
             {row.date ?? ''}
           </span>
         )}
@@ -343,7 +373,7 @@ export default function Bonds() {
                 ))}
               </div>
               <AddWidgetTray api={sovereignTiles} title="MORE COUNTRIES" />
-              <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 9, color: '#1D4A30', marginTop: 10 }}>
+              <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: '#3C8F5F', marginTop: 10 }}>
                 {'// US Treasury, JGB, and GILT show by default; other countries are hidden until added above. Tile width is proportional to tenor count. US Treasury (Treasury.gov, daily, 1-MO-30-YR) is widest; JGB (Japan MOF, 1Y/5Y/10Y/30Y) narrower; GILT (3-MO+10-YR) narrower still; BUND/CANGB/ACGB/BRA (mostly 3-MO+10-YR) smallest. All real data — no interpolation, no invented tenors. bp figures between bars are the gap to the next tenor (curve steepness), not day-over-day change.'}
               </div>
             </div>
@@ -366,7 +396,7 @@ export default function Bonds() {
                 })}
               </div>
               <AddWidgetTray api={corporateTiles} title="HIDDEN RATING TIERS" />
-              <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 9, color: '#1D4A30', marginTop: 10 }}>
+              <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: '#3C8F5F', marginTop: 10 }}>
                 {'// ICE BofA index effective yields by rating tier (daily, via FRED) — investment-grade (AAA-BBB) through high-yield/speculative (BB-CCC-D). Per-issuer bond quotes are subscription-only data, so these are the benchmark curves those issuers actually price against rather than invented per-company yields. CCC-D is the distressed end (ICE BofA folds CCC/CC/C/D into one bucket, no free source publishes D separately) — a widening gap vs. BB is a classic risk-off signal.'}
               </div>
             </div>
@@ -378,7 +408,7 @@ export default function Bonds() {
 
       {data && <AddWidgetTray api={sections} title="HIDDEN SECTIONS" />}
 
-      <div style={{ marginTop: 12, padding: '9px 12px', backgroundColor: 'rgba(0,255,136,0.02)', border: '1px solid rgba(0,255,136,0.07)', fontFamily: "'JetBrains Mono', monospace", fontSize: 10, color: '#1D4A30' }}>
+      <div style={{ marginTop: 12, padding: '9px 12px', backgroundColor: 'rgba(0,255,136,0.02)', border: '1px solid rgba(0,255,136,0.07)', fontFamily: "'JetBrains Mono', monospace", fontSize: 13, color: '#3C8F5F' }}>
         {'// DATA SOURCES: Treasury.gov (U.S. curve, daily; yfinance fallback) · FRED/OECD (10Y sovereign baseline, monthly) · Japan MOF, Bank of Canada, Bank of England (JGB/CANGB/GILT curves, daily) · FRED/ICE BofA (corporate rating tiers, daily). Corporate + sovereign sections need FRED_API_KEY set.'}
       </div>
     </div>

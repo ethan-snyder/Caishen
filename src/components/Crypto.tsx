@@ -3,6 +3,7 @@ import {
   fetchCrypto, fetchCryptoHistory,
   type CryptoCoin, type CryptoRange, type CryptoHistoryPoint,
 } from '@/lib/api'
+import { AxisLabels, GridLines } from './ChartGrid'
 import { formatCryptoPrice, formatLargeNum, formatPct, posNegColor } from '@/lib/format'
 import { Loading, ErrorBlock } from './StatusBlock'
 import { useSortableLayout } from '@/lib/layout'
@@ -18,7 +19,7 @@ function LiveBadge() {
   return (
     <span style={{
       display: 'inline-flex', alignItems: 'center', gap: 4,
-      fontFamily: "'JetBrains Mono', monospace", fontSize: 9,
+      fontFamily: "'JetBrains Mono', monospace", fontSize: 12,
       color: '#00FF88', letterSpacing: '0.08em',
     }}>
       <span className="blink" style={{
@@ -60,7 +61,7 @@ function PriceChart({ points, range, color, height = 140 }: {
     return (
       <div style={{
         height, display: 'flex', alignItems: 'center', justifyContent: 'center',
-        fontFamily: "'JetBrains Mono', monospace", fontSize: 11, color: '#1D4A30',
+        fontFamily: "'JetBrains Mono', monospace", fontSize: 14, color: '#3C8F5F',
       }}>
         not enough history for this range
       </div>
@@ -98,14 +99,7 @@ function PriceChart({ points, range, color, height = 140 }: {
   return (
     <div>
       <div style={{ display: 'flex', gap: 10 }}>
-        <div style={{
-          display: 'flex', flexDirection: 'column', justifyContent: 'space-between',
-          fontFamily: "'JetBrains Mono', monospace", fontSize: 10, color: '#4a5a52',
-          textAlign: 'right', minWidth: 76, flexShrink: 0,
-        }}>
-          <span>{formatCryptoPrice(max)}</span>
-          <span>{formatCryptoPrice(min)}</span>
-        </div>
+        <AxisLabels min={min} max={max} height={h} minWidth={76} format={formatCryptoPrice} />
         <div style={{ position: 'relative', flex: 1 }}>
           <svg
             viewBox={`0 0 ${w} ${h}`} width="100%" height={h} preserveAspectRatio="none"
@@ -113,6 +107,7 @@ function PriceChart({ points, range, color, height = 140 }: {
             onMouseLeave={() => setHover(null)}
             style={{ cursor: 'crosshair', display: 'block', overflow: 'visible' }}
           >
+            <GridLines w={w} h={h} />
             <defs>
               <linearGradient id={fillId} x1="0" y1="0" x2="0" y2="1">
                 <stop offset="0%" stopColor={lineColor} stopOpacity={0.25} />
@@ -147,18 +142,18 @@ function PriceChart({ points, range, color, height = 140 }: {
               left: `${tooltipPct}%`,
               transform: tooltipPct > 65 ? 'translate(-100%, -100%)' : 'translate(0, -100%)',
               backgroundColor: '#0A1420', border: `1px solid ${lineColor}`, padding: '5px 10px',
-              fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: '#C8FFD4',
+              fontFamily: "'JetBrains Mono', monospace", fontSize: 15, color: '#C8FFD4',
               whiteSpace: 'nowrap', pointerEvents: 'none', zIndex: 10,
             }}>
               <div style={{ color: lineColor, fontWeight: 600 }}>{formatCryptoPrice(hoverPoint.value)}</div>
-              <div style={{ fontSize: 10, color: '#4a5a52', marginTop: 1 }}>{formatHistoryDate(hoverPoint.date, range)}</div>
+              <div style={{ fontSize: 13, color: '#4a5a52', marginTop: 1 }}>{formatHistoryDate(hoverPoint.date, range)}</div>
             </div>
           )}
         </div>
       </div>
       <div style={{
         display: 'flex', justifyContent: 'space-between', marginLeft: 86,
-        fontFamily: "'JetBrains Mono', monospace", fontSize: 10, color: '#1D4A30', marginTop: 6,
+        fontFamily: "'JetBrains Mono', monospace", fontSize: 13, color: '#3C8F5F', marginTop: 6,
       }}>
         <span>{formatHistoryDate(points[0].date, range)}</span>
         <span>{formatHistoryDate(points[points.length - 1].date, range)}</span>
@@ -170,8 +165,8 @@ function PriceChart({ points, range, color, height = 140 }: {
 function Metric({ label, value, color }: { label: string; value: string; color?: string }) {
   return (
     <div style={{ backgroundColor: '#03080F', padding: '7px 9px' }}>
-      <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 8, color: '#1D4A30', letterSpacing: '0.1em', marginBottom: 3 }}>{label}</div>
-      <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: color ?? '#4DCC88' }}>{value}</div>
+      <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 11, color: '#3C8F5F', letterSpacing: '0.1em', marginBottom: 3 }}>{label}</div>
+      <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 15, color: color ?? '#4DCC88' }}>{value}</div>
     </div>
   )
 }
@@ -185,8 +180,8 @@ function ChangeBadge({ label, value }: { label: string; value: number | null }) 
       border: `1px solid ${value != null && value >= 0 ? 'rgba(0,255,136,0.18)' : 'rgba(255,59,59,0.18)'}`,
       padding: '5px 4px', flex: 1,
     }}>
-      <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 8, color: '#1D4A30', letterSpacing: '0.08em' }}>{label}</span>
-      <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 11, color: c, textShadow: `0 0 5px ${c}` }}>{formatPct(value)}</span>
+      <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 11, color: '#3C8F5F', letterSpacing: '0.08em' }}>{label}</span>
+      <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 14, color: c, textShadow: `0 0 5px ${c}` }}>{formatPct(value)}</span>
     </div>
   )
 }
@@ -243,7 +238,7 @@ function CoinDetail({ coin, tick, isLive }: { coin: CryptoCoin; tick: LiveTick |
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', flexWrap: 'wrap', gap: 10, marginBottom: 4 }}>
         <div style={{ display: 'flex', alignItems: 'baseline', gap: 10 }}>
           <span style={{ fontFamily: "'VT323', monospace", fontSize: 26, color: '#C8FFD4' }}>{coin.name}</span>
-          <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 11, color: '#2D6644', letterSpacing: '0.1em' }}>{coin.symbol}/USD</span>
+          <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 14, color: '#52A877', letterSpacing: '0.1em' }}>{coin.symbol}/USD</span>
         </div>
         <span style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
           {isLive && <LiveBadge />}
@@ -268,8 +263,8 @@ function CoinDetail({ coin, tick, isLive }: { coin: CryptoCoin; tick: LiveTick |
             type="button"
             onClick={() => setRange(r.key)}
             style={{
-              fontFamily: "'Share Tech Mono', monospace", fontSize: 10,
-              color: range === r.key ? '#00FF88' : '#2D6644',
+              fontFamily: "'Share Tech Mono', monospace", fontSize: 13,
+              color: range === r.key ? '#00FF88' : '#52A877',
               background: range === r.key ? 'rgba(0,255,136,0.08)' : 'transparent',
               border: `1px solid ${range === r.key ? 'rgba(0,255,136,0.3)' : 'rgba(0,255,136,0.1)'}`,
               padding: '3px 9px', cursor: 'pointer', letterSpacing: '0.06em',
@@ -359,7 +354,7 @@ export default function Crypto() {
           CRYPTO MARKETS
         </span>
         {coins && coins.length > 0 && (
-          <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10, color: '#2D6644' }}>
+          <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 13, color: '#52A877' }}>
             TOTAL MKTCAP: <span style={{ color: '#00FF88' }}>{formatLargeNum(totalMktCap, '$')}</span>
             &nbsp;·&nbsp;BTC DOM: <span style={{ color: '#FFD700' }}>{btc?.dominance != null ? `${btc.dominance.toFixed(1)}%` : '—'}</span>
           </span>
@@ -413,12 +408,12 @@ export default function Crypto() {
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 14 }}>
                 <div>
                   <div style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: 18, color: '#C8FFD4', marginBottom: 3 }}>
-                    {c.rank != null && <span style={{ color: '#1D4A30', marginRight: 8 }}>#{c.rank}</span>}
+                    {c.rank != null && <span style={{ color: '#3C8F5F', marginRight: 8 }}>#{c.rank}</span>}
                     {c.name}
                   </div>
-                  <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 11, color: '#2D6644', letterSpacing: '0.1em' }}>{c.symbol}/USD</div>
+                  <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 14, color: '#52A877', letterSpacing: '0.1em' }}>{c.symbol}/USD</div>
                 </div>
-                <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10, color: '#1D4A30' }}>
+                <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 13, color: '#3C8F5F' }}>
                   {isOpen ? '▲ COLLAPSE' : '▼ EXPAND'}
                 </span>
               </div>
@@ -429,7 +424,7 @@ export default function Crypto() {
                   {formatCryptoPrice(livePrice)}
                 </div>
               </div>
-              <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 13, color: posNegColor(liveAbsChg), marginBottom: 14 }}>
+              <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 15, color: posNegColor(liveAbsChg), marginBottom: 14 }}>
                 {liveAbsChg != null ? `${liveAbsChg >= 0 ? '+' : ''}$${Math.abs(liveAbsChg).toLocaleString('en-US', { maximumFractionDigits: 3 })}` : '—'}
               </div>
 
@@ -456,7 +451,7 @@ export default function Crypto() {
       )}
       {coins && <AddWidgetTray api={cards} title="HIDDEN COINS" />}
 
-      <div style={{ marginTop: 12, padding: '9px 12px', backgroundColor: 'rgba(0,255,136,0.02)', border: '1px solid rgba(0,255,136,0.07)', fontFamily: "'JetBrains Mono', monospace", fontSize: 10, color: '#1D4A30' }}>
+      <div style={{ marginTop: 12, padding: '9px 12px', backgroundColor: 'rgba(0,255,136,0.02)', border: '1px solid rgba(0,255,136,0.07)', fontFamily: "'JetBrains Mono', monospace", fontSize: 13, color: '#3C8F5F' }}>
         {'// PRICE/CHANGE/24H HI-LO: live via Coinbase WebSocket where available (LIVE badge) · everything else (rank, dominance, supply, ATH/ATL, history): CoinGecko · click a coin to expand'}
       </div>
     </div>

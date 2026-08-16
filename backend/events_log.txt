@@ -986,3 +986,71 @@
 2026-08-15 23:11:34.540 [INFO] Fetching top 10 cryptocurrencies (full data)
 2026-08-15 23:11:34.716 [WARNING] Couldn't fetch Coinbase product list (401 Client Error: Unauthorized for url: https://api.coinbase.com/api/v3/brokerage/products)
 2026-08-15 23:12:04.243 [INFO] Fetching market overview (full data)
+2026-08-15 23:17:50.798 [INFO] Fetching stock data (full) for AAPL
+2026-08-15 23:18:06.726 [INFO] Fetching stock data (full) for MSFT
+2026-08-15 23:18:10.330 [INFO] Fetching stock data (full) for AAPL
+2026-08-15 23:18:19.062 [INFO] Fetching stock data (full) for FUBO
+2026-08-15 23:18:24.141 [INFO] Fetching stock data (full) for SOFI
+2026-08-15 23:18:48.898 [INFO] Fetching market overview (full data)
+2026-08-15 23:18:49.730 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F', 'GC=F', 'BTC-USD', 'ETH-USD', '^KS11', 'QQQ', '^N225']
+2026-08-15 23:19:51.433 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F', 'GC=F', 'BTC-USD', 'ETH-USD', '^KS11', 'QQQ', '^N225']
+2026-08-15 23:20:01.577 [INFO] Fetching top 10 cryptocurrencies (full data)
+2026-08-15 23:20:02.042 [WARNING] Couldn't fetch Coinbase product list (401 Client Error: Unauthorized for url: https://api.coinbase.com/api/v3/brokerage/products)
+2026-08-15 23:20:02.147 [WARNING] Couldn't fetch Coinbase product list (401 Client Error: Unauthorized for url: https://api.coinbase.com/api/v3/brokerage/products)
+2026-08-15 23:20:03.183 [WARNING] Couldn't fetch Coinbase product list (401 Client Error: Unauthorized for url: https://api.coinbase.com/api/v3/brokerage/products)
+2026-08-15 23:20:03.378 [INFO] Fetching top 10 cryptocurrencies (full data)
+2026-08-15 23:20:21.966 [INFO] Fetching bond data (full)
+2026-08-15 23:20:31.569 [WARNING] Couldn't fetch Brazil 10Y [IRLTLT01BRM156N] (Bad Request.  The series does not exist.)
+2026-08-15 23:20:33.666 [INFO] Fetching bond data (full)
+2026-08-15 23:20:42.174 [WARNING] Couldn't fetch Brazil 10Y [IRLTLT01BRM156N] (Bad Request.  The series does not exist.)
+2026-08-15 23:22:31.407 [INFO] Fetching top 10 cryptocurrencies (full data)
+2026-08-15 23:22:31.547 [WARNING] Couldn't fetch Coinbase product list (401 Client Error: Unauthorized for url: https://api.coinbase.com/api/v3/brokerage/products)
+2026-08-15 23:22:31.623 [WARNING] Couldn't fetch Coinbase product list (401 Client Error: Unauthorized for url: https://api.coinbase.com/api/v3/brokerage/products)
+2026-08-15 23:22:31.653 [INFO] Fetching top 10 cryptocurrencies (full data)
+2026-08-15 23:22:31.745 [WARNING] Couldn't fetch Coinbase product list (401 Client Error: Unauthorized for url: https://api.coinbase.com/api/v3/brokerage/products)
+2026-08-15 23:24:46.299 [INFO] Fetching top 10 cryptocurrencies (full data)
+2026-08-15 23:24:46.437 [WARNING] Couldn't fetch Coinbase product list (401 Client Error: Unauthorized for url: https://api.coinbase.com/api/v3/brokerage/products)
+2026-08-15 23:24:46.527 [WARNING] Couldn't fetch Coinbase product list (401 Client Error: Unauthorized for url: https://api.coinbase.com/api/v3/brokerage/products)
+2026-08-15 23:24:46.562 [INFO] Fetching top 10 cryptocurrencies (full data)
+2026-08-15 23:24:46.643 [WARNING] Couldn't fetch Coinbase product list (401 Client Error: Unauthorized for url: https://api.coinbase.com/api/v3/brokerage/products)
+2026-08-15 23:29:20.479 [INFO] Fetching stock data (full) for AAPL
+2026-08-15 23:29:33.882 [INFO] Fetching stock data (full) for AAPL
+2026-08-15 23:36:37.921 [INFO] Session started
+2026-08-15 23:36:38.803 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F', 'GC=F', 'BTC-USD', 'ETH-USD', '^KS11', 'QQQ', '^N225']
+2026-08-15 23:36:41.434 [INFO] Session started
+2026-08-15 23:36:42.222 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F', 'GC=F', 'BTC-USD', 'ETH-USD', '^KS11', 'QQQ', '^N225']
+2026-08-15 23:36:46.474 [INFO] Session started
+2026-08-15 23:36:47.329 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F', 'GC=F', 'BTC-USD', 'ETH-USD', '^KS11', 'QQQ', '^N225']
+2026-08-15 23:36:52.128 [INFO] Fetching market overview (full data)
+2026-08-15 23:37:03.707 [INFO] Session started
+2026-08-15 23:37:04.611 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F', 'GC=F', 'BTC-USD', 'ETH-USD', '^KS11', 'QQQ', '^N225']
+2026-08-15 23:37:07.869 [INFO] Session started
+2026-08-15 23:37:08.751 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F', 'GC=F', 'BTC-USD', 'ETH-USD', '^KS11', 'QQQ', '^N225']
+2026-08-15 23:37:14.538 [INFO] Session started
+2026-08-15 23:37:15.369 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F', 'GC=F', 'BTC-USD', 'ETH-USD', '^KS11', 'QQQ', '^N225']
+2026-08-15 23:37:47.585 [INFO] Fetching top 10 cryptocurrencies (full data)
+2026-08-15 23:37:47.688 [WARNING] Couldn't fetch Coinbase product list (401 Client Error: Unauthorized for url: https://api.coinbase.com/api/v3/brokerage/products)
+2026-08-15 23:37:47.758 [WARNING] Couldn't fetch Coinbase product list (401 Client Error: Unauthorized for url: https://api.coinbase.com/api/v3/brokerage/products)
+2026-08-15 23:37:49.083 [INFO] Fetching top 10 cryptocurrencies (full data)
+2026-08-15 23:37:49.160 [WARNING] Couldn't fetch Coinbase product list (401 Client Error: Unauthorized for url: https://api.coinbase.com/api/v3/brokerage/products)
+2026-08-15 23:40:09.936 [INFO] Fetching stock data (full) for AAPL
+2026-08-15 23:40:11.259 [INFO] Fetching analyst insights for AAPL
+2026-08-15 23:40:11.895 [INFO] Fetching analyst insights for AAPL
+2026-08-15 23:40:57.414 [INFO] Fetching market overview (full data)
+2026-08-15 23:45:16.423 [INFO] Fetching market overview (full data)
+2026-08-15 23:45:24.319 [INFO] Fetching stock data (full) for AAPL
+2026-08-15 23:45:25.517 [INFO] Fetching analyst insights for AAPL
+2026-08-15 23:45:26.416 [INFO] Fetching analyst insights for AAPL
+2026-08-15 23:45:28.920 [INFO] Fetching top 10 cryptocurrencies (full data)
+2026-08-15 23:45:29.047 [WARNING] Couldn't fetch Coinbase product list (401 Client Error: Unauthorized for url: https://api.coinbase.com/api/v3/brokerage/products)
+2026-08-15 23:45:29.189 [WARNING] Couldn't fetch Coinbase product list (401 Client Error: Unauthorized for url: https://api.coinbase.com/api/v3/brokerage/products)
+2026-08-15 23:45:30.476 [INFO] Fetching top 10 cryptocurrencies (full data)
+2026-08-15 23:45:30.645 [WARNING] Couldn't fetch Coinbase product list (401 Client Error: Unauthorized for url: https://api.coinbase.com/api/v3/brokerage/products)
+2026-08-15 23:45:40.590 [INFO] Fetching top 10 cryptocurrencies (full data)
+2026-08-15 23:45:40.902 [INFO] Fetching top 10 cryptocurrencies (full data)
+2026-08-15 23:45:41.024 [WARNING] Couldn't fetch Coinbase product list (401 Client Error: Unauthorized for url: https://api.coinbase.com/api/v3/brokerage/products)
+2026-08-15 23:45:41.130 [WARNING] Couldn't fetch Coinbase product list (401 Client Error: Unauthorized for url: https://api.coinbase.com/api/v3/brokerage/products)
+2026-08-15 23:46:01.873 [INFO] Fetching bond data (full)
+2026-08-15 23:46:10.935 [WARNING] Couldn't fetch Brazil 10Y [IRLTLT01BRM156N] (Bad Request.  The series does not exist.)
+2026-08-15 23:46:13.512 [INFO] Fetching bond data (full)
+2026-08-15 23:46:23.673 [WARNING] Couldn't fetch Brazil 10Y [IRLTLT01BRM156N] (Bad Request.  The series does not exist.)

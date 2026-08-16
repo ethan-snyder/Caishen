@@ -50,6 +50,87 @@ export interface StockData {
   marketCap: string
   rf: string
   erp: string
+
+  volume: number | null
+  avgVolume: number | null
+  /** ISO date the stock must be held by to receive the dividend. */
+  exDividendDate: string | null
+  /** ISO date the dividend is actually paid. */
+  dividendDate: string | null
+
+  /** Fractions, not percentages (0.243 = 24.3%). ROE can legitimately
+   * exceed 1.0, so these are never rescaled by magnitude. */
+  profitMargin: number | null
+  operatingMargin: number | null
+  returnOnAssets: number | null
+  returnOnEquity: number | null
+
+  revenue: number | null
+  totalCash: number | null
+  totalDebt: number | null
+  /** yfinance reports this percentage-style (154.5 means 1.545x). */
+  debtToEquity: number | null
+  netIncome: number | null
+  ebitda: number | null
+}
+
+export type StockRange = '1d' | '1w' | '1mo' | '3mo' | '6mo' | '1y' | '3y' | '5y' | 'all'
+
+export interface StockHistoryPoint {
+  date: string
+  value: number
+}
+
+export interface StockHistory {
+  ticker: string
+  range: StockRange
+  points: StockHistoryPoint[]
+}
+
+export function fetchStockHistory(ticker: string, range: StockRange): Promise<StockHistory> {
+  return request<StockHistory>(`/api/stock/${encodeURIComponent(ticker)}/history?range=${range}`)
+}
+
+export interface AnalystPriceTargets {
+  current: number | null
+  low: number | null
+  mean: number | null
+  median: number | null
+  high: number | null
+}
+
+export interface RecommendationPeriod {
+  /** yfinance's relative label: "0m" = current month, "-1m" = last. */
+  period: string
+  strong_buy: number
+  buy: number
+  hold: number
+  sell: number
+  strong_sell: number
+  total: number
+}
+
+export interface RatingChange {
+  date: string
+  firm: string | null
+  action: string | null
+  to_grade: string | null
+  from_grade: string | null
+}
+
+export interface AnalystInsights {
+  ticker: string
+  /** Null when analysts don't cover this ticker -- render nothing rather
+   * than an empty chart, which reads as "zero analysts". */
+  price_targets: AnalystPriceTargets | null
+  recommendations: RecommendationPeriod[] | null
+  latest_ratings: RatingChange[] | null
+  recommendation: string | null
+  num_analysts: number | null
+}
+
+export function fetchAnalystInsights(ticker: string): Promise<AnalystInsights> {
+  return request<AnalystInsights>(`/api/stock/${encodeURIComponent(ticker)}/analysts`)
 }
 
 export interface StockQuote {
