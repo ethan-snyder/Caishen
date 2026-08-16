@@ -141,6 +141,21 @@ export interface StockQuote {
   change_pct: number | null
   pe: number | null
   eps: number | null
+
+  // Seeds for the Projector's non-EPS valuation models.
+  revenue: number | null
+  net_income: number | null
+  /** Fraction, not percent (0.243 = 24.3%). */
+  profit_margin: number | null
+  shares_outstanding: number | null
+  ebitda: number | null
+  total_debt: number | null
+  total_cash: number | null
+  /** total_debt - total_cash. Negative means net cash, which raises
+   * equity value in the EV/EBITDA bridge. Null when either side is
+   * missing rather than assuming zero debt. */
+  net_debt: number | null
+  dividend_rate: number | null
 }
 
 export const fetchStock = (ticker: string) => request<StockData>(`/api/stock/${encodeURIComponent(ticker)}`)
@@ -232,17 +247,21 @@ export interface HeatmapTicker {
   ticker: string
   name: string
   sector: string
-  /** 3 = largest tile, 1 = smallest -- a static rank-based bucket, not a
-   * live market cap (see backend/heatmap.py for why). */
-  size_tier: 1 | 2 | 3
+  /** Approximate index weight in percent. Drives treemap tile area, and
+   * is a static table rather than a live figure -- see backend/heatmap.py
+   * for why. Not displayed as a quoted number anywhere. */
+  weight: number
   price: number | null
+  change: number | null
   change_pct: number | null
+  /** Live price x a static share count, so it tracks the day's move
+   * rather than being a frozen snapshot. Approximate — see backend. */
+  market_cap: number | null
 }
 
 export interface HeatmapData {
   tickers: HeatmapTicker[]
-  /** Always "sp500_top50" today -- the top 50 S&P 500 names by weight,
-   * not all 500 (one batched request vs. hundreds; see backend). */
+  /** "nasdaq100" — the full NDX constituent list. */
   universe: string
 }
 

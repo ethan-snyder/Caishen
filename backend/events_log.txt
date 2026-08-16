@@ -1114,3 +1114,26 @@
 2026-08-16 00:26:07.836 [WARNING] Fed feed monetary failed (not well-formed (invalid token): line 1, column 1)
 2026-08-16 00:26:07.857 [WARNING] Fed feed speeches failed (not well-formed (invalid token): line 1, column 1)
 2026-08-16 00:34:20.484 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F', 'GC=F', 'BTC-USD', 'ETH-USD', '^KS11', 'QQQ', '^N225']
+2026-08-16 00:42:06.980 [INFO] Fetching stock data (full) for AAPL
+2026-08-16 00:42:08.096 [INFO] Fetching analyst insights for AAPL
+2026-08-16 00:42:08.671 [INFO] Fetching analyst insights for AAPL
+2026-08-16 13:14:50.439 [INFO] Session started
+2026-08-16 13:15:02.345 [INFO] Fetching market overview (full data)
+2026-08-16 13:15:02.891 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F', 'GC=F', 'BTC-USD', 'ETH-USD', '^KS11', 'QQQ', '^N225']
+2026-08-16 13:15:13.454 [INFO] Fetching S&P 500 heatmap (top 50 by weight)
+2026-08-16 13:16:46.683 [INFO] Fetching economics page data (FRED indicators + calendar + Fed feeds)
+2026-08-16 13:16:54.532 [WARNING] Fed feed monetary failed (not well-formed (invalid token): line 1, column 1)
+2026-08-16 13:16:54.543 [WARNING] Fed feed speeches failed (not well-formed (invalid token): line 1, column 1)
+2026-08-16 13:21:31.355 [INFO] Fetching market overview (full data)
+2026-08-16 13:29:21.128 [INFO] Fetching market overview (full data)
+2026-08-16 13:29:21.129 [INFO] Fetching S&P 500 heatmap (top 50 by weight)
+2026-08-16 13:29:30.087 [INFO] Session started
+2026-08-16 13:29:30.483 [INFO] Fetching market overview (full data)
+2026-08-16 13:29:31.110 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F', 'GC=F', 'BTC-USD', 'ETH-USD', '^KS11', 'QQQ', '^N225']
+2026-08-16 13:31:29.601 [INFO] Fetching NASDAQ-100 heatmap (103 constituents)
+2026-08-16 13:38:20.703 [INFO] Session started
+2026-08-16 13:38:26.572 [INFO] Session started
+2026-08-16 13:38:27.084 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F', 'GC=F', 'BTC-USD', 'ETH-USD', '^KS11', 'QQQ', '^N225']
+2026-08-16 13:38:35.719 [INFO] Session started
+2026-08-16 13:38:36.684 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F', 'GC=F', 'BTC-USD', 'ETH-USD', '^KS11', 'QQQ', '^N225']
+2026-08-16 13:39:19.602 [INFO] Fetching NASDAQ-100 heatmap (100 constituents)

@@ -561,6 +561,15 @@ def get_quote(ticker_symbol):
     if change_pct is None and prev_close and price:
         change_pct = (price - prev_close) / prev_close * 100
 
+    # Net debt drives the EV/EBITDA bridge. Computed here rather than in
+    # the frontend so the "cash exceeds debt" case (net cash, a negative
+    # number that *raises* equity value) is handled in one place -- and
+    # left None when either side is missing, since treating an unknown
+    # debt load as zero would silently overstate the equity value.
+    total_debt = _safe(info, "totalDebt")
+    total_cash = _safe(info, "totalCash")
+    net_debt = (total_debt - total_cash) if (total_debt is not None and total_cash is not None) else None
+
     return {
         "ticker": ticker_symbol,
         "name": _safe(info, "longName", "shortName", default=ticker_symbol),
@@ -569,6 +578,20 @@ def get_quote(ticker_symbol):
         "change_pct": change_pct,
         "pe": _safe(info, "trailingPE"),
         "eps": _safe(info, "trailingEps") or _safe(info, "forwardEps"),
+
+        # -- seeds for the Projector's other valuation models --
+        # Driver model (revenue x margin / shares):
+        "revenue": _safe(info, "totalRevenue"),
+        "net_income": _safe(info, "netIncomeToCommon"),
+        "profit_margin": _safe(info, "profitMargins"),
+        "shares_outstanding": _safe(info, "sharesOutstanding"),
+        # EV/EBITDA bridge:
+        "ebitda": _safe(info, "ebitda"),
+        "total_debt": total_debt,
+        "total_cash": total_cash,
+        "net_debt": net_debt,
+        # Gordon growth:
+        "dividend_rate": _safe(info, "dividendRate"),
     }
 
 
