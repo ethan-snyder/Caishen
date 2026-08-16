@@ -27,6 +27,13 @@ import yfinance as yf
 from utils import gradient_color, RESET_COLOR
 from logger import log_event, warn
 
+# Above this, a computed dividend yield is treated as untrustworthy data
+# noise (stale/mismatched yfinance fields, one-time distributions counted
+# as dividends) rather than a real number worth displaying -- see usage
+# in get_watchlists_full(). Kept in sync with portfolio.py's constant of
+# the same name.
+DIVIDEND_YIELD_SANITY_CAP = 25
+
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 WATCHLISTS_FILE = os.path.join(SCRIPT_DIR, "watchlists.txt")
 
@@ -179,9 +186,13 @@ def remove_ticker(list_name, ticker):
 def get_watchlists_full():
     """
     Data-only variant for API consumers: for every ticker in every
-    watchlist, pulls price/change plus company name and trailing PE when
-    available (meaningful for stocks; naturally absent for FX/futures/bond
-    tickers, which the frontend shows as "--" for).
+    watchlist, pulls price/change plus company name, valuation ratios,
+    dividend detail and 52-week range when available (meaningful for
+    stocks; naturally absent for FX/futures/bond tickers, which the
+    frontend shows "--" for).
+
+    Every field is a real yfinance value -- anything unavailable for a
+    given ticker stays null rather than being estimated.
     """
     _ensure_watchlists_file()
     watchlists = _parse_watchlists_file()
@@ -192,7 +203,11 @@ def get_watchlists_full():
         for ticker in tickers:
             row = {
                 "ticker": ticker, "name": None, "price": None, "change": None,
-                "change_pct": None, "pe": None,
+                "change_pct": None, "pe": None, "forward_pe": None, "peg": None,
+                "ps": None, "pb": None, "beta": None, "eps": None,
+                "market_cap": None, "dividend_yield": None, "dividend_rate": None,
+                "week52_high": None, "week52_low": None,
+                "volume": None, "avg_volume": None, "sector": None,
             }
             try:
                 tk = yf.Ticker(ticker)
@@ -206,7 +221,51 @@ def get_watchlists_full():
                 try:
                     info = tk.info
                     row["name"] = info.get("longName") or info.get("shortName")
+                    row["sector"] = info.get("sector")
                     row["pe"] = info.get("trailingPE")
+                    row["forward_pe"] = info.get("forwardPE")
+                    row["peg"] = info.get("trailingPegRatio") or info.get("pegRatio")
+                    row["ps"] = info.get("priceToSalesTrailing12Months")
+                    row["pb"] = info.get("priceToBook")
+                    row["beta"] = info.get("beta")
+                    row["eps"] = info.get("trailingEps")
+                    row["market_cap"] = info.get("marketCap")
+                    row["week52_high"] = info.get("fiftyTwoWeekHigh")
+                    row["week52_low"] = info.get("fiftyTwoWeekLow")
+                    row["volume"] = info.get("volume") or info.get("regularMarketVolume")
+                    row["avg_volume"] = info.get("averageVolume")
+
+                    # Same normalization as portfolio.py: dividendRate
+                    # ($/share/yr) is unambiguous, dividendYield isn't
+                    # consistently a fraction vs. a percent across tickers.
+                    price = row["price"] or info.get("currentPrice") or info.get("regularMarketPrice")
+                    div_rate = info.get("dividendRate")
+                    div_yield = info.get("dividendYield")
+                    computed_rate = None
+                    computed_yield = None
+                    if div_rate:
+                        computed_rate = div_rate
+                        computed_yield = (div_rate / price * 100) if price else None
+                    elif div_yield:
+                        pct = div_yield * 100 if div_yield < 1 else div_yield
+                        computed_yield = pct
+                        computed_rate = (price * pct / 100) if price else None
+
+                    # Sanity cap -- see DIVIDEND_YIELD_SANITY_CAP above.
+                    # yfinance's dividendRate can be stale/split-mismatched
+                    # against the current price, or a one-time capital-gains
+                    # distribution can get counted as a dividend and
+                    # annualized, producing an implausible number (e.g. a
+                    # leveraged ETF showing a "58% yield"). Null it out
+                    # rather than display something misleading.
+                    if computed_yield is not None and computed_yield > DIVIDEND_YIELD_SANITY_CAP:
+                        computed_rate = None
+                        computed_yield = None
+
+                    if computed_rate is not None:
+                        row["dividend_rate"] = computed_rate
+                    if computed_yield is not None:
+                        row["dividend_yield"] = computed_yield
                 except Exception:
                     pass
             except Exception as e:

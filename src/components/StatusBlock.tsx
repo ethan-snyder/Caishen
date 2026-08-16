@@ -21,7 +21,7 @@ export function ErrorBlock({ message, onRetry }: { message: string; onRetry?: ()
     }}>
       <div style={{ marginBottom: onRetry ? 10 : 0 }}>{'// ERROR: '}{message}</div>
       {onRetry && (
-        <button onClick={onRetry} style={{
+        <button type="button" onClick={onRetry} style={{
           fontFamily: "'Share Tech Mono', monospace", fontSize: 11, color: '#FF3B3B',
           background: 'rgba(255,59,59,0.1)', border: '1px solid rgba(255,59,59,0.3)',
           padding: '4px 12px', cursor: 'pointer', letterSpacing: '0.06em',

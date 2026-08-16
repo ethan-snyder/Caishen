@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import StockInfo from './components/StockInfo'
 import Projector from './components/Projector'
 import MarketOverview from './components/MarketOverview'
@@ -10,6 +10,7 @@ import Watchlist from './components/Watchlist'
 import Futures from './components/Futures'
 import { LayoutProvider, useSortableLayout } from '@/lib/layout'
 import { EditModeButton, Draggable, AddWidgetTray } from './components/LayoutKit'
+import TickerTape from './components/TickerTape'
 import { ErrorBoundary } from './components/ErrorBoundary'
 
 type Tab = 'stock' | 'projector' | 'market' | 'crypto' | 'bonds' | 'forex' | 'portfolio' | 'watchlist' | 'futures'
@@ -45,8 +46,26 @@ export default function App() {
   )
 }
 
+const TAB_IDS = new Set<string>(TABS.map(t => t.id))
+const ACTIVE_TAB_KEY = 'app.activeTab'
+
 function AppShell() {
-  const [active, setActive] = useState<Tab>('stock')
+  // Persisted so the current page survives a reload. Without this, any
+  // stray full-page navigation (a form submit that slips through, a
+  // refresh, a crash-and-reload) silently dumped the user back on the
+  // default STOCK INFO tab, which read as "the button took me home".
+  const [active, setActive] = useState<Tab>(() => {
+    try {
+      const saved = localStorage.getItem(ACTIVE_TAB_KEY)
+      if (saved && TAB_IDS.has(saved)) return saved as Tab
+    } catch { /* storage unavailable */ }
+    return 'stock'
+  })
+
+  useEffect(() => {
+    try { localStorage.setItem(ACTIVE_TAB_KEY, active) } catch { /* storage unavailable */ }
+  }, [active])
+
   const [time] = useState(() => new Date().toLocaleTimeString('en-US', { hour12: false }))
 
   // One sortable scope per sidebar group. Keeping groups separate (rather
@@ -142,43 +161,24 @@ function AppShell() {
 
       {/* ── Main ── */}
       <div style={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0 }}>
-        {/* Top bar */}
+        {/* Top bar. Previously a shell prompt, the current page's name and
+            a row of data-source status dots -- all of which were purely
+            decorative (the sidebar already shows which page you're on, and
+            the dots were hardcoded rather than reflecting real source
+            health). That space now carries the ticker tape; only the
+            EDIT LAYOUT button, which actually does something, is kept. */}
         <header style={{
           borderBottom: border,
-          padding: '0 28px',
+          padding: '0 0 0 12px',
           height: 44,
           display: 'flex',
           alignItems: 'center',
-          justifyContent: 'space-between',
+          gap: 12,
           backgroundColor: '#020710',
           flexShrink: 0,
         }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            <span style={{
-              fontFamily: "'JetBrains Mono', monospace",
-              fontSize: 10,
-              color: '#2D6644',
-              letterSpacing: '0.06em',
-            }}>
-              ROOT@CAISHEN:~$
-            </span>
-            <span style={{
-              fontFamily: "'VT323', monospace",
-              fontSize: 18,
-              color: '#00FF88',
-              letterSpacing: '0.06em',
-              textShadow: '0 0 6px rgba(0,255,136,0.5)',
-            }}>
-              {TABS.find(t => t.id === active)?.label}
-            </span>
-          </div>
-          <div style={{ display: 'flex', gap: 20, alignItems: 'center' }}>
-            {['yfinance', 'CNN F&G', 'CBOE', 'FRED', 'CFTC'].map(src => (
-              <div key={src} style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
-                <span style={{ color: '#00FF88', fontSize: 6, textShadow: '0 0 4px #00FF88' }}>●</span>
-                <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 9, color: '#1D4A30' }}>{src}</span>
-              </div>
-            ))}
+          <TickerTape />
+          <div style={{ flexShrink: 0, paddingRight: 28 }}>
             <EditModeButton />
           </div>
         </header>

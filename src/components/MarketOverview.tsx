@@ -556,18 +556,72 @@ const SENTIMENT_TILES = [
 const MACRO_TILE_ITEMS = SENTIMENT_CARDS.map(c => ({ id: c.key, label: c.title }))
 const MACRO_CARDS_BY_KEY = new Map(SENTIMENT_CARDS.map(c => [c.key as string, c]))
 
+// Last successful payload, kept outside the component so it survives
+// unmounting. Switching tabs unmounts this page entirely (App.tsx keys the
+// error boundary on the active tab), and /api/market is the slowest call
+// in the app -- without this, every visit back to MARKET tore the board
+// down to a loading state and waited on a fresh multi-second fetch, which
+// read as the page "disappearing". Now a return visit paints the previous
+// board instantly and refreshes underneath it.
+let lastMarketData: MarketData | null = null
+// Serialized form of whatever `lastMarketData` holds, so a refresh can be
+// compared against what's already on screen without walking the object by
+// hand. See the fetch effect for why that comparison matters.
+let lastMarketJson: string | null = null
+
 export default function MarketOverview() {
-  const [data, setData] = useState<MarketData | null>(null)
+  const [data, setData] = useState<MarketData | null>(lastMarketData)
   const [error, setError] = useState<string | null>(null)
   const [fgExpanded, setFgExpanded] = useState(false)
+  const [refreshing, setRefreshing] = useState(false)
+  // Bumped by the RETRY button to re-run the fetch effect.
+  const [reloadNonce, setReloadNonce] = useState(0)
 
-  const load = () => {
+  useEffect(() => {
+    let cancelled = false
     setError(null)
-    setData(null)
-    fetchMarket().then(setData).catch(e => setError(e.message))
-  }
+    setRefreshing(true)
+    // Note what's *not* here: setData(null). Clearing first is the
+    // intuitive thing to write, but it means any refresh blanks a board
+    // that's already perfectly readable. Stale numbers stay up until real
+    // ones replace them.
+    fetchMarket()
+      .then(fresh => {
+        lastMarketData = fresh
+        if (cancelled) return
 
-  useEffect(load, [])
+        // The important part: if the payload is byte-identical to what's
+        // already rendered, don't call setData at all.
+        //
+        // This board is a large tree -- two dozen index tiles plus several
+        // inline SVG charts. Handing React a new object identity makes it
+        // re-render and repaint all of it, which is visible as a flash even
+        // though not one number on screen actually changed. And identical
+        // payloads are now the *common* case, because the backend caches
+        // /api/market: revisiting the tab inside the cache window returns
+        // exactly what's already displayed.
+        //
+        // Skipping the state update makes those refreshes completely inert.
+        // When something genuinely did move, the update goes through as
+        // normal and React's reconciliation touches only the nodes whose
+        // values differ -- numbers and charts change, the page around them
+        // doesn't.
+        const json = JSON.stringify(fresh)
+        if (json === lastMarketJson) return
+        lastMarketJson = json
+        setData(fresh)
+      })
+      .catch(e => {
+        // A failed refresh with data already on screen is a non-event --
+        // keep showing it rather than replacing a working board with an
+        // error. The error surfaces only when there's nothing to show.
+        if (!cancelled && !lastMarketData) setError(e.message)
+      })
+      .finally(() => {
+        if (!cancelled) setRefreshing(false)
+      })
+    return () => { cancelled = true }
+  }, [reloadNonce])
 
   const pc = data?.put_call_ratio ?? null
   const pcZone = pc !== null ? putCallZone(pc) : null
@@ -578,13 +632,20 @@ export default function MarketOverview() {
   // Index tiles are keyed by symbol, which is stable across reloads. The
   // long tail of optional indexes ships hidden -- available in the edit
   // tray, off the board until asked for.
+  // Keyed on the tile *identities* rather than the payload, so this array
+  // keeps a stable reference when only prices moved. useSortableLayout
+  // memoizes off it, and a fresh array on every refresh would pointlessly
+  // recompute order/visibility for a set of tiles that hasn't changed.
+  const indexKey = (data?.indexes ?? [])
+    .map(i => `${i.symbol}:${i.default_hidden ? 1 : 0}`).join(',')
   const indexItems = useMemo(
     () => (data?.indexes ?? []).map(i => ({
       id: i.symbol,
       label: i.name,
       defaultHidden: i.default_hidden,
     })),
-    [data?.indexes],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [indexKey],
   )
   const indexTiles = useSortableLayout('market.indices', indexItems)
   const sentimentTiles = useSortableLayout('market.sentiment', SENTIMENT_TILES)
@@ -604,9 +665,20 @@ export default function MarketOverview() {
           fontFamily: "'VT323', monospace", fontSize: 32, color: '#C8FFD4',
           letterSpacing: '0.04em', textShadow: '0 0 10px rgba(200,255,212,0.3)',
         }}>MARKET OVERVIEW</span>
+        {/* Refreshes no longer change the page, which is the point -- but
+            that also means there's no longer any sign one is happening.
+            This is that sign, deliberately small enough to ignore. */}
+        {refreshing && data && (
+          <span style={{
+            fontFamily: "'JetBrains Mono', monospace", fontSize: 9,
+            color: '#2D6644', letterSpacing: '0.12em', marginLeft: 12,
+          }}>
+            <span className="blink">●</span> REFRESHING
+          </span>
+        )}
       </div>
 
-      {error && <ErrorBlock message={error} onRetry={load} />}
+      {error && <ErrorBlock message={error} onRetry={() => setReloadNonce(n => n + 1)} />}
       {!error && !data && <Loading label="PULLING MARKET DATA" />}
 
       {data && (

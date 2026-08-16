@@ -24,6 +24,8 @@ can.
 import os
 import re
 import math
+import threading
+import time
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timezone
 
@@ -737,7 +739,69 @@ INDEX_META = {
 }
 
 
-def get_market_data_full():
+# ----------------------------------------------------------------------
+# Full payload (cached)
+# ----------------------------------------------------------------------
+#
+# This is by a wide margin the most expensive call in the app: two dozen
+# yfinance history fetches plus four scraped/third-party sources, every
+# one of them a separate network round trip. Uncached, that cost was paid
+# again on every single request -- and requests come in pairs, because
+# React's StrictMode mounts components twice in dev, so simply opening the
+# MARKET tab fired the whole thing twice back to back.
+#
+# The practical damage wasn't just latency: hammering Yahoo with ~50
+# concurrent history requests per tab visit is what gets a client rate
+# limited, and once that happens *everything* yfinance-backed in the app
+# slows down or starts failing, not only this page.
+#
+# So: one TTL cache, plus a lock that makes concurrent callers share a
+# single in-flight fetch rather than each starting their own.
+MARKET_CACHE_TTL = 90.0
+
+_market_cache = None
+_market_cache_at = 0.0
+_market_lock = threading.Lock()
+
+
+def get_market_data_full(force=False):
+    """Cached wrapper around _build_market_data(). Returns the cached
+    payload when it's younger than MARKET_CACHE_TTL.
+
+    Holding the lock across the fetch is deliberate. It means a second
+    caller arriving mid-fetch blocks and then gets the fresh result,
+    instead of kicking off a duplicate of the same expensive work -- which
+    is exactly the StrictMode double-mount case, and the case of several
+    browser tabs being opened at once.
+    """
+    global _market_cache, _market_cache_at
+
+    if not force and _market_cache is not None:
+        if (time.monotonic() - _market_cache_at) < MARKET_CACHE_TTL:
+            return _market_cache
+
+    with _market_lock:
+        # Re-check: while waiting for the lock, whoever held it may have
+        # already refreshed the cache, in which case there's nothing to do.
+        if not force and _market_cache is not None:
+            if (time.monotonic() - _market_cache_at) < MARKET_CACHE_TTL:
+                return _market_cache
+        try:
+            payload = _build_market_data()
+        except Exception as e:
+            if _market_cache is not None:
+                # Stale data beats an error page. The board is a wall of
+                # slow-moving macro numbers -- a couple of minutes old is
+                # not meaningfully worse, whereas an empty page is.
+                warn(f"Market refresh failed ({e}); serving cached data")
+                return _market_cache
+            raise
+        _market_cache = payload
+        _market_cache_at = time.monotonic()
+        return payload
+
+
+def _build_market_data():
     """
     Data-only variant for API consumers, shaped for the frontend rather
     than the console: indexes as a flat list with absolute change (not

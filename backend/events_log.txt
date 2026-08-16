@@ -497,3 +497,359 @@
 2026-08-15 18:52:40.404 [ERROR] API call to get_fx_history failed: ValueError('no history in the trimmed window for USDJPY (24h)')
 2026-08-15 18:54:39.264 [INFO] Session started
 2026-08-15 19:02:48.886 [INFO] Session started
+2026-08-15 19:05:16.763 [INFO] Fetching bond data (full)
+2026-08-15 19:05:25.488 [WARNING] Couldn't fetch Brazil 10Y [IRLTLT01BRM156N] (Bad Request.  The series does not exist.)
+2026-08-15 19:05:27.632 [INFO] Fetching bond data (full)
+2026-08-15 19:05:35.953 [WARNING] Couldn't fetch Brazil 10Y [IRLTLT01BRM156N] (Bad Request.  The series does not exist.)
+2026-08-15 19:08:41.295 [INFO] Session started
+2026-08-15 19:09:31.924 [INFO] Session started
+2026-08-15 19:09:49.158 [INFO] Session started
+2026-08-15 19:09:53.705 [INFO] Session started
+2026-08-15 19:10:37.811 [INFO] Session started
+2026-08-15 19:28:34.957 [INFO] Session started
+2026-08-15 19:28:35.716 [ERROR] API call to get_portfolio_full failed: NameError("name 'DIVIDEND_YIELD_SANITY_CAP' is not defined")
+2026-08-15 19:28:35.717 [ERROR] API call to get_portfolio_full failed: NameError("name 'DIVIDEND_YIELD_SANITY_CAP' is not defined")
+2026-08-15 19:28:35.762 [ERROR] API call to get_portfolio_full failed: NameError("name 'DIVIDEND_YIELD_SANITY_CAP' is not defined")
+2026-08-15 19:28:39.712 [INFO] Session started
+2026-08-15 19:28:53.803 [INFO] Session started
+2026-08-15 19:28:59.821 [INFO] Session started
+2026-08-15 19:42:19.639 [INFO] Fetching top 10 cryptocurrencies (full data)
+2026-08-15 19:42:19.801 [WARNING] Couldn't fetch Coinbase product list (401 Client Error: Unauthorized for url: https://api.coinbase.com/api/v3/brokerage/products)
+2026-08-15 19:42:19.882 [WARNING] Couldn't fetch Coinbase product list (401 Client Error: Unauthorized for url: https://api.coinbase.com/api/v3/brokerage/products)
+2026-08-15 19:42:21.086 [INFO] Fetching top 10 cryptocurrencies (full data)
+2026-08-15 19:42:21.206 [WARNING] Couldn't fetch Coinbase product list (401 Client Error: Unauthorized for url: https://api.coinbase.com/api/v3/brokerage/products)
+2026-08-15 19:42:23.961 [INFO] Fetching market overview (full data)
+2026-08-15 19:42:30.696 [INFO] Fetching market overview (full data)
+2026-08-15 19:45:16.061 [INFO] Fetching market overview (full data)
+2026-08-15 19:45:25.312 [INFO] Fetching market overview (full data)
+2026-08-15 19:45:26.949 [INFO] Fetching market overview (full data)
+2026-08-15 19:45:39.814 [INFO] Fetching market overview (full data)
+2026-08-15 19:45:41.640 [INFO] Fetching market overview (full data)
+2026-08-15 19:45:53.450 [INFO] Fetching market overview (full data)
+2026-08-15 19:45:56.970 [INFO] Fetching market overview (full data)
+2026-08-15 19:46:09.183 [INFO] Fetching market overview (full data)
+2026-08-15 19:46:11.940 [INFO] Fetching market overview (full data)
+2026-08-15 19:46:26.640 [INFO] Fetching market overview (full data)
+2026-08-15 19:46:35.133 [INFO] Fetching market overview (full data)
+2026-08-15 19:46:41.930 [INFO] Fetching market overview (full data)
+2026-08-15 19:46:51.757 [INFO] Fetching market overview (full data)
+2026-08-15 19:46:56.640 [INFO] Fetching market overview (full data)
+2026-08-15 19:47:00.036 [WARNING] FRED inflation expectations (MICH) fetch failed (<urlopen error [WinError 10054] An existing connection was forcibly closed by the remote host>)
+2026-08-15 19:47:09.381 [INFO] Session started
+2026-08-15 19:47:09.767 [INFO] Fetching market overview (full data)
+2026-08-15 19:47:11.686 [INFO] Fetching market overview (full data)
+2026-08-15 19:47:18.890 [WARNING] FRED high-yield OAS spread (BAMLH0A0HYM2) fetch failed (<urlopen error [WinError 10054] An existing connection was forcibly closed by the remote host>)
+2026-08-15 19:47:26.786 [INFO] Session started
+2026-08-15 19:47:27.128 [INFO] Fetching market overview (full data)
+2026-08-15 19:47:40.058 [INFO] Session started
+2026-08-15 19:47:40.914 [INFO] Session started
+2026-08-15 19:47:41.330 [INFO] Fetching market overview (full data)
+2026-08-15 19:47:41.331 [INFO] Fetching market overview (full data)
+2026-08-15 19:47:41.762 [INFO] Fetching market overview (full data)
+2026-08-15 19:47:42.623 [INFO] Fetching market overview (full data)
+2026-08-15 19:48:00.037 [INFO] Session started
+2026-08-15 19:48:00.412 [INFO] Fetching market overview (full data)
+2026-08-15 19:48:00.412 [INFO] Fetching market overview (full data)
+2026-08-15 19:48:01.623 [INFO] Fetching market overview (full data)
+2026-08-15 19:48:11.824 [INFO] Fetching market overview (full data)
+2026-08-15 19:48:25.848 [INFO] Fetching market overview (full data)
+2026-08-15 19:48:26.979 [INFO] Fetching market overview (full data)
+2026-08-15 19:48:37.850 [INFO] Fetching market overview (full data)
+2026-08-15 19:48:41.934 [INFO] Fetching market overview (full data)
+2026-08-15 19:48:52.921 [INFO] Fetching market overview (full data)
+2026-08-15 19:48:56.746 [INFO] Fetching market overview (full data)
+2026-08-15 19:49:05.698 [INFO] Fetching market overview (full data)
+2026-08-15 19:49:11.783 [INFO] Fetching market overview (full data)
+2026-08-15 19:49:45.599 [INFO] Fetching market overview (full data)
+2026-08-15 19:49:47.380 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F']
+2026-08-15 19:49:53.937 [INFO] Fetching market overview (full data)
+2026-08-15 19:50:20.968 [INFO] Fetching market overview (full data)
+2026-08-15 19:50:21.404 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F']
+2026-08-15 19:50:25.973 [INFO] Fetching market overview (full data)
+2026-08-15 19:50:26.384 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F']
+2026-08-15 19:50:32.046 [INFO] Fetching market overview (full data)
+2026-08-15 19:50:40.610 [INFO] Fetching market overview (full data)
+2026-08-15 19:50:41.041 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F']
+2026-08-15 19:50:46.246 [INFO] Fetching market overview (full data)
+2026-08-15 19:50:55.965 [INFO] Fetching market overview (full data)
+2026-08-15 19:50:56.362 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F']
+2026-08-15 19:51:03.629 [INFO] Fetching market overview (full data)
+2026-08-15 19:51:10.971 [INFO] Fetching market overview (full data)
+2026-08-15 19:51:11.390 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F']
+2026-08-15 19:51:17.600 [INFO] Fetching market overview (full data)
+2026-08-15 19:51:25.951 [INFO] Fetching market overview (full data)
+2026-08-15 19:51:26.372 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F']
+2026-08-15 19:51:32.347 [INFO] Fetching market overview (full data)
+2026-08-15 19:51:40.946 [INFO] Fetching market overview (full data)
+2026-08-15 19:51:41.352 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F']
+2026-08-15 19:51:49.690 [INFO] Fetching market overview (full data)
+2026-08-15 19:51:55.931 [INFO] Fetching market overview (full data)
+2026-08-15 19:51:56.368 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F']
+2026-08-15 19:52:06.330 [INFO] Fetching market overview (full data)
+2026-08-15 19:52:10.674 [INFO] Fetching market overview (full data)
+2026-08-15 19:52:11.266 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F']
+2026-08-15 19:52:18.826 [INFO] Fetching market overview (full data)
+2026-08-15 19:52:25.937 [INFO] Fetching market overview (full data)
+2026-08-15 19:52:26.393 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F']
+2026-08-15 19:52:32.950 [INFO] Fetching market overview (full data)
+2026-08-15 19:52:40.627 [INFO] Fetching market overview (full data)
+2026-08-15 19:52:41.038 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F']
+2026-08-15 19:52:49.692 [INFO] Fetching market overview (full data)
+2026-08-15 19:52:55.649 [INFO] Fetching market overview (full data)
+2026-08-15 19:52:56.114 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F']
+2026-08-15 19:53:05.461 [INFO] Fetching market overview (full data)
+2026-08-15 19:53:10.942 [INFO] Fetching market overview (full data)
+2026-08-15 19:53:11.442 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F']
+2026-08-15 19:53:20.633 [INFO] Fetching market overview (full data)
+2026-08-15 19:53:25.961 [INFO] Fetching market overview (full data)
+2026-08-15 19:53:26.377 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F']
+2026-08-15 19:53:32.319 [INFO] Fetching market overview (full data)
+2026-08-15 19:53:40.920 [INFO] Fetching market overview (full data)
+2026-08-15 19:53:41.359 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F']
+2026-08-15 19:53:46.717 [INFO] Fetching market overview (full data)
+2026-08-15 19:53:55.666 [INFO] Fetching market overview (full data)
+2026-08-15 19:53:56.046 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F']
+2026-08-15 19:54:03.281 [INFO] Fetching market overview (full data)
+2026-08-15 19:54:10.927 [INFO] Fetching market overview (full data)
+2026-08-15 19:54:11.328 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F']
+2026-08-15 19:54:18.001 [INFO] Fetching market overview (full data)
+2026-08-15 19:54:25.673 [INFO] Fetching market overview (full data)
+2026-08-15 19:54:26.085 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F']
+2026-08-15 19:54:37.007 [INFO] Fetching market overview (full data)
+2026-08-15 19:54:40.957 [INFO] Fetching market overview (full data)
+2026-08-15 19:54:41.486 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F']
+2026-08-15 19:54:48.695 [INFO] Fetching market overview (full data)
+2026-08-15 19:54:55.979 [INFO] Fetching market overview (full data)
+2026-08-15 19:54:56.453 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F']
+2026-08-15 19:55:04.767 [INFO] Fetching market overview (full data)
+2026-08-15 19:55:11.054 [INFO] Fetching market overview (full data)
+2026-08-15 19:55:11.563 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F']
+2026-08-15 19:55:19.083 [INFO] Fetching market overview (full data)
+2026-08-15 19:55:25.947 [INFO] Fetching market overview (full data)
+2026-08-15 19:55:26.339 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F']
+2026-08-15 19:55:31.962 [INFO] Fetching market overview (full data)
+2026-08-15 19:55:40.950 [INFO] Fetching market overview (full data)
+2026-08-15 19:55:41.359 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F']
+2026-08-15 19:55:48.054 [INFO] Fetching market overview (full data)
+2026-08-15 19:55:55.976 [INFO] Fetching market overview (full data)
+2026-08-15 19:55:56.436 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F']
+2026-08-15 19:56:03.923 [INFO] Fetching market overview (full data)
+2026-08-15 19:56:10.952 [INFO] Fetching market overview (full data)
+2026-08-15 19:56:11.444 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F']
+2026-08-15 19:56:23.305 [INFO] Fetching market overview (full data)
+2026-08-15 19:56:25.949 [INFO] Fetching market overview (full data)
+2026-08-15 19:56:26.410 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F']
+2026-08-15 19:56:33.677 [INFO] Fetching market overview (full data)
+2026-08-15 19:56:40.681 [INFO] Fetching market overview (full data)
+2026-08-15 19:56:41.535 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F']
+2026-08-15 19:56:49.147 [INFO] Fetching market overview (full data)
+2026-08-15 19:56:55.951 [INFO] Fetching market overview (full data)
+2026-08-15 19:56:56.386 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F']
+2026-08-15 19:57:03.661 [INFO] Fetching market overview (full data)
+2026-08-15 19:57:10.992 [INFO] Fetching market overview (full data)
+2026-08-15 19:57:11.422 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F']
+2026-08-15 19:57:19.834 [INFO] Fetching market overview (full data)
+2026-08-15 19:57:25.983 [INFO] Fetching market overview (full data)
+2026-08-15 19:57:26.392 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F']
+2026-08-15 19:57:33.000 [INFO] Fetching market overview (full data)
+2026-08-15 19:57:40.947 [INFO] Fetching market overview (full data)
+2026-08-15 19:57:41.351 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F']
+2026-08-15 19:57:49.498 [INFO] Fetching market overview (full data)
+2026-08-15 19:57:56.036 [INFO] Fetching market overview (full data)
+2026-08-15 19:57:56.519 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F']
+2026-08-15 19:58:07.995 [INFO] Fetching market overview (full data)
+2026-08-15 19:58:10.687 [INFO] Fetching market overview (full data)
+2026-08-15 19:58:11.515 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F']
+2026-08-15 19:58:17.583 [INFO] Fetching market overview (full data)
+2026-08-15 19:58:25.982 [INFO] Fetching market overview (full data)
+2026-08-15 19:58:26.381 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F']
+2026-08-15 19:58:31.596 [INFO] Fetching market overview (full data)
+2026-08-15 19:58:40.935 [INFO] Fetching market overview (full data)
+2026-08-15 19:58:41.550 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F']
+2026-08-15 19:58:47.424 [INFO] Fetching market overview (full data)
+2026-08-15 19:58:55.975 [INFO] Fetching market overview (full data)
+2026-08-15 19:58:56.394 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F']
+2026-08-15 19:59:04.650 [INFO] Fetching market overview (full data)
+2026-08-15 19:59:10.963 [INFO] Fetching market overview (full data)
+2026-08-15 19:59:11.902 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F']
+2026-08-15 19:59:22.399 [INFO] Fetching market overview (full data)
+2026-08-15 19:59:25.175 [WARNING] FRED financial stress index (STLFSI4) fetch failed (<urlopen error [WinError 10054] An existing connection was forcibly closed by the remote host>)
+2026-08-15 19:59:25.992 [INFO] Fetching market overview (full data)
+2026-08-15 19:59:26.406 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F']
+2026-08-15 19:59:33.513 [INFO] Fetching market overview (full data)
+2026-08-15 19:59:40.683 [INFO] Fetching market overview (full data)
+2026-08-15 19:59:41.143 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F']
+2026-08-15 19:59:49.415 [INFO] Fetching market overview (full data)
+2026-08-15 19:59:56.952 [INFO] Fetching market overview (full data)
+2026-08-15 19:59:57.367 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F']
+2026-08-15 20:00:11.978 [INFO] Fetching market overview (full data)
+2026-08-15 20:00:12.513 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F']
+2026-08-15 20:00:26.648 [INFO] Fetching market overview (full data)
+2026-08-15 20:00:27.057 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F']
+2026-08-15 20:00:41.950 [INFO] Fetching market overview (full data)
+2026-08-15 20:00:42.366 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F']
+2026-08-15 20:00:56.644 [INFO] Fetching market overview (full data)
+2026-08-15 20:00:57.042 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F']
+2026-08-15 20:01:06.625 [INFO] Fetching market overview (full data)
+2026-08-15 20:01:07.019 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F']
+2026-08-15 20:01:12.643 [INFO] Fetching market overview (full data)
+2026-08-15 20:01:13.192 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F']
+2026-08-15 20:01:22.491 [WARNING] FRED policy uncertainty index (USEPUINDXD) fetch failed (<urlopen error [WinError 10054] An existing connection was forcibly closed by the remote host>)
+2026-08-15 20:01:27.062 [INFO] Fetching market overview (full data)
+2026-08-15 20:01:27.728 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F']
+2026-08-15 20:01:37.249 [INFO] Fetching stock data (full) for AAPL
+2026-08-15 20:01:41.778 [INFO] Fetching market overview (full data)
+2026-08-15 20:01:42.585 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F']
+2026-08-15 20:01:56.730 [INFO] Fetching market overview (full data)
+2026-08-15 20:01:57.501 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F']
+2026-08-15 20:02:01.713 [WARNING] FRED policy uncertainty index (USEPUINDXD) fetch failed (None)
+2026-08-15 20:02:11.633 [INFO] Fetching market overview (full data)
+2026-08-15 20:02:12.217 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F']
+2026-08-15 20:02:25.223 [INFO] Fetching market overview (full data)
+2026-08-15 20:02:26.674 [INFO] Fetching market overview (full data)
+2026-08-15 20:02:27.141 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F']
+2026-08-15 20:02:36.356 [INFO] Fetching market overview (full data)
+2026-08-15 20:02:41.946 [INFO] Fetching market overview (full data)
+2026-08-15 20:02:42.694 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F']
+2026-08-15 20:02:52.270 [INFO] Fetching market overview (full data)
+2026-08-15 20:02:56.743 [INFO] Fetching market overview (full data)
+2026-08-15 20:02:57.271 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F']
+2026-08-15 20:03:08.881 [INFO] Fetching market overview (full data)
+2026-08-15 20:03:11.788 [INFO] Fetching market overview (full data)
+2026-08-15 20:03:12.399 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F']
+2026-08-15 20:03:23.392 [INFO] Fetching market overview (full data)
+2026-08-15 20:03:26.829 [INFO] Fetching market overview (full data)
+2026-08-15 20:03:27.461 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F']
+2026-08-15 20:03:39.297 [INFO] Fetching market overview (full data)
+2026-08-15 20:03:41.844 [INFO] Fetching market overview (full data)
+2026-08-15 20:03:42.391 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F']
+2026-08-15 20:03:45.678 [WARNING] FRED high-yield OAS spread (BAMLH0A0HYM2) fetch failed (<urlopen error [WinError 10054] An existing connection was forcibly closed by the remote host>)
+2026-08-15 20:03:56.876 [INFO] Fetching market overview (full data)
+2026-08-15 20:03:57.421 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F']
+2026-08-15 20:04:05.839 [INFO] Fetching market overview (full data)
+2026-08-15 20:04:11.920 [INFO] Fetching market overview (full data)
+2026-08-15 20:04:12.645 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F']
+2026-08-15 20:04:24.546 [INFO] Fetching market overview (full data)
+2026-08-15 20:04:26.957 [INFO] Fetching market overview (full data)
+2026-08-15 20:04:27.590 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F']
+2026-08-15 20:04:38.823 [INFO] Fetching market overview (full data)
+2026-08-15 20:04:41.998 [INFO] Fetching market overview (full data)
+2026-08-15 20:04:42.534 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F']
+2026-08-15 20:04:54.327 [INFO] Session started
+2026-08-15 20:04:54.721 [INFO] Fetching market overview (full data)
+2026-08-15 20:04:54.811 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F']
+2026-08-15 20:04:54.885 [INFO] Fetching market overview (full data)
+2026-08-15 20:04:55.306 [WARNING] /ws/tape connection error (WebSocket is not connected. Need to call "accept" first.)
+2026-08-15 20:04:55.386 [INFO] Fetching market overview (full data)
+2026-08-15 20:04:55.779 [INFO] Fetching market overview (full data)
+2026-08-15 20:04:56.172 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F']
+2026-08-15 20:04:57.547 [INFO] Fetching market overview (full data)
+2026-08-15 20:04:58.146 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F']
+2026-08-15 20:05:20.765 [INFO] Session started
+2026-08-15 20:05:21.137 [INFO] Fetching market overview (full data)
+2026-08-15 20:05:21.240 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F']
+2026-08-15 20:05:21.626 [WARNING] /ws/tape connection error (WebSocket is not connected. Need to call "accept" first.)
+2026-08-15 20:05:22.715 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F']
+2026-08-15 20:05:27.999 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F']
+2026-08-15 20:05:42.521 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F']
+2026-08-15 20:05:57.530 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F']
+2026-08-15 20:05:58.977 [INFO] Session started
+2026-08-15 20:05:59.354 [INFO] Fetching market overview (full data)
+2026-08-15 20:05:59.578 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F']
+2026-08-15 20:06:00.081 [WARNING] /ws/tape connection error (WebSocket is not connected. Need to call "accept" first.)
+2026-08-15 20:06:00.126 [WARNING] /ws/tape connection error (WebSocket is not connected. Need to call "accept" first.)
+2026-08-15 20:06:00.452 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F']
+2026-08-15 20:06:12.870 [INFO] Session started
+2026-08-15 20:06:13.773 [INFO] Session started
+2026-08-15 20:06:14.133 [INFO] Fetching market overview (full data)
+2026-08-15 20:06:14.238 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F']
+2026-08-15 20:06:14.744 [WARNING] /ws/tape connection error (WebSocket is not connected. Need to call "accept" first.)
+2026-08-15 20:06:14.776 [WARNING] /ws/tape connection error (WebSocket is not connected. Need to call "accept" first.)
+2026-08-15 20:06:26.223 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F']
+2026-08-15 20:06:27.693 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F']
+2026-08-15 20:06:33.776 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F']
+2026-08-15 20:06:36.354 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F']
+2026-08-15 20:06:38.977 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F']
+2026-08-15 20:06:42.797 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F']
+2026-08-15 20:06:52.154 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F']
+2026-08-15 20:06:57.897 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F']
+2026-08-15 20:07:00.576 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F']
+2026-08-15 20:07:08.934 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F']
+2026-08-15 20:07:12.878 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F']
+2026-08-15 20:07:27.968 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F']
+2026-08-15 20:07:42.980 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F']
+2026-08-15 20:07:49.813 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F']
+2026-08-15 20:07:51.016 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F']
+2026-08-15 20:07:57.606 [INFO] Fetching market overview (full data)
+2026-08-15 20:07:58.068 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F']
+2026-08-15 20:08:13.009 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F']
+2026-08-15 20:08:28.145 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F']
+2026-08-15 20:08:43.475 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F']
+2026-08-15 20:08:58.112 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F']
+2026-08-15 20:09:13.404 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F']
+2026-08-15 20:09:28.205 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F']
+2026-08-15 20:09:42.787 [INFO] Fetching market overview (full data)
+2026-08-15 20:09:43.312 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F']
+2026-08-15 20:09:58.255 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F']
+2026-08-15 20:10:13.259 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F']
+2026-08-15 20:10:28.285 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F']
+2026-08-15 20:10:43.621 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F']
+2026-08-15 20:10:58.375 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F']
+2026-08-15 20:11:13.406 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F']
+2026-08-15 20:11:28.456 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F']
+2026-08-15 20:11:43.068 [INFO] Fetching market overview (full data)
+2026-08-15 20:11:43.512 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F']
+2026-08-15 20:11:58.550 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F']
+2026-08-15 20:12:13.980 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F']
+2026-08-15 20:12:28.536 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F']
+2026-08-15 20:12:43.643 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F']
+2026-08-15 20:12:58.684 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F']
+2026-08-15 20:13:14.151 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F']
+2026-08-15 20:13:28.349 [INFO] Fetching market overview (full data)
+2026-08-15 20:13:28.818 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F']
+2026-08-15 20:13:44.086 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F']
+2026-08-15 20:13:51.831 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F']
+2026-08-15 20:13:56.732 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F']
+2026-08-15 20:13:58.968 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F']
+2026-08-15 20:14:14.032 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F']
+2026-08-15 20:14:29.157 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F']
+2026-08-15 20:14:44.164 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F']
+2026-08-15 20:14:52.688 [INFO] Fetching top 10 cryptocurrencies (full data)
+2026-08-15 20:14:53.154 [WARNING] Couldn't fetch Coinbase product list (401 Client Error: Unauthorized for url: https://api.coinbase.com/api/v3/brokerage/products)
+2026-08-15 20:14:53.266 [WARNING] Couldn't fetch Coinbase product list (401 Client Error: Unauthorized for url: https://api.coinbase.com/api/v3/brokerage/products)
+2026-08-15 20:14:54.198 [INFO] Fetching top 10 cryptocurrencies (full data)
+2026-08-15 20:14:54.311 [WARNING] Couldn't fetch Coinbase product list (401 Client Error: Unauthorized for url: https://api.coinbase.com/api/v3/brokerage/products)
+2026-08-15 20:14:59.092 [INFO] Fetching top 10 cryptocurrencies (full data)
+2026-08-15 20:14:59.373 [INFO] Fetching top 10 cryptocurrencies (full data)
+2026-08-15 20:14:59.587 [WARNING] Couldn't fetch Coinbase product list (401 Client Error: Unauthorized for url: https://api.coinbase.com/api/v3/brokerage/products)
+2026-08-15 20:14:59.722 [WARNING] Couldn't fetch Coinbase product list (401 Client Error: Unauthorized for url: https://api.coinbase.com/api/v3/brokerage/products)
+2026-08-15 20:14:59.817 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F']
+2026-08-15 20:15:13.743 [INFO] Fetching top 10 cryptocurrencies (full data)
+2026-08-15 20:15:14.023 [INFO] Fetching top 10 cryptocurrencies (full data)
+2026-08-15 20:15:14.170 [WARNING] Couldn't fetch Coinbase product list (401 Client Error: Unauthorized for url: https://api.coinbase.com/api/v3/brokerage/products)
+2026-08-15 20:15:14.276 [WARNING] Couldn't fetch Coinbase product list (401 Client Error: Unauthorized for url: https://api.coinbase.com/api/v3/brokerage/products)
+2026-08-15 20:15:14.352 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F']
+2026-08-15 20:15:28.782 [INFO] Fetching top 10 cryptocurrencies (full data)
+2026-08-15 20:15:29.067 [INFO] Fetching top 10 cryptocurrencies (full data)
+2026-08-15 20:15:29.283 [WARNING] Couldn't fetch Coinbase product list (401 Client Error: Unauthorized for url: https://api.coinbase.com/api/v3/brokerage/products)
+2026-08-15 20:15:29.390 [WARNING] Couldn't fetch Coinbase product list (401 Client Error: Unauthorized for url: https://api.coinbase.com/api/v3/brokerage/products)
+2026-08-15 20:15:29.457 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F']
+2026-08-15 20:15:30.544 [INFO] Fetching top 10 cryptocurrencies (full data)
+2026-08-15 20:15:30.857 [INFO] Fetching top 10 cryptocurrencies (full data)
+2026-08-15 20:15:30.994 [WARNING] Couldn't fetch Coinbase product list (401 Client Error: Unauthorized for url: https://api.coinbase.com/api/v3/brokerage/products)
+2026-08-15 20:15:31.089 [WARNING] Couldn't fetch Coinbase product list (401 Client Error: Unauthorized for url: https://api.coinbase.com/api/v3/brokerage/products)
+2026-08-15 20:15:31.159 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F']
+2026-08-15 20:15:33.822 [INFO] Fetching top 10 cryptocurrencies (full data)
+2026-08-15 20:15:33.934 [INFO] Fetching top 10 cryptocurrencies (full data)
+2026-08-15 20:15:34.224 [WARNING] Couldn't fetch Coinbase product list (401 Client Error: Unauthorized for url: https://api.coinbase.com/api/v3/brokerage/products)
+2026-08-15 20:15:34.373 [WARNING] Couldn't fetch Coinbase product list (401 Client Error: Unauthorized for url: https://api.coinbase.com/api/v3/brokerage/products)
+2026-08-15 20:15:34.442 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F']
+2026-08-15 20:16:24.808 [INFO] Session started
+2026-08-15 20:16:30.840 [INFO] Fetching top 10 cryptocurrencies (full data)
+2026-08-15 20:16:31.244 [WARNING] Couldn't fetch Coinbase product list (401 Client Error: Unauthorized for url: https://api.coinbase.com/api/v3/brokerage/products)
+2026-08-15 20:16:31.339 [WARNING] Couldn't fetch Coinbase product list (401 Client Error: Unauthorized for url: https://api.coinbase.com/api/v3/brokerage/products)
+2026-08-15 20:16:31.440 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F']
+2026-08-15 20:16:32.316 [INFO] Fetching top 10 cryptocurrencies (full data)
+2026-08-15 20:16:32.437 [WARNING] Couldn't fetch Coinbase product list (401 Client Error: Unauthorized for url: https://api.coinbase.com/api/v3/brokerage/products)
+2026-08-15 20:17:03.354 [INFO] Fetching market overview (full data)
+2026-08-15 20:18:46.296 [INFO] Fetching market overview (full data)

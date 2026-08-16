@@ -179,6 +179,7 @@ function ExpandedChart({ contract, decimals }: { contract: FuturesContract; deci
         {RANGES.map(r => (
           <button
             key={r.key}
+            type="button"
             onClick={() => setRange(r.key)}
             style={{
               fontFamily: "'JetBrains Mono', monospace", fontSize: 10, letterSpacing: '0.06em',

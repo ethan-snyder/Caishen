@@ -28,6 +28,7 @@ import forex
 import futures
 import bonds
 import coinbase_stream
+import tape
 
 app = FastAPI(title="Caishen API")
 
@@ -176,6 +177,49 @@ async def ws_crypto(websocket: WebSocket):
         await coinbase_stream.manager.unregister(send)
 
 
+# ----------------------------------------------------------------------
+# Ticker tape (top banner, every page)
+# ----------------------------------------------------------------------
+
+@app.get("/api/tape")
+def get_tape():
+    """One-shot snapshot. The tape's live path is the WebSocket below --
+    this exists so the banner paints real numbers on first render instead
+    of waiting on a socket handshake, and so it still works at all if the
+    WebSocket can't be established."""
+    return _safe_call(tape.get_tape)
+
+
+# Protocol (server -> client only; the client sends nothing, since the
+# tape's contents are fixed server-side rather than per-client):
+#   <- {"type": "snapshot", "items": [{key, label, symbol, price, change,
+#                                      change_pct, live, updated_at}, ...]}
+#      Sent on connect and after each poll refresh -- the full tape.
+#   <- {"type": "tick", "item": {...same shape...}}
+#      One symbol moved on Yahoo's live feed, when that feed is up. The
+#      tape works on snapshots alone if it never is (see tape.py).
+@app.websocket("/ws/tape")
+async def ws_tape(websocket: WebSocket):
+    await websocket.accept()
+
+    async def send(payload: str):
+        await websocket.send_text(payload)
+
+    try:
+        await tape.stream.register(send)
+        while True:
+            # Nothing to read, but awaiting a receive is what surfaces the
+            # disconnect -- without it this coroutine would return
+            # immediately and Starlette would close the socket.
+            await websocket.receive_text()
+    except WebSocketDisconnect:
+        pass
+    except Exception as e:
+        warn(f"/ws/tape connection error ({e})")
+    finally:
+        await tape.stream.unregister(send)
+
+
 @app.get("/api/fx")
 def get_fx():
     return _safe_call(forex.get_fx_data_full)
@@ -228,6 +272,16 @@ class HoldingIn(BaseModel):
 @app.get("/api/portfolio")
 def get_portfolio():
     return _safe_call(portfolio.get_portfolio_full)
+
+
+PORTFOLIO_RANGES = set(portfolio.PORTFOLIO_RANGE_SPECS.keys())
+
+
+@app.get("/api/portfolio/history")
+def get_portfolio_history(range: str = "1y"):
+    if range not in PORTFOLIO_RANGES:
+        raise HTTPException(status_code=400, detail=f"range must be one of {sorted(PORTFOLIO_RANGES)}")
+    return _safe_call(portfolio.get_portfolio_history, range)
 
 
 @app.post("/api/portfolio")

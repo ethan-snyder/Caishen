@@ -89,6 +89,21 @@ body::after {
   animation: flicker 8s infinite;
 }
 
+/* Ticker tape (components/TickerTape.tsx). The track holds two identical
+   copies of the symbol list, so sliding exactly -50% lands the second copy
+   where the first began -- the loop repeats with no visible seam. The
+   animation *duration* is set inline from a px/sec constant so the pace
+   doesn't change as symbols are added or removed. */
+@keyframes tape-scroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+/* Hover to hold it still and actually read an entry. */
+.tape-viewport:hover .tape-track {
+  animation-play-state: paused;
+}
+
 ::-webkit-scrollbar {
   width: 4px;
   height: 4px;

@@ -333,9 +333,32 @@ export interface PortfolioHolding {
   avg_cost: number | null
   price: number | null
   value: number | null
+  cost_basis: number | null
+  /** Per-share move today. */
+  day_change: number | null
   day_change_pct: number | null
+  /** This position's dollar P/L today (day_change * qty). */
+  day_gain: number | null
   gain: number | null
   gain_pct: number | null
+  pe: number | null
+  forward_pe: number | null
+  peg: number | null
+  ps: number | null
+  pb: number | null
+  beta: number | null
+  eps: number | null
+  market_cap: number | null
+  /** Already normalized to a percent (e.g. 0.75 means 0.75%). */
+  dividend_yield: number | null
+  /** Annual dividend per share, in dollars. */
+  dividend_rate: number | null
+  /** Annual dividend for this whole position (dividend_rate * qty). */
+  annual_dividend: number | null
+  week52_high: number | null
+  week52_low: number | null
+  volume: number | null
+  avg_volume: number | null
 }
 
 export interface PortfolioData {
@@ -344,8 +367,32 @@ export interface PortfolioData {
   total_cost_basis: number | null
   total_gain: number | null
   total_gain_pct: number | null
+  total_day_gain: number | null
+  total_day_gain_pct: number | null
+  total_annual_dividend: number | null
+  total_dividend_yield: number | null
   errors: string[]
 }
+
+export type PortfolioRange = '1d' | '1w' | '1mo' | '3mo' | '6mo' | '1y' | '3y' | '5y' | 'all'
+
+export interface PortfolioHistoryPoint {
+  date: string
+  value: number
+}
+
+export interface PortfolioHistory {
+  range: PortfolioRange
+  points: PortfolioHistoryPoint[]
+  /** Total cost basis, for drawing a break-even reference line. Null when
+   * no holding has an avg cost recorded. */
+  cost_basis: number | null
+  /** Tickers with no usable price history, excluded from the series. */
+  skipped: string[]
+}
+
+export const fetchPortfolioHistory = (range: PortfolioRange) =>
+  request<PortfolioHistory>(`/api/portfolio/history?range=${range}`)
 
 export const fetchPortfolio = () => request<PortfolioData>('/api/portfolio')
 
@@ -365,10 +412,25 @@ export const removePortfolioHolding = (ticker: string) =>
 export interface WatchlistItem {
   ticker: string
   name: string | null
+  sector: string | null
   price: number | null
   change: number | null
   change_pct: number | null
   pe: number | null
+  forward_pe: number | null
+  peg: number | null
+  ps: number | null
+  pb: number | null
+  beta: number | null
+  eps: number | null
+  market_cap: number | null
+  /** Already normalized to a percent (e.g. 0.75 means 0.75%). */
+  dividend_yield: number | null
+  dividend_rate: number | null
+  week52_high: number | null
+  week52_low: number | null
+  volume: number | null
+  avg_volume: number | null
 }
 
 export type WatchlistsData = Record<string, WatchlistItem[]>
