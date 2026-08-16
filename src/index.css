@@ -77,18 +77,6 @@ body::after {
   animation: blink 1s step-end infinite;
 }
 
-/* CRT flicker */
-@keyframes flicker {
-  0%, 100% { opacity: 1; }
-  92% { opacity: 0.97; }
-  93% { opacity: 0.87; }
-  94% { opacity: 0.97; }
-}
-
-#root {
-  animation: flicker 8s infinite;
-}
-
 /* Ticker tape (components/TickerTape.tsx). The track holds two identical
    copies of the symbol list, so sliding exactly -50% lands the second copy
    where the first began -- the loop repeats with no visible seam. The

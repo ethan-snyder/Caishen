@@ -853,3 +853,136 @@
 2026-08-15 20:16:32.437 [WARNING] Couldn't fetch Coinbase product list (401 Client Error: Unauthorized for url: https://api.coinbase.com/api/v3/brokerage/products)
 2026-08-15 20:17:03.354 [INFO] Fetching market overview (full data)
 2026-08-15 20:18:46.296 [INFO] Fetching market overview (full data)
+2026-08-15 22:56:49.526 [INFO] Session started
+2026-08-15 22:57:00.159 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F']
+2026-08-15 22:57:01.644 [INFO] Fetching market overview (full data)
+2026-08-15 22:58:55.130 [INFO] Fetching market overview (full data)
+2026-08-15 22:58:55.620 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F']
+2026-08-15 22:59:01.960 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F']
+2026-08-15 22:59:05.122 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F']
+2026-08-15 22:59:14.619 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F']
+2026-08-15 22:59:30.388 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F']
+2026-08-15 22:59:44.713 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F']
+2026-08-15 22:59:59.891 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F']
+2026-08-15 23:00:14.734 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F']
+2026-08-15 23:00:29.749 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F']
+2026-08-15 23:00:44.354 [INFO] Fetching market overview (full data)
+2026-08-15 23:00:44.744 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F']
+2026-08-15 23:00:59.787 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F']
+2026-08-15 23:01:14.873 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F']
+2026-08-15 23:01:30.480 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F']
+2026-08-15 23:01:39.316 [INFO] Session started
+2026-08-15 23:01:39.705 [INFO] Fetching market overview (full data)
+2026-08-15 23:01:39.785 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F', 'GC=F', 'BTC-USD', 'ETH-USD']
+2026-08-15 23:01:40.718 [WARNING] /ws/tape connection error (WebSocket is not connected. Need to call "accept" first.)
+2026-08-15 23:01:41.371 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F', 'GC=F', 'BTC-USD', 'ETH-USD']
+2026-08-15 23:01:44.893 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F', 'GC=F', 'BTC-USD', 'ETH-USD']
+2026-08-15 23:02:00.373 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F', 'GC=F', 'BTC-USD', 'ETH-USD']
+2026-08-15 23:03:23.911 [INFO] Fetching market overview (full data)
+2026-08-15 23:03:24.584 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F', 'GC=F', 'BTC-USD', 'ETH-USD']
+2026-08-15 23:04:43.623 [INFO] Session started
+2026-08-15 23:04:43.999 [INFO] Fetching market overview (full data)
+2026-08-15 23:04:44.193 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F', 'GC=F', 'BTC-USD', 'ETH-USD', '^KS11', 'QQQ', '^N225']
+2026-08-15 23:04:45.294 [WARNING] /ws/tape connection error (WebSocket is not connected. Need to call "accept" first.)
+2026-08-15 23:04:53.512 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F', 'GC=F', 'BTC-USD', 'ETH-USD', '^KS11', 'QQQ', '^N225']
+2026-08-15 23:05:00.458 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F', 'GC=F', 'BTC-USD', 'ETH-USD', '^KS11', 'QQQ', '^N225']
+2026-08-15 23:05:15.372 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F', 'GC=F', 'BTC-USD', 'ETH-USD', '^KS11', 'QQQ', '^N225']
+2026-08-15 23:05:30.530 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F', 'GC=F', 'BTC-USD', 'ETH-USD', '^KS11', 'QQQ', '^N225']
+2026-08-15 23:05:45.564 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F', 'GC=F', 'BTC-USD', 'ETH-USD', '^KS11', 'QQQ', '^N225']
+2026-08-15 23:06:00.463 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F', 'GC=F', 'BTC-USD', 'ETH-USD', '^KS11', 'QQQ', '^N225']
+2026-08-15 23:06:15.397 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F', 'GC=F', 'BTC-USD', 'ETH-USD', '^KS11', 'QQQ', '^N225']
+2026-08-15 23:06:30.295 [INFO] Fetching market overview (full data)
+2026-08-15 23:06:30.695 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F', 'GC=F', 'BTC-USD', 'ETH-USD', '^KS11', 'QQQ', '^N225']
+2026-08-15 23:06:45.709 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F', 'GC=F', 'BTC-USD', 'ETH-USD', '^KS11', 'QQQ', '^N225']
+2026-08-15 23:07:00.454 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F', 'GC=F', 'BTC-USD', 'ETH-USD', '^KS11', 'QQQ', '^N225']
+2026-08-15 23:07:15.186 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F', 'GC=F', 'BTC-USD', 'ETH-USD', '^KS11', 'QQQ', '^N225']
+2026-08-15 23:07:30.179 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F', 'GC=F', 'BTC-USD', 'ETH-USD', '^KS11', 'QQQ', '^N225']
+2026-08-15 23:07:36.416 [INFO] Fetching top 10 cryptocurrencies (full data)
+2026-08-15 23:07:36.803 [WARNING] Couldn't fetch Coinbase product list (401 Client Error: Unauthorized for url: https://api.coinbase.com/api/v3/brokerage/products)
+2026-08-15 23:07:36.882 [WARNING] Couldn't fetch Coinbase product list (401 Client Error: Unauthorized for url: https://api.coinbase.com/api/v3/brokerage/products)
+2026-08-15 23:07:37.867 [INFO] Fetching top 10 cryptocurrencies (full data)
+2026-08-15 23:07:37.945 [WARNING] Couldn't fetch Coinbase product list (401 Client Error: Unauthorized for url: https://api.coinbase.com/api/v3/brokerage/products)
+2026-08-15 23:07:45.109 [INFO] Fetching top 10 cryptocurrencies (full data)
+2026-08-15 23:07:45.401 [INFO] Fetching top 10 cryptocurrencies (full data)
+2026-08-15 23:07:45.517 [WARNING] Couldn't fetch Coinbase product list (401 Client Error: Unauthorized for url: https://api.coinbase.com/api/v3/brokerage/products)
+2026-08-15 23:07:45.591 [WARNING] Couldn't fetch Coinbase product list (401 Client Error: Unauthorized for url: https://api.coinbase.com/api/v3/brokerage/products)
+2026-08-15 23:07:45.652 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F', 'GC=F', 'BTC-USD', 'ETH-USD', '^KS11', 'QQQ', '^N225']
+2026-08-15 23:07:59.815 [INFO] Fetching top 10 cryptocurrencies (full data)
+2026-08-15 23:08:00.110 [INFO] Fetching top 10 cryptocurrencies (full data)
+2026-08-15 23:08:00.242 [WARNING] Couldn't fetch Coinbase product list (401 Client Error: Unauthorized for url: https://api.coinbase.com/api/v3/brokerage/products)
+2026-08-15 23:08:00.336 [WARNING] Couldn't fetch Coinbase product list (401 Client Error: Unauthorized for url: https://api.coinbase.com/api/v3/brokerage/products)
+2026-08-15 23:08:00.473 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F', 'GC=F', 'BTC-USD', 'ETH-USD', '^KS11', 'QQQ', '^N225']
+2026-08-15 23:08:14.835 [INFO] Fetching top 10 cryptocurrencies (full data)
+2026-08-15 23:08:14.839 [INFO] Fetching top 10 cryptocurrencies (full data)
+2026-08-15 23:08:15.305 [WARNING] Couldn't fetch Coinbase product list (401 Client Error: Unauthorized for url: https://api.coinbase.com/api/v3/brokerage/products)
+2026-08-15 23:08:15.448 [WARNING] Couldn't fetch Coinbase product list (401 Client Error: Unauthorized for url: https://api.coinbase.com/api/v3/brokerage/products)
+2026-08-15 23:08:15.528 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F', 'GC=F', 'BTC-USD', 'ETH-USD', '^KS11', 'QQQ', '^N225']
+2026-08-15 23:08:29.847 [INFO] Fetching top 10 cryptocurrencies (full data)
+2026-08-15 23:08:30.128 [INFO] Fetching top 10 cryptocurrencies (full data)
+2026-08-15 23:08:30.241 [WARNING] Couldn't fetch Coinbase product list (401 Client Error: Unauthorized for url: https://api.coinbase.com/api/v3/brokerage/products)
+2026-08-15 23:08:30.320 [WARNING] Couldn't fetch Coinbase product list (401 Client Error: Unauthorized for url: https://api.coinbase.com/api/v3/brokerage/products)
+2026-08-15 23:08:30.383 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F', 'GC=F', 'BTC-USD', 'ETH-USD', '^KS11', 'QQQ', '^N225']
+2026-08-15 23:08:44.986 [INFO] Fetching top 10 cryptocurrencies (full data)
+2026-08-15 23:08:45.297 [INFO] Fetching top 10 cryptocurrencies (full data)
+2026-08-15 23:08:45.381 [WARNING] Couldn't fetch Coinbase product list (401 Client Error: Unauthorized for url: https://api.coinbase.com/api/v3/brokerage/products)
+2026-08-15 23:08:45.462 [WARNING] Couldn't fetch Coinbase product list (401 Client Error: Unauthorized for url: https://api.coinbase.com/api/v3/brokerage/products)
+2026-08-15 23:08:45.518 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F', 'GC=F', 'BTC-USD', 'ETH-USD', '^KS11', 'QQQ', '^N225']
+2026-08-15 23:09:00.281 [INFO] Fetching top 10 cryptocurrencies (full data)
+2026-08-15 23:09:00.569 [INFO] Fetching top 10 cryptocurrencies (full data)
+2026-08-15 23:09:00.708 [WARNING] Couldn't fetch Coinbase product list (401 Client Error: Unauthorized for url: https://api.coinbase.com/api/v3/brokerage/products)
+2026-08-15 23:09:00.818 [WARNING] Couldn't fetch Coinbase product list (401 Client Error: Unauthorized for url: https://api.coinbase.com/api/v3/brokerage/products)
+2026-08-15 23:09:00.915 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F', 'GC=F', 'BTC-USD', 'ETH-USD', '^KS11', 'QQQ', '^N225']
+2026-08-15 23:09:14.978 [INFO] Fetching top 10 cryptocurrencies (full data)
+2026-08-15 23:09:15.294 [INFO] Fetching top 10 cryptocurrencies (full data)
+2026-08-15 23:09:15.395 [WARNING] Couldn't fetch Coinbase product list (401 Client Error: Unauthorized for url: https://api.coinbase.com/api/v3/brokerage/products)
+2026-08-15 23:09:15.487 [WARNING] Couldn't fetch Coinbase product list (401 Client Error: Unauthorized for url: https://api.coinbase.com/api/v3/brokerage/products)
+2026-08-15 23:09:15.565 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F', 'GC=F', 'BTC-USD', 'ETH-USD', '^KS11', 'QQQ', '^N225']
+2026-08-15 23:09:20.289 [INFO] Fetching top 10 cryptocurrencies (full data)
+2026-08-15 23:09:20.495 [INFO] Fetching top 10 cryptocurrencies (full data)
+2026-08-15 23:09:20.710 [WARNING] Couldn't fetch Coinbase product list (401 Client Error: Unauthorized for url: https://api.coinbase.com/api/v3/brokerage/products)
+2026-08-15 23:09:20.809 [WARNING] Couldn't fetch Coinbase product list (401 Client Error: Unauthorized for url: https://api.coinbase.com/api/v3/brokerage/products)
+2026-08-15 23:09:20.834 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F', 'GC=F', 'BTC-USD', 'ETH-USD', '^KS11', 'QQQ', '^N225']
+2026-08-15 23:09:30.236 [INFO] Fetching top 10 cryptocurrencies (full data)
+2026-08-15 23:09:30.268 [INFO] Fetching top 10 cryptocurrencies (full data)
+2026-08-15 23:09:30.394 [WARNING] Couldn't fetch Coinbase product list (401 Client Error: Unauthorized for url: https://api.coinbase.com/api/v3/brokerage/products)
+2026-08-15 23:09:30.466 [WARNING] Couldn't fetch Coinbase product list (401 Client Error: Unauthorized for url: https://api.coinbase.com/api/v3/brokerage/products)
+2026-08-15 23:09:30.536 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F', 'GC=F', 'BTC-USD', 'ETH-USD', '^KS11', 'QQQ', '^N225']
+2026-08-15 23:09:31.977 [INFO] Fetching top 10 cryptocurrencies (full data)
+2026-08-15 23:09:32.296 [INFO] Fetching top 10 cryptocurrencies (full data)
+2026-08-15 23:09:32.422 [WARNING] Couldn't fetch Coinbase product list (401 Client Error: Unauthorized for url: https://api.coinbase.com/api/v3/brokerage/products)
+2026-08-15 23:09:32.493 [WARNING] Couldn't fetch Coinbase product list (401 Client Error: Unauthorized for url: https://api.coinbase.com/api/v3/brokerage/products)
+2026-08-15 23:09:32.511 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F', 'GC=F', 'BTC-USD', 'ETH-USD', '^KS11', 'QQQ', '^N225']
+2026-08-15 23:09:45.305 [INFO] Fetching top 10 cryptocurrencies (full data)
+2026-08-15 23:09:45.598 [INFO] Fetching top 10 cryptocurrencies (full data)
+2026-08-15 23:09:45.735 [WARNING] Couldn't fetch Coinbase product list (401 Client Error: Unauthorized for url: https://api.coinbase.com/api/v3/brokerage/products)
+2026-08-15 23:09:45.807 [WARNING] Couldn't fetch Coinbase product list (401 Client Error: Unauthorized for url: https://api.coinbase.com/api/v3/brokerage/products)
+2026-08-15 23:09:45.878 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F', 'GC=F', 'BTC-USD', 'ETH-USD', '^KS11', 'QQQ', '^N225']
+2026-08-15 23:09:59.983 [INFO] Fetching top 10 cryptocurrencies (full data)
+2026-08-15 23:10:00.286 [INFO] Fetching top 10 cryptocurrencies (full data)
+2026-08-15 23:10:00.728 [WARNING] Couldn't fetch Coinbase product list (401 Client Error: Unauthorized for url: https://api.coinbase.com/api/v3/brokerage/products)
+2026-08-15 23:10:01.077 [WARNING] Couldn't fetch Coinbase product list (401 Client Error: Unauthorized for url: https://api.coinbase.com/api/v3/brokerage/products)
+2026-08-15 23:10:01.480 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F', 'GC=F', 'BTC-USD', 'ETH-USD', '^KS11', 'QQQ', '^N225']
+2026-08-15 23:10:09.279 [INFO] Fetching top 10 cryptocurrencies (full data)
+2026-08-15 23:10:09.584 [INFO] Fetching top 10 cryptocurrencies (full data)
+2026-08-15 23:10:09.675 [WARNING] Couldn't fetch Coinbase product list (401 Client Error: Unauthorized for url: https://api.coinbase.com/api/v3/brokerage/products)
+2026-08-15 23:10:09.746 [WARNING] Couldn't fetch Coinbase product list (401 Client Error: Unauthorized for url: https://api.coinbase.com/api/v3/brokerage/products)
+2026-08-15 23:10:09.822 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F', 'GC=F', 'BTC-USD', 'ETH-USD', '^KS11', 'QQQ', '^N225']
+2026-08-15 23:10:15.229 [INFO] Fetching top 10 cryptocurrencies (full data)
+2026-08-15 23:10:15.261 [INFO] Fetching top 10 cryptocurrencies (full data)
+2026-08-15 23:10:15.456 [WARNING] Couldn't fetch Coinbase product list (401 Client Error: Unauthorized for url: https://api.coinbase.com/api/v3/brokerage/products)
+2026-08-15 23:10:15.556 [WARNING] Couldn't fetch Coinbase product list (401 Client Error: Unauthorized for url: https://api.coinbase.com/api/v3/brokerage/products)
+2026-08-15 23:10:15.666 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F', 'GC=F', 'BTC-USD', 'ETH-USD', '^KS11', 'QQQ', '^N225']
+2026-08-15 23:10:21.003 [INFO] Fetching top 10 cryptocurrencies (full data)
+2026-08-15 23:10:21.253 [INFO] Fetching top 10 cryptocurrencies (full data)
+2026-08-15 23:10:21.443 [WARNING] Couldn't fetch Coinbase product list (401 Client Error: Unauthorized for url: https://api.coinbase.com/api/v3/brokerage/products)
+2026-08-15 23:10:21.552 [WARNING] Couldn't fetch Coinbase product list (401 Client Error: Unauthorized for url: https://api.coinbase.com/api/v3/brokerage/products)
+2026-08-15 23:10:21.633 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F', 'GC=F', 'BTC-USD', 'ETH-USD', '^KS11', 'QQQ', '^N225']
+2026-08-15 23:11:24.344 [INFO] Session started
+2026-08-15 23:11:30.705 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F', 'GC=F', 'BTC-USD', 'ETH-USD', '^KS11', 'QQQ', '^N225']
+2026-08-15 23:11:33.075 [INFO] Fetching top 10 cryptocurrencies (full data)
+2026-08-15 23:11:33.539 [WARNING] Couldn't fetch Coinbase product list (401 Client Error: Unauthorized for url: https://api.coinbase.com/api/v3/brokerage/products)
+2026-08-15 23:11:33.735 [WARNING] Couldn't fetch Coinbase product list (401 Client Error: Unauthorized for url: https://api.coinbase.com/api/v3/brokerage/products)
+2026-08-15 23:11:33.817 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F', 'GC=F', 'BTC-USD', 'ETH-USD', '^KS11', 'QQQ', '^N225']
+2026-08-15 23:11:34.540 [INFO] Fetching top 10 cryptocurrencies (full data)
+2026-08-15 23:11:34.716 [WARNING] Couldn't fetch Coinbase product list (401 Client Error: Unauthorized for url: https://api.coinbase.com/api/v3/brokerage/products)
+2026-08-15 23:12:04.243 [INFO] Fetching market overview (full data)
