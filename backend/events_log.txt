@@ -1054,3 +1054,53 @@
 2026-08-15 23:46:10.935 [WARNING] Couldn't fetch Brazil 10Y [IRLTLT01BRM156N] (Bad Request.  The series does not exist.)
 2026-08-15 23:46:13.512 [INFO] Fetching bond data (full)
 2026-08-15 23:46:23.673 [WARNING] Couldn't fetch Brazil 10Y [IRLTLT01BRM156N] (Bad Request.  The series does not exist.)
+2026-08-15 23:50:13.404 [INFO] Fetching bond data (full)
+2026-08-15 23:50:22.946 [WARNING] Couldn't fetch Brazil 10Y [IRLTLT01BRM156N] (Bad Request.  The series does not exist.)
+2026-08-15 23:50:25.811 [INFO] Fetching bond data (full)
+2026-08-15 23:50:35.634 [WARNING] Couldn't fetch Brazil 10Y [IRLTLT01BRM156N] (Bad Request.  The series does not exist.)
+2026-08-15 23:50:37.241 [INFO] Fetching bond data (full)
+2026-08-15 23:50:37.241 [INFO] Fetching bond data (full)
+2026-08-15 23:50:45.714 [WARNING] Couldn't fetch Brazil 10Y [IRLTLT01BRM156N] (Bad Request.  The series does not exist.)
+2026-08-15 23:50:45.996 [WARNING] Couldn't fetch Brazil 10Y [IRLTLT01BRM156N] (Bad Request.  The series does not exist.)
+2026-08-15 23:50:48.754 [INFO] Fetching bond data (full)
+2026-08-15 23:50:58.986 [WARNING] Treasury.gov par yield curve unavailable, falling back to yfinance (HTTPSConnectionPool(host='home.treasury.gov', port=443): Read timed out. (read timeout=10))
+2026-08-15 23:50:59.595 [WARNING] Couldn't fetch Brazil 10Y [IRLTLT01BRM156N] (Bad Request.  The series does not exist.)
+2026-08-15 23:51:04.733 [INFO] Fetching bond data (full)
+2026-08-15 23:51:14.640 [WARNING] Couldn't fetch Brazil 10Y [IRLTLT01BRM156N] (Bad Request.  The series does not exist.)
+2026-08-15 23:53:57.879 [INFO] Fetching bond data (full)
+2026-08-15 23:54:07.978 [WARNING] Treasury.gov par yield curve unavailable, falling back to yfinance (HTTPSConnectionPool(host='home.treasury.gov', port=443): Read timed out. (read timeout=10))
+2026-08-15 23:54:08.668 [WARNING] Couldn't fetch Brazil 10Y [IRLTLT01BRM156N] (Bad Request.  The series does not exist.)
+2026-08-15 23:54:11.005 [INFO] Fetching bond data (full)
+2026-08-15 23:54:21.093 [WARNING] Treasury.gov par yield curve unavailable, falling back to yfinance (HTTPSConnectionPool(host='home.treasury.gov', port=443): Read timed out. (read timeout=10))
+2026-08-15 23:54:21.742 [WARNING] Couldn't fetch Brazil 10Y [IRLTLT01BRM156N] (Bad Request.  The series does not exist.)
+2026-08-15 23:58:28.987 [INFO] Fetching stock data (full) for AAPL
+2026-08-15 23:58:30.443 [INFO] Fetching analyst insights for AAPL
+2026-08-15 23:58:31.544 [INFO] Fetching analyst insights for AAPL
+2026-08-16 00:03:59.651 [INFO] Session started
+2026-08-16 00:04:00.635 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F', 'GC=F', 'BTC-USD', 'ETH-USD', '^KS11', 'QQQ', '^N225']
+2026-08-16 00:04:02.263 [INFO] Session started
+2026-08-16 00:04:03.203 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F', 'GC=F', 'BTC-USD', 'ETH-USD', '^KS11', 'QQQ', '^N225']
+2026-08-16 00:04:06.185 [INFO] Session started
+2026-08-16 00:04:07.064 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F', 'GC=F', 'BTC-USD', 'ETH-USD', '^KS11', 'QQQ', '^N225']
+2026-08-16 00:06:08.340 [INFO] Fetching market overview (full data)
+2026-08-16 00:06:17.569 [INFO] Fetching S&P 500 heatmap (top 60 by weight)
+2026-08-16 00:06:29.086 [INFO] Session started
+2026-08-16 00:06:29.448 [INFO] Fetching S&P 500 heatmap (top 60 by weight)
+2026-08-16 00:06:29.623 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F', 'GC=F', 'BTC-USD', 'ETH-USD', '^KS11', 'QQQ', '^N225']
+2026-08-16 00:07:09.398 [INFO] Fetching top 10 cryptocurrencies (full data)
+2026-08-16 00:07:09.493 [WARNING] Couldn't fetch Coinbase product list (401 Client Error: Unauthorized for url: https://api.coinbase.com/api/v3/brokerage/products)
+2026-08-16 00:07:09.567 [WARNING] Couldn't fetch Coinbase product list (401 Client Error: Unauthorized for url: https://api.coinbase.com/api/v3/brokerage/products)
+2026-08-16 00:07:10.921 [INFO] Fetching top 10 cryptocurrencies (full data)
+2026-08-16 00:07:11.071 [WARNING] Couldn't fetch Coinbase product list (401 Client Error: Unauthorized for url: https://api.coinbase.com/api/v3/brokerage/products)
+2026-08-16 00:07:50.564 [INFO] Session started
+2026-08-16 00:07:52.263 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F', 'GC=F', 'BTC-USD', 'ETH-USD', '^KS11', 'QQQ', '^N225']
+2026-08-16 00:07:54.497 [INFO] Session started
+2026-08-16 00:07:56.365 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F', 'GC=F', 'BTC-USD', 'ETH-USD', '^KS11', 'QQQ', '^N225']
+2026-08-16 00:07:57.970 [WARNING] /ws/tape connection error (WebSocket is not connected. Need to call "accept" first.)
+2026-08-16 00:07:58.525 [INFO] Session started
+2026-08-16 00:07:59.061 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F', 'GC=F', 'BTC-USD', 'ETH-USD', '^KS11', 'QQQ', '^N225']
+2026-08-16 00:08:00.334 [WARNING] /ws/tape connection error (WebSocket is not connected. Need to call "accept" first.)
+2026-08-16 00:08:00.769 [INFO] Session started
+2026-08-16 00:08:02.334 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F', 'GC=F', 'BTC-USD', 'ETH-USD', '^KS11', 'QQQ', '^N225']
+2026-08-16 00:13:24.917 [INFO] Fetching market overview (full data)
+2026-08-16 00:13:36.959 [INFO] Fetching S&P 500 heatmap (top 50 by weight)

@@ -228,6 +228,26 @@ export interface MarketData {
 
 export const fetchMarket = () => request<MarketData>('/api/market')
 
+export interface HeatmapTicker {
+  ticker: string
+  name: string
+  sector: string
+  /** 3 = largest tile, 1 = smallest -- a static rank-based bucket, not a
+   * live market cap (see backend/heatmap.py for why). */
+  size_tier: 1 | 2 | 3
+  price: number | null
+  change_pct: number | null
+}
+
+export interface HeatmapData {
+  tickers: HeatmapTicker[]
+  /** Always "sp500_top50" today -- the top 50 S&P 500 names by weight,
+   * not all 500 (one batched request vs. hundreds; see backend). */
+  universe: string
+}
+
+export const fetchHeatmap = () => request<HeatmapData>('/api/market/heatmap')
+
 // ---------------------------------------------------------------------
 // Crypto / FX / Futures / Bonds
 // ---------------------------------------------------------------------

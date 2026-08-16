@@ -29,6 +29,7 @@ import futures
 import bonds
 import coinbase_stream
 import tape
+import heatmap
 
 app = FastAPI(title="Caishen API")
 
@@ -125,6 +126,14 @@ def get_stock_quote(ticker: str):
 @app.get("/api/market")
 def get_market():
     return _safe_call(market_info.get_market_data_full)
+
+
+@app.get("/api/market/heatmap")
+def get_market_heatmap():
+    """Top-60-by-weight S&P 500 heatmap -- not all 500 names; see
+    heatmap.py's module docstring for why. Cached for 10 minutes since
+    this is a single batched yfinance call, not a live feed."""
+    return _safe_call(heatmap.get_heatmap)
 
 
 # ----------------------------------------------------------------------

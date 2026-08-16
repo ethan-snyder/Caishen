@@ -5,6 +5,7 @@ import { Loading, ErrorBlock } from './StatusBlock'
 import { useSortableLayout } from '@/lib/layout'
 import { Draggable, AddWidgetTray, EditHint } from './LayoutKit'
 import { AxisLabels, GridLines } from './ChartGrid'
+import SP500Heatmap from './SP500Heatmap'
 
 const border = '1px solid rgba(0,255,136,0.12)'
 
@@ -557,6 +558,7 @@ const SENTIMENT_CARDS: SentimentCardConfig[] = [
 
 const MARKET_SECTIONS = [
   { id: 'indices', label: 'MAJOR INDICES' },
+  { id: 'heatmap', label: 'S&P 500 HEATMAP' },
   { id: 'sentiment', label: 'SENTIMENT INDICATORS' },
   { id: 'macro', label: 'MACRO SENTIMENT' },
 ]
@@ -750,6 +752,14 @@ export default function MarketOverview() {
                     })}
                   </div>
                   <AddWidgetTray api={indexTiles} title="MORE INDEXES" />
+                </div>
+              </Draggable>
+            )
+
+            if (sectionId === 'heatmap') return (
+              <Draggable key="heatmap" id="heatmap" label="S&P 500 HEATMAP" api={sections} variant="section">
+                <div style={{ marginBottom: 22 }}>
+                  <SP500Heatmap />
                 </div>
               </Draggable>
             )

@@ -205,12 +205,21 @@ function ExpandedChart({ contract, decimals }: { contract: FuturesContract; deci
   )
 }
 
-function DataCell({ label, value }: { label: string; value: string }) {
+/**
+ * Volume/open-interest as an inline "LABEL value" pair rather than the
+ * old stacked DataCell (label on its own line above a bigger value line).
+ * That stacked form added a whole second content row to every collapsed
+ * tile -- with 15+ contracts in the list, that's an extra ~30px each,
+ * purely for two numbers nobody was scanning as a standalone block. Sits
+ * in the same header row as price/change now, so a collapsed tile is one
+ * line tall again.
+ */
+function InlineStat({ label, value }: { label: string; value: string }) {
   return (
-    <div>
-      <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 11, color: '#3C8F5F', letterSpacing: '0.1em', marginBottom: 2 }}>{label}</div>
-      <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 15, color: '#4DCC88' }}>{value}</div>
-    </div>
+    <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 13, whiteSpace: 'nowrap' }}>
+      <span style={{ color: '#3C8F5F', letterSpacing: '0.08em' }}>{label} </span>
+      <span style={{ color: '#4DCC88' }}>{value}</span>
+    </span>
   )
 }
 
@@ -267,12 +276,17 @@ export default function Futures() {
               const isOpen = expanded.has(f.symbol)
               return (
                 <Draggable key={f.symbol} id={f.symbol} label={f.name} api={rows}>
-                  <div style={{ backgroundColor: '#060E18', border, padding: '14px 16px' }}>
+                  {/* Was 14px/16px padding plus a whole second content row
+                      for volume/open interest below the header -- roughly
+                      doubled the height every tile needed. Tighter padding
+                      + folding those two stats into the header line (see
+                      InlineStat) gets a collapsed tile back to one line. */}
+                  <div style={{ backgroundColor: '#060E18', border, padding: '9px 14px' }}>
                     <div
                       onClick={() => toggleExpanded(f.symbol)}
-                      style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 12, cursor: 'pointer' }}
+                      style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, cursor: 'pointer' }}
                     >
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 14, flexWrap: 'wrap' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 14, flexWrap: 'wrap', rowGap: 4 }}>
                         <div style={{ minWidth: 150 }}>
                           <div style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: 16, color: '#C8FFD4', lineHeight: 1.2 }}>{f.name}</div>
                           <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: '#52A877', letterSpacing: '0.08em', marginTop: 2 }}>
@@ -306,6 +320,9 @@ export default function Futures() {
                             {`1Y ${formatPct(f.year_change_pct)}`}
                           </div>
                         )}
+
+                        <InlineStat label="VOL" value={formatLargeNum(f.volume)} />
+                        <InlineStat label="OI" value={f.open_interest !== null ? formatLargeNum(f.open_interest) : 'N/A'} />
                       </div>
 
                       <span style={{
@@ -314,11 +331,6 @@ export default function Futures() {
                       }}>
                         ▾
                       </span>
-                    </div>
-
-                    <div style={{ display: 'flex', gap: 26, flexWrap: 'wrap', marginTop: 12 }}>
-                      <DataCell label="VOLUME" value={formatLargeNum(f.volume)} />
-                      <DataCell label="OPEN INT" value={f.open_interest !== null ? formatLargeNum(f.open_interest) : 'N/A'} />
                     </div>
 
                     {isOpen && <ExpandedChart contract={f} decimals={dec} />}

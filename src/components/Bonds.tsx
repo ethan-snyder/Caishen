@@ -35,6 +35,27 @@ function formatBp(a: number | null, b: number | null): string | null {
   return `${bp >= 0 ? '+' : ''}${bp}bp`
 }
 
+/**
+ * Box width for a bp label at a given font size, wide enough that the text
+ * never spills into the bars on either side.
+ *
+ * Both bp columns used to be a fixed width (30px / 26px) chosen for a
+ * typical 2-3 digit gap. A wider spread between tenors (steep curves, or
+ * comparing a short-end point to the 30Y) produces a longer label --
+ * "+215bp" or "-1240bp" -- which is wider than that fixed box. Since the
+ * text itself is `white-space: nowrap`, the overflow doesn't wrap or
+ * shrink, it just paints outside the box and over the neighboring bar.
+ * Sizing the box to the actual label (JetBrains Mono's advance is ~0.6em,
+ * per POINT_WIDTH's own comment) fixes that for any gap size, not just
+ * the common case -- and because every chip gets the same formula, the
+ * padding around each label reads as consistent even though the boxes
+ * themselves vary slightly with digit count.
+ */
+function bpChipWidth(bp: string, fontSize: number): number {
+  const PADDING = 16
+  return Math.ceil(bp.length * fontSize * 0.62) + PADDING
+}
+
 /** Small vertical divider sitting between two curve bars, showing the
  * basis-point gap between them at that point on the curve. `height` is
  * the bar-box height it should center against (same as the bars it sits
@@ -46,7 +67,7 @@ function GapChip({ bp, height, fontSize = 11 }: { bp: string | null; height: num
   return (
     <div style={{
       display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
-      width: 30, height, flexShrink: 0,
+      width: Math.max(30, bpChipWidth(bp, fontSize)), height, flexShrink: 0,
     }}>
       <div style={{ width: 1, flex: 1, backgroundColor: 'rgba(0,255,136,0.15)' }} />
       <div style={{
@@ -204,14 +225,25 @@ function CurveBars({ curve, barHeight }: { curve: FredYieldRow['curve']; barHeig
       {points.map((p, i) => (
         <div key={p.tenor} style={{ display: 'flex', alignItems: 'flex-end', flex: i === 0 ? '0 0 auto' : 1, minWidth: 0 }}>
           {/* The slot widened along with the type: these bp gaps were 6px
-              text in a 16px column, the least readable thing on the page. */}
-          {i > 0 && (
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: barHeight, flexShrink: 0, width: 26 }}>
-              <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 11, color: '#52A877', whiteSpace: 'nowrap' }}>
-                {formatBp(points[i - 1].yield, p.yield) ?? ''}
-              </span>
-            </div>
-          )}
+              text in a 16px column, the least readable thing on the page.
+              Width is now sized to each label's own text (bpChipWidth) --
+              a fixed column was too narrow for a wide curve-spread gap
+              like "+215bp", and since the label is nowrap, an overflow
+              just paints over the neighboring bar instead of wrapping. */}
+          {i > 0 && (() => {
+            const gap = formatBp(points[i - 1].yield, p.yield)
+            return (
+              <div style={{
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                height: barHeight, flexShrink: 0,
+                width: gap ? Math.max(26, bpChipWidth(gap, 11)) : 26,
+              }}>
+                <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 11, color: '#52A877', whiteSpace: 'nowrap' }}>
+                  {gap ?? ''}
+                </span>
+              </div>
+            )
+          })()}
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', flex: 1, minWidth: 0 }}>
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-end', width: '100%', height: barHeight }}>
               <div style={{
