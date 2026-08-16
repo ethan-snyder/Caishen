@@ -1104,3 +1104,13 @@
 2026-08-16 00:08:02.334 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F', 'GC=F', 'BTC-USD', 'ETH-USD', '^KS11', 'QQQ', '^N225']
 2026-08-16 00:13:24.917 [INFO] Fetching market overview (full data)
 2026-08-16 00:13:36.959 [INFO] Fetching S&P 500 heatmap (top 50 by weight)
+2026-08-16 00:20:36.295 [INFO] Session started
+2026-08-16 00:20:37.444 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F', 'GC=F', 'BTC-USD', 'ETH-USD', '^KS11', 'QQQ', '^N225']
+2026-08-16 00:20:43.931 [INFO] Session started
+2026-08-16 00:20:45.399 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F', 'GC=F', 'BTC-USD', 'ETH-USD', '^KS11', 'QQQ', '^N225']
+2026-08-16 00:20:49.161 [INFO] Session started
+2026-08-16 00:20:50.332 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F', 'GC=F', 'BTC-USD', 'ETH-USD', '^KS11', 'QQQ', '^N225']
+2026-08-16 00:25:56.886 [INFO] Fetching economics page data (FRED indicators + calendar + Fed feeds)
+2026-08-16 00:26:07.836 [WARNING] Fed feed monetary failed (not well-formed (invalid token): line 1, column 1)
+2026-08-16 00:26:07.857 [WARNING] Fed feed speeches failed (not well-formed (invalid token): line 1, column 1)
+2026-08-16 00:34:20.484 [INFO] Yahoo live tape stream connected for ['^GSPC', '^DJI', '^IXIC', '^RUT', '^VIX', 'BZ=F', 'GC=F', 'BTC-USD', 'ETH-USD', '^KS11', 'QQQ', '^N225']

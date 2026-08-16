@@ -30,6 +30,7 @@ import bonds
 import coinbase_stream
 import tape
 import heatmap
+import econ
 
 app = FastAPI(title="Caishen API")
 
@@ -134,6 +135,19 @@ def get_market_heatmap():
     heatmap.py's module docstring for why. Cached for 10 minutes since
     this is a single batched yfinance call, not a live feed."""
     return _safe_call(heatmap.get_heatmap)
+
+
+# ----------------------------------------------------------------------
+# Economics
+# ----------------------------------------------------------------------
+
+@app.get("/api/econ")
+def get_econ():
+    """Macro indicators, the FRED release calendar and the Fed's own
+    publication feeds, in one payload. Each of the three degrades
+    independently -- a missing FRED key kills the calendar but leaves the
+    Fed RSS feeds working, and vice versa."""
+    return _safe_call(econ.get_econ_data)
 
 
 # ----------------------------------------------------------------------

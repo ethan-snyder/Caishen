@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import StockInfo from './components/StockInfo'
 import Projector from './components/Projector'
 import MarketOverview from './components/MarketOverview'
+import Economics from './components/Economics'
 import Crypto from './components/Crypto'
 import Bonds from './components/Bonds'
 import Forex from './components/Forex'
@@ -12,13 +13,15 @@ import { LayoutProvider, useSortableLayout } from '@/lib/layout'
 import { EditModeButton, Draggable, AddWidgetTray } from './components/LayoutKit'
 import TickerTape from './components/TickerTape'
 import { ErrorBoundary } from './components/ErrorBoundary'
+import Logo from './components/Logo'
 
-type Tab = 'stock' | 'projector' | 'market' | 'crypto' | 'bonds' | 'forex' | 'portfolio' | 'watchlist' | 'futures'
+type Tab = 'stock' | 'projector' | 'market' | 'economics' | 'crypto' | 'bonds' | 'forex' | 'portfolio' | 'watchlist' | 'futures'
 
 const TABS: { id: Tab; label: string; icon: string; group: string }[] = [
   { id: 'stock',     label: 'STOCK INFO',    icon: '▸', group: 'ANALYSIS' },
   { id: 'projector', label: 'PROJECTOR',     icon: '▸', group: 'ANALYSIS' },
   { id: 'market',    label: 'MARKET',        icon: '▸', group: 'ANALYSIS' },
+  { id: 'economics', label: 'ECONOMICS',     icon: '▸', group: 'ANALYSIS' },
   { id: 'crypto',    label: 'CRYPTO',        icon: '▸', group: 'MARKETS' },
   { id: 'bonds',     label: 'BONDS',         icon: '▸', group: 'MARKETS' },
   { id: 'forex',     label: 'FOREX',         icon: '▸', group: 'MARKETS' },
@@ -111,15 +114,18 @@ function AppShell() {
           padding: '20px 16px 16px',
           borderBottom: border,
         }}>
-          <div style={{
-            fontFamily: "'VT323', monospace",
-            fontSize: 36,
-            color: '#00FF88',
-            lineHeight: 1,
-            textShadow: '0 0 10px #00FF88, 0 0 30px rgba(0,255,136,0.4)',
-            letterSpacing: 2,
-          }}>
-            CAISHEN
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+            <Logo size={38} />
+            <div style={{
+              fontFamily: "'VT323', monospace",
+              fontSize: 36,
+              color: '#00FF88',
+              lineHeight: 1,
+              textShadow: '0 0 10px #00FF88, 0 0 30px rgba(0,255,136,0.4)',
+              letterSpacing: 2,
+            }}>
+              CAISHEN
+            </div>
           </div>
           <div style={{
             fontFamily: "'JetBrains Mono', monospace",
@@ -201,6 +207,7 @@ function AppShell() {
             {active === 'stock'     && <StockInfo />}
             {active === 'projector' && <Projector />}
             {active === 'market'    && <MarketOverview />}
+            {active === 'economics' && <Economics />}
             {active === 'crypto'    && <Crypto />}
             {active === 'bonds'     && <Bonds />}
             {active === 'forex'     && <Forex />}

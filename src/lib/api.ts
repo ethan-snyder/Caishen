@@ -249,6 +249,69 @@ export interface HeatmapData {
 export const fetchHeatmap = () => request<HeatmapData>('/api/market/heatmap')
 
 // ---------------------------------------------------------------------
+// Economics
+// ---------------------------------------------------------------------
+
+export interface EconPoint {
+  date: string
+  value: number
+}
+
+export interface EconIndicator {
+  key: string
+  label: string
+  sub: string
+  group: string
+  /** Suffix for the headline number: '%', 'K', 'M', 'T', or ''. */
+  unit: string
+  /** Whether a rise is good news, bad news, or neither -- drives tile
+   * coloring. Rising unemployment and rising inflation are bad; rising
+   * GDP is good; the Fed funds rate is neither in itself. */
+  direction: 'up_good' | 'up_bad' | 'neutral'
+  series_id: string
+  source: string
+  /** What the headline number means: the published level, a 12-month
+   * percent change, or the change vs. the prior observation. */
+  transform: 'level' | 'yoy' | 'mom_change'
+  value: number | null
+  prev: number | null
+  change: number | null
+  date: string | null
+  /** Already in the transformed space, so the sparkline plots the same
+   * quantity the headline number reports. */
+  history: EconPoint[]
+}
+
+export interface EconRelease {
+  date: string
+  name: string
+  release_id: number | null
+  is_past: boolean
+}
+
+export interface FedPublication {
+  feed: string
+  feed_label: string
+  title: string
+  link: string | null
+  published: string | null
+  summary: string | null
+}
+
+export interface EconData {
+  indicators: EconIndicator[]
+  groups: string[]
+  calendar: EconRelease[]
+  /** Set when the calendar specifically failed (e.g. no FRED_API_KEY),
+   * while the rest of the payload is still usable. */
+  calendar_error: string | null
+  fed: FedPublication[]
+  as_of: string
+}
+
+export const fetchEcon = () => request<EconData>('/api/econ')
+
+// ---------------------------------------------------------------------
 // Crypto / FX / Futures / Bonds
 // ---------------------------------------------------------------------
 
