@@ -5,8 +5,11 @@
 
 import { useEffect, useMemo, useState } from 'react'
 import { fetchEcon, type EconData, type EconIndicator, type EconRelease } from '@/lib/api'
+import { fmtDate } from '@/lib/format'
 import { C, FONT, border, goldA, purpleA } from '@/lib/theme'
 import { Loading, ErrorBlock } from './StatusBlock'
+import { LineChart } from './TrackingKit'
+import { useInExpandedTile } from './TileChart'
 
 function SectionHead({ children, right }: { children: React.ReactNode; right?: React.ReactNode }) {
   return (
@@ -60,6 +63,7 @@ const TRANSFORM_NOTE: Record<EconIndicator['transform'], string> = {
 
 function IndicatorTile({ ind }: { ind: EconIndicator }) {
   const cc = changeColor(ind)
+  const [ref, expanded] = useInExpandedTile<HTMLDivElement>()
   const arrow = ind.change === null || ind.change === 0 ? '' : ind.change > 0 ? '▲' : '▼'
   return (
     <div style={{ backgroundColor: C.card, border, padding: '14px 16px', display: 'flex', flexDirection: 'column', gap: 6 }}>
@@ -85,9 +89,24 @@ function IndicatorTile({ ind }: { ind: EconIndicator }) {
           </span>
         )}
       </div>
-      <Sparkline points={ind.history} color={cc === C.textSoft ? C.gold : cc} />
+      {/* Collapsed: sparkline. Expanded (tile clicked): the same series as
+          a full chart -- axis, gridlines, hover readout, dated x-axis. */}
+      <div ref={ref}>
+        {expanded
+          ? (
+            <div style={{ marginTop: 8 }}>
+              <LineChart
+                points={ind.history}
+                formatValue={v => fmtValue(v, ind.unit)}
+                height={260}
+                detailed
+              />
+            </div>
+          )
+          : <Sparkline points={ind.history} color={cc === C.textSoft ? C.gold : cc} />}
+      </div>
       <div style={{ display: 'flex', justifyContent: 'space-between', fontFamily: FONT.mono, fontSize: 11, color: C.dim }}>
-        <span>{ind.date ?? '—'}</span>
+        <span>{fmtDate(ind.date)}</span>
         <span>{ind.source} · {ind.series_id}</span>
       </div>
     </div>
@@ -97,7 +116,7 @@ function IndicatorTile({ ind }: { ind: EconIndicator }) {
 function fmtDay(iso: string) {
   const d = new Date(`${iso.slice(0, 10)}T00:00:00`)
   if (Number.isNaN(d.getTime())) return iso
-  return d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })
+  return fmtDate(d)
 }
 
 function Calendar({ releases }: { releases: EconRelease[] }) {
@@ -190,7 +209,7 @@ export default function Economics() {
 
       {data && (
         <>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: 8 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(440px, 1fr))', gap: 8 }}>
             {shown.map(ind => <IndicatorTile key={ind.key} ind={ind} />)}
           </div>
           {data.indicators.length === 0 && (
@@ -199,7 +218,7 @@ export default function Economics() {
             </div>
           )}
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(380px, 1fr))', gap: 16 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(440px, 1fr))', gap: 16 }}>
             <div>
               <SectionHead>RELEASE CALENDAR</SectionHead>
               {data.calendar_error
@@ -240,8 +259,8 @@ export default function Economics() {
             </div>
           </div>
 
-          <div style={{ marginTop: 12, padding: '9px 12px', backgroundColor: 'rgba(212,175,55,0.02)', border: '1px solid rgba(212,175,55,0.07)', fontFamily: FONT.mono, fontSize: 12, color: C.dim }}>
-            {`// DATA: FRED (St. Louis Fed) indicators + release calendar · federalreserve.gov RSS · as of ${data.as_of}`}
+          <div style={{ marginTop: 12, padding: '9px 12px', backgroundColor: 'rgba(212,175,55,0.02)', border: '1px solid rgba(155,89,182,0.5)', fontFamily: FONT.mono, fontSize: 12, color: C.dim }}>
+            {`// DATA: FRED (St. Louis Fed) indicators + release calendar · federalreserve.gov RSS · as of ${fmtDate(data.as_of, true)}`}
           </div>
         </>
       )}

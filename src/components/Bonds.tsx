@@ -1,11 +1,12 @@
 import { useEffect, useMemo, useState } from 'react'
 import { fetchBonds, type BondData, type FredYieldRow } from '@/lib/api'
+import { fmtDate } from '@/lib/format'
 import { Loading, ErrorBlock } from './StatusBlock'
 import { useSortableLayout } from '@/lib/layout'
 import { Draggable, AddWidgetTray, EditHint } from './LayoutKit'
 import { Flag } from './Flag'
 
-const border = '1px solid rgba(212,175,55,0.12)'
+const border = '1px solid rgba(155,89,182,0.5)'
 
 const BOND_SECTIONS = [
   { id: 'curve', label: 'GOVERNMENT YIELD CURVES' },
@@ -137,7 +138,7 @@ function CurveTile({ entry }: { entry: CurveEntry }) {
 
   return (
     <div style={{
-      backgroundColor: '#0A0610', border, padding: '20px 24px', minHeight: 264,
+      backgroundColor: '#0A0610', border, padding: '20px 24px', minHeight: 264, minWidth: 440,
       display: 'flex', flexDirection: 'column', flex: '0 0 auto',
     }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', gap: 8, marginBottom: 10 }}>
@@ -298,7 +299,7 @@ function YieldTile({ row, showDate, square }: { row: FredYieldRow; showDate?: bo
         </span>
         {showDate && (
           <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 11, color: '#7A6A8E' }}>
-            {row.date ?? ''}
+            {row.date ? fmtDate(row.date) : ''}
           </span>
         )}
       </div>
@@ -440,7 +441,7 @@ export default function Bonds() {
 
       {data && <AddWidgetTray api={sections} title="HIDDEN SECTIONS" />}
 
-      <div style={{ marginTop: 12, padding: '9px 12px', backgroundColor: 'rgba(212,175,55,0.02)', border: '1px solid rgba(212,175,55,0.07)', fontFamily: "'JetBrains Mono', monospace", fontSize: 13, color: '#7A6A8E' }}>
+      <div style={{ marginTop: 12, padding: '9px 12px', backgroundColor: 'rgba(212,175,55,0.02)', border: '1px solid rgba(155,89,182,0.5)', fontFamily: "'JetBrains Mono', monospace", fontSize: 13, color: '#7A6A8E' }}>
         {'// DATA SOURCES: Treasury.gov (U.S. curve, daily; yfinance fallback) · FRED/OECD (10Y sovereign baseline, monthly) · Japan MOF, Bank of Canada, Bank of England (JGB/CANGB/GILT curves, daily) · FRED/ICE BofA (corporate rating tiers, daily). Corporate + sovereign sections need FRED_API_KEY set.'}
       </div>
     </div>

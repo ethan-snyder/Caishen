@@ -5,7 +5,9 @@
 
 import { useEffect, useState } from 'react'
 import { fetchAnalystInsights, type AnalystInsights as Data, type RecommendationPeriod } from '@/lib/api'
+import { fmtDate } from '@/lib/format'
 import { C, FONT, border, goldA } from '@/lib/theme'
+import { WhenExpanded, HistoryTileChart } from './TileChart'
 
 const REC_COLORS: { key: keyof Omit<RecommendationPeriod, 'period' | 'total'>; label: string; color: string }[] = [
   { key: 'strong_buy', label: 'STRONG BUY', color: '#1FAE63' },
@@ -28,7 +30,7 @@ function periodLabel(p: string) {
   return d.toLocaleDateString('en-US', { month: 'short' }).toUpperCase()
 }
 
-function TargetRange({ t }: { t: NonNullable<Data['price_targets']> }) {
+function TargetRange({ t, ticker }: { t: NonNullable<Data['price_targets']>; ticker: string }) {
   const { low, high, mean, median, current } = t
   if (low === null || high === null || high <= low) return null
   const lo = Math.min(low, current ?? low)
@@ -58,6 +60,9 @@ function TargetRange({ t }: { t: NonNullable<Data['price_targets']> }) {
         <span style={{ color: C.textSoft }}>LOW <span style={{ color: C.number }}>{money(low)}</span></span>
         <span style={{ color: C.textSoft }}>HIGH <span style={{ color: C.number }}>{money(high)}</span></span>
       </div>
+      <WhenExpanded>
+        <HistoryTileChart kind="stock" id={ticker} title={`${ticker} price vs. targets`} note={`// analyst 12-mo targets: low ${money(low)} · mean ${money(mean)} · high ${money(high)}`} />
+      </WhenExpanded>
     </div>
   )
 }
@@ -151,8 +156,8 @@ export default function AnalystInsights({ ticker }: { ticker: string }) {
         </div>
       )}
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: 8 }}>
-        {data.price_targets && <TargetRange t={data.price_targets} />}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(440px, 1fr))', gap: 8 }}>
+        {data.price_targets && <TargetRange t={data.price_targets} ticker={ticker} />}
         {data.recommendations && data.recommendations.length > 0 && <RecBars periods={data.recommendations} />}
       </div>
 
@@ -167,7 +172,7 @@ export default function AnalystInsights({ ticker }: { ticker: string }) {
               fontFamily: FONT.mono, fontSize: 13, padding: '5px 0',
               borderTop: i ? `1px solid ${goldA(0.06)}` : 'none',
             }}>
-              <span style={{ color: C.muted }}>{r.date}</span>
+              <span style={{ color: C.muted }}>{fmtDate(r.date)}</span>
               <span style={{ color: C.number }}>{r.firm ?? '—'}</span>
               <span style={{ color: C.textSoft, textTransform: 'uppercase' }}>{r.action ?? ''}</span>
               <span style={{ color: C.textSoft }}>

@@ -5,7 +5,7 @@ import {
   type TradeFlow, type TradeCountry,
 } from '@/lib/api'
 import { formatLargeNum } from '@/lib/format'
-import { C, FONT, border, goldA } from '@/lib/theme'
+import { C, FONT, border, goldA, GRID_LINE } from '@/lib/theme'
 import { Loading, ErrorBlock } from './StatusBlock'
 import Delta from './Delta'
 import { Panel, PanelTitle, SourceNote, EmptyNote, Toggle, Kpi, selectStyle, money, pct } from './TradeUI'
@@ -141,7 +141,7 @@ function TrendChart({ data }: { data: TradeTrend }) {
         <svg width={width} height={H + BH + 8} style={{ display: 'block' }}>
           {ticks.map(t => (
             <g key={t}>
-              <line x1={pad.l} x2={pad.l + plotW} y1={y(t)} y2={y(t)} stroke={goldA(0.07)} />
+              <line x1={pad.l} x2={pad.l + plotW} y1={y(t)} y2={y(t)} stroke={GRID_LINE} strokeDasharray="4 4" />
               <text x={pad.l - 8} y={y(t) + 3} textAnchor="end" fill={C.muted} style={{ fontFamily: MONO, fontSize: 9 }}>
                 {formatLargeNum(t, '$').replace('.00', '')}
               </text>
@@ -473,7 +473,7 @@ export default function Trade() {
       </div>
 
       {/* KPI row */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(170px, 1fr))', gap: 8, marginBottom: 14 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(440px, 1fr))', gap: 8, marginBottom: 14 }}>
         <Kpi label="TOTAL EXPORTS" value={money(profile?.world_exports)} sub={shownYear ? `${shownYear} · goods` : undefined} />
         <Kpi label="TOTAL IMPORTS" value={money(profile?.world_imports)} sub={shownYear ? `${shownYear} · goods` : undefined} />
         <Kpi label="TRADE BALANCE" value={<Delta value={balance} format={money} size={20} weight={600} />}

@@ -5,22 +5,26 @@
 // preserveAspectRatio="none" SVG would stretch); GridLines draws inside the
 // chart's own viewBox.
 
-import { goldA } from '@/lib/theme'
+import { GRID_LINE, goldA } from '@/lib/theme'
 
-/** 0 = top (max), 1 = bottom (min). Five ticks: max, 3 between, min. */
+/** 0 = top (max), 1 = bottom (min). Five ticks by default: max, 3 between,
+ * min. Expanded tiles pass `ticks={9}` for a denser, more detailed axis. */
 const TICKS = [0, 0.25, 0.5, 0.75, 1]
+const tickFractions = (n = 5) =>
+  n === 5 ? TICKS : Array.from({ length: n }, (_, i) => i / (n - 1))
 
 export function AxisLabels({
-  min, max, height, minWidth = 56, format,
+  min, max, height, minWidth = 56, format, ticks: count = 5,
 }: {
   min: number
   max: number
   height: number
   minWidth?: number
   format: (v: number) => string
+  ticks?: number
 }) {
   // A flat series has one meaningful value -- print it once, not five times.
-  const ticks = max === min ? [0] : TICKS
+  const ticks = max === min ? [0] : tickFractions(count)
   return (
     <div style={{
       position: 'relative', height, minWidth, flexShrink: 0,
@@ -43,16 +47,16 @@ export function AxisLabels({
   )
 }
 
-export function GridLines({ w, h }: { w: number; h: number }) {
+export function GridLines({ w, h, ticks = 5 }: { w: number; h: number; ticks?: number }) {
   return (
     <g aria-hidden="true">
-      {TICKS.map(f => (
+      {tickFractions(ticks).map(f => (
         <line
           key={f}
           x1={0} x2={w} y1={f * h} y2={f * h}
-          stroke={goldA(f === 1 ? 0.18 : 0.07)}
+          stroke={f === 1 ? goldA(0.3) : GRID_LINE}
           strokeWidth={1}
-          strokeDasharray={f === 1 ? undefined : '3,4'}
+          strokeDasharray={f === 1 ? undefined : '4,4'}
           vectorEffect="non-scaling-stroke"
         />
       ))}

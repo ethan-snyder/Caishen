@@ -1,16 +1,17 @@
-import { useEffect, useState, type MouseEvent } from 'react'
+import { createContext, useContext, useEffect, useState, type MouseEvent } from 'react'
 import {
   fetchStock, fetchStockHistory,
   type StockData, type StockRange, type StockHistoryPoint,
 } from '@/lib/api'
-import { formatMoney, formatNum, formatLargeNum, posNegColor } from '@/lib/format'
+import { formatMoney, formatNum, formatLargeNum, posNegColor, fmtDate } from '@/lib/format'
 import { Loading, ErrorBlock } from './StatusBlock'
 import Delta from './Delta'
 import { AxisLabels, GridLines } from './ChartGrid'
 import AnalystInsights from './AnalystInsights'
+import { WhenExpanded, HistoryTileChart } from './TileChart'
 
 const G = 'rgba(212,175,55,'
-const border = `1px solid ${G}0.12)`
+const border = '1px solid rgba(155,89,182,0.5)'
 
 const RANGES: { key: StockRange; label: string }[] = [
   { key: '1d', label: '1D' }, { key: '1w', label: '1W' }, { key: '1mo', label: '1M' },
@@ -23,9 +24,9 @@ function formatHistoryDate(iso: string, range: StockRange) {
   const dt = new Date(iso)
   if (Number.isNaN(dt.getTime())) return iso
   if (range === '1d' || range === '1w') {
-    return dt.toLocaleString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' })
+    return fmtDate(dt, true)
   }
-  return dt.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+  return fmtDate(dt)
 }
 
 /** Hand-rolled SVG price chart, same construction as the Crypto/Forex/
@@ -217,7 +218,12 @@ function SectionHead({ children }: { children: React.ReactNode }) {
   )
 }
 
+/** Ticker being viewed, so an expanded metric cell can chart it. */
+const TickerContext = createContext<string | null>(null)
+const PRICE_LEVEL_CELLS = new Set(['52-WK HIGH', '52-WK LOW'])
+
 function Cell({ label, value, pos, neg }: { label: string; value: string | number; pos?: boolean; neg?: boolean }) {
+  const ticker = useContext(TickerContext)
   const valColor = pos ? '#3DDC84' : neg ? '#FF4D4D' : '#FFFFFF'
   return (
     <div style={{
@@ -226,8 +232,8 @@ function Cell({ label, value, pos, neg }: { label: string; value: string | numbe
       padding: '12px 14px',
       transition: 'border-color 0.1s',
     }}
-    onMouseEnter={e => (e.currentTarget.style.borderColor = 'rgba(212,175,55,0.35)')}
-    onMouseLeave={e => (e.currentTarget.style.borderColor = 'rgba(212,175,55,0.12)')}
+    onMouseEnter={e => (e.currentTarget.style.borderColor = 'rgba(180,140,219,0.85)')}
+    onMouseLeave={e => (e.currentTarget.style.borderColor = 'rgba(155,89,182,0.5)')}
     >
       <div style={{
         fontFamily: "'JetBrains Mono', monospace",
@@ -245,6 +251,15 @@ function Cell({ label, value, pos, neg }: { label: string; value: string | numbe
         letterSpacing: '-0.01em',
         textShadow: pos || neg ? `0 0 8px ${valColor}` : `0 0 6px rgba(255,255,255,0.3)`,
       }}>{value}</div>
+      {ticker && (
+        <WhenExpanded>
+          <HistoryTileChart
+            kind="stock" id={ticker} title={`${ticker} share price`}
+            note={PRICE_LEVEL_CELLS.has(label) ? undefined
+              : `// no free historical series for ${label.toLowerCase()} -- showing the share price it moves with`}
+          />
+        </WhenExpanded>
+      )}
     </div>
   )
 }
@@ -270,6 +285,7 @@ export default function StockInfo() {
   const d = data
 
   return (
+    <TickerContext.Provider value={data?.ticker ?? null}>
     <div>
       {/* Search */}
       <form onSubmit={e => { e.preventDefault(); if (inputVal.trim()) load(inputVal.trim()) }} style={{ display: 'flex', gap: 8, maxWidth: 440, marginBottom: 24 }}>
@@ -294,8 +310,8 @@ export default function StockInfo() {
               outline: 'none',
               caretColor: '#D4AF37',
             }}
-            onFocus={e => (e.currentTarget.style.borderColor = 'rgba(212,175,55,0.4)')}
-            onBlur={e => (e.currentTarget.style.borderColor = 'rgba(212,175,55,0.12)')}
+            onFocus={e => (e.currentTarget.style.borderColor = 'rgba(180,140,219,0.85)')}
+            onBlur={e => (e.currentTarget.style.borderColor = 'rgba(155,89,182,0.5)')}
           />
         </div>
         <button type="submit" style={{
@@ -374,7 +390,7 @@ export default function StockInfo() {
           <AnalystInsights ticker={d.ticker} />
 
           <SectionHead>VALUATION</SectionHead>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(148px, 1fr))', gap: 6 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(440px, 1fr))', gap: 6 }}>
             <Cell label="P/E RATIO" value={formatNum(d.pe)} />
             <Cell label="FORWARD P/E" value={formatNum(d.forwardPe)} />
             <Cell label="PEG RATIO" value={formatNum(d.peg)} />
@@ -384,7 +400,7 @@ export default function StockInfo() {
           </div>
 
           <SectionHead>COST OF CAPITAL</SectionHead>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(148px, 1fr))', gap: 6 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(440px, 1fr))', gap: 6 }}>
             <Cell label="CAPM" value={d.capm} />
             <Cell label="WACC" value={d.wacc} />
             <Cell label="BETA" value={formatNum(d.beta)} />
@@ -392,7 +408,7 @@ export default function StockInfo() {
           </div>
 
           <SectionHead>PER SHARE</SectionHead>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(148px, 1fr))', gap: 6 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(440px, 1fr))', gap: 6 }}>
             <Cell label="DIVIDEND" value={d.dividend !== null ? `$${d.dividend.toFixed(2)}` : '—'} />
             <Cell label="DIV YIELD" value={d.dividendYield} />
             <Cell label="CASH/SHARE" value={d.cashPerShare !== null ? `$${d.cashPerShare.toFixed(2)}` : '—'} />
@@ -401,7 +417,7 @@ export default function StockInfo() {
           </div>
 
           <SectionHead>PROFITABILITY</SectionHead>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(148px, 1fr))', gap: 6 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(440px, 1fr))', gap: 6 }}>
             <Cell label="PROFIT MARGIN" value={pctOf(d.profitMargin)} pos={(d.profitMargin ?? 0) > 0} neg={(d.profitMargin ?? 0) < 0} />
             <Cell label="OPER. MARGIN" value={pctOf(d.operatingMargin)} />
             <Cell label="ROA" value={pctOf(d.returnOnAssets)} />
@@ -411,7 +427,7 @@ export default function StockInfo() {
           </div>
 
           <SectionHead>BALANCE SHEET</SectionHead>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(148px, 1fr))', gap: 6 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(440px, 1fr))', gap: 6 }}>
             <Cell label="TOTAL CASH" value={bigMoney(d.totalCash)} />
             <Cell label="TOTAL DEBT" value={bigMoney(d.totalDebt)} />
             {/* yfinance reports debtToEquity percentage-style (154.5 means
@@ -422,13 +438,13 @@ export default function StockInfo() {
           </div>
 
           <SectionHead>TRADING &amp; DIVIDEND DATES</SectionHead>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(148px, 1fr))', gap: 6 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(440px, 1fr))', gap: 6 }}>
             <Cell label="VOLUME" value={bigMoney(d.volume)} />
             <Cell label="AVG VOLUME" value={bigMoney(d.avgVolume)} />
             {/* Two different dates that get conflated constantly: ex-div is
                 the ownership cutoff, dividend date is when cash lands. */}
-            <Cell label="EX-DIVIDEND" value={d.exDividendDate ?? '—'} />
-            <Cell label="DIVIDEND PAID" value={d.dividendDate ?? '—'} />
+            <Cell label="EX-DIVIDEND" value={fmtDate(d.exDividendDate)} />
+            <Cell label="DIVIDEND PAID" value={fmtDate(d.dividendDate)} />
           </div>
 
           {/* 52-week range */}
@@ -470,7 +486,7 @@ export default function StockInfo() {
           <div style={{
             marginTop: 12, padding: '9px 12px',
             backgroundColor: 'rgba(212,175,55,0.03)',
-            border: '1px solid rgba(212,175,55,0.08)',
+            border: '1px solid rgba(155,89,182,0.5)',
             fontFamily: "'JetBrains Mono', monospace",
             fontSize: 13, color: '#7A6A8E',
           }}>
@@ -479,5 +495,6 @@ export default function StockInfo() {
         </>
       )}
     </div>
+    </TickerContext.Provider>
   )
 }

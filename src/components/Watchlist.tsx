@@ -14,7 +14,7 @@ import {
   type MetricDef,
 } from './TrackingKit'
 
-const border = '1px solid rgba(212,175,55,0.12)'
+const border = '1px solid rgba(155,89,182,0.5)'
 
 /** Watchlists hold any yfinance-resolvable symbol (stocks, FX, futures,
  * indexes, crypto), so price formatting scales to the magnitude rather
@@ -186,7 +186,7 @@ export default function Watchlist() {
           ) : (
             <>
               {avgYield !== null && (
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(170px, 1fr))', gap: 6, marginBottom: 14 }}>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(440px, 1fr))', gap: 6, marginBottom: 14 }}>
                   <div style={{ backgroundColor: '#130B1B', border, padding: '12px 14px' }}>
                     <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: '#A391B5', letterSpacing: '0.12em', marginBottom: 5 }}>AVG DIV YIELD</div>
                     <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 18, fontWeight: 600, color: '#F2C94C', textShadow: '0 0 8px rgba(242,201,76,0.35)' }}>
@@ -238,8 +238,8 @@ export default function Watchlist() {
                             cursor: 'pointer', display: 'grid', gridTemplateColumns: gridCols, gap: 6,
                             alignItems: 'center', backgroundColor: '#130B1B', border, padding: '12px 14px', transition: 'border-color 0.1s',
                           }}
-                            onMouseEnter={e => (e.currentTarget.style.borderColor = 'rgba(212,175,55,0.3)')}
-                            onMouseLeave={e => (e.currentTarget.style.borderColor = 'rgba(212,175,55,0.12)')}
+                            onMouseEnter={e => (e.currentTarget.style.borderColor = 'rgba(180,140,219,0.85)')}
+                            onMouseLeave={e => (e.currentTarget.style.borderColor = 'rgba(155,89,182,0.5)')}
                           >
                             <div style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: 16, color: '#D4AF37', textShadow: '0 0 6px rgba(212,175,55,0.4)' }}>{item.ticker}</div>
                             <div style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: 14, color: '#C9B8D9', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={item.name ?? ''}>{item.name ?? '—'}</div>
@@ -268,7 +268,7 @@ export default function Watchlist() {
         </>
       )}
 
-      <div style={{ marginTop: 12, padding: '9px 12px', backgroundColor: 'rgba(212,175,55,0.02)', border: '1px solid rgba(212,175,55,0.07)', fontFamily: "'JetBrains Mono', monospace", fontSize: 13, color: '#7A6A8E' }}>
+      <div style={{ marginTop: 12, padding: '9px 12px', backgroundColor: 'rgba(212,175,55,0.02)', border: '1px solid rgba(155,89,182,0.5)', fontFamily: "'JetBrains Mono', monospace", fontSize: 13, color: '#7A6A8E' }}>
         {'// DATA SOURCE: yfinance · saved to watchlists.txt on the backend · ratios/dividends only apply to individual stocks, so FX/futures/index rows show "—" · metric columns are saved in this browser · avg yield is an unweighted average (a watchlist has no share counts to weight by)'}
       </div>
 

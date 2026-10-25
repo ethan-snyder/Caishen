@@ -2,7 +2,7 @@
 // configurable metric columns, small charts, panels and formatters.
 
 import { useCallback, useMemo, useState, type MouseEvent, type ReactNode } from 'react'
-import { formatLargeNum as baseFormatLargeNum } from '@/lib/format'
+import { formatLargeNum as baseFormatLargeNum, fmtDate } from '@/lib/format'
 import { C, FONT, border, goldA, purpleA } from '@/lib/theme'
 import { AxisLabels, GridLines } from './ChartGrid'
 
@@ -283,23 +283,26 @@ export function BarRow({ label, value, max, color, valueLabel }: {
 // Charts
 // ---------------------------------------------------------------------
 
-function fmtDate(iso: string, intraday: boolean) {
+function chartDate(iso: string, intraday: boolean) {
   const d = new Date(iso.length <= 10 ? `${iso}T00:00:00` : iso)
   if (Number.isNaN(d.getTime())) return iso
   return intraday
     ? d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })
-    : d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+    : fmtDate(d)
 }
 
 /** Value-over-time line with optional horizontal reference (cost basis). */
-export function LineChart({ points, intraday = false, refLine, refLabel, formatValue, height = 200 }: {
+export function LineChart({ points, intraday = false, refLine, refLabel, formatValue, height = 200, detailed = false }: {
   points: { date: string; value: number }[]
   intraday?: boolean
   refLine?: number | null
   refLabel?: string
   formatValue: (v: number) => string
   height?: number
+  /** Denser y-axis (9 labelled gridlines) and 5 date labels instead of 2. */
+  detailed?: boolean
 }) {
+  const ticks = detailed ? 9 : 5
   const [hover, setHover] = useState<number | null>(null)
   if (points.length < 2) {
     return (
@@ -333,14 +336,14 @@ export function LineChart({ points, intraday = false, refLine, refLabel, formatV
   return (
     <div>
       <div style={{ display: 'flex', gap: 10 }}>
-        <AxisLabels min={min} max={max} height={h} minWidth={72} format={formatValue} />
+        <AxisLabels min={min} max={max} height={h} minWidth={72} format={formatValue} ticks={ticks} />
         <div style={{ position: 'relative', flex: 1 }}>
           <svg
             viewBox={`0 0 ${w} ${h}`} width="100%" height={h} preserveAspectRatio="none"
             onMouseMove={onMove} onMouseLeave={() => setHover(null)}
             style={{ display: 'block', overflow: 'visible', cursor: 'crosshair' }}
           >
-            <GridLines w={w} h={h} />
+            <GridLines w={w} h={h} ticks={ticks} />
             <defs>
               <linearGradient id={`tk-fill-${up ? 'u' : 'd'}`} x1="0" y1="0" x2="0" y2="1">
                 <stop offset="0%" stopColor={color} stopOpacity={0.22} />
@@ -375,7 +378,7 @@ export function LineChart({ points, intraday = false, refLine, refLabel, formatV
               pointerEvents: 'none', zIndex: 5,
             }}>
               <div style={{ fontWeight: 600 }}>{formatValue(hp.value)}</div>
-              <div style={{ fontSize: 11, color: C.muted }}>{fmtDate(hp.date, intraday)}</div>
+              <div style={{ fontSize: 11, color: C.muted }}>{chartDate(hp.date, intraday)}</div>
             </div>
           )}
         </div>
@@ -384,8 +387,9 @@ export function LineChart({ points, intraday = false, refLine, refLabel, formatV
         display: 'flex', justifyContent: 'space-between', marginLeft: 82, marginTop: 6,
         fontFamily: FONT.mono, fontSize: 12, color: C.dim,
       }}>
-        <span>{fmtDate(points[0].date, intraday)}</span>
-        <span>{fmtDate(points[points.length - 1].date, intraday)}</span>
+        {(detailed ? [0, 0.25, 0.5, 0.75, 1] : [0, 1]).map(f => (
+          <span key={f}>{chartDate(points[Math.round(f * (points.length - 1))].date, intraday)}</span>
+        ))}
       </div>
     </div>
   )

@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState, type MouseEvent as ReactMouseEvent } from 'react'
 import { fetchTradeCompare, type ComparePoint, type CompareSeries, type TradeCompare as CompareData } from '@/lib/api'
 import { formatLargeNum } from '@/lib/format'
-import { C, FONT, goldA } from '@/lib/theme'
+import { C, FONT, goldA, GRID_LINE } from '@/lib/theme'
 import { COMPARE_MAX, setCompareList, useTradeNav } from '@/lib/tradeNav'
 import { Loading, ErrorBlock } from './StatusBlock'
 import Delta from './Delta'
@@ -108,7 +108,7 @@ function CompareChart({ lines, years, metric, scale }: { lines: Line[]; years: n
         <svg width={width} height={H} style={{ display: 'block' }}>
           {ticks.map(t => (
             <g key={t}>
-              <line x1={pad.l} x2={pad.l + plotW} y1={y(t)} y2={y(t)} stroke={t === 0 && metric === 'balance' ? goldA(0.35) : goldA(0.07)} />
+              <line x1={pad.l} x2={pad.l + plotW} y1={y(t)} y2={y(t)} stroke={t === 0 && metric === 'balance' ? goldA(0.35) : GRID_LINE} strokeDasharray={t === 0 && metric === 'balance' ? undefined : '4 4'} />
               <text x={pad.l - 8} y={y(t) + 3} textAnchor="end" fill={C.muted} style={{ fontFamily: MONO, fontSize: 9 }}>
                 {fmtValue(t, metric, scale).replace('.00', '')}
               </text>

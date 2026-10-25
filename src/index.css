@@ -75,6 +75,38 @@ body {
   background-size: 100px 96px;
 }
 
+/* Box outlines: every panel/tile/input whose inline border uses the Moneta
+   box purple (theme.ts BOX_PURPLE / BOX_PURPLE_HOVER) gets a soft purple
+   glow. Browsers serialize the inline color with spaces, hence the match
+   strings. Clicking a box marks it data-box-selected (see App.tsx), which
+   turns the outline gold -- !important so it wins over the inline border
+   and any hover handler. */
+[style*="rgba(155, 89, 182, 0.5)"],
+[style*="rgba(180, 140, 219, 0.85)"] {
+  box-shadow: 0 0 10px rgba(155, 89, 182, 0.22);
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+[data-box-selected="true"] {
+  border-color: #D4AF37 !important;
+  box-shadow: 0 0 12px rgba(212, 175, 55, 0.4) !important;
+}
+
+/* The clicked card in a tile grid grows: it stretches from its column to
+   the end of the row (the grid-column is set inline by App.tsx), pushing the
+   tiles after it to the next row. In a one-column grid it can't widen, so
+   it grows taller instead. Clicking it again collapses it. */
+[data-tile-expanded] {
+  z-index: 2;
+}
+[data-tile-expanded="tall"] {
+  min-height: 320px;
+}
+/* While a card in this grid is expanded, its row-mates keep their natural
+   height instead of stretching to match it. */
+[data-has-expanded] > :not([data-tile-expanded]) {
+  align-self: start;
+}
+
 /* CRT scanline overlay */
 body::after {
   content: '';

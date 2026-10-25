@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState, type MouseEvent as ReactMouseEvent } from 'react'
 import { fetchHistory, type ChartKind, type ChartRange, type HistoryData } from '@/lib/api'
-import { C, FONT, border, goldA } from '@/lib/theme'
+import { fmtDate } from '@/lib/format'
+import { C, FONT, border, goldA, GRID_LINE } from '@/lib/theme'
 import { Loading, ErrorBlock } from './StatusBlock'
 import Delta from './Delta'
 
@@ -51,9 +52,9 @@ function fmtTime(iso: string, intraday: boolean, range: ChartRange) {
   if (intraday) {
     return range === '1D'
       ? d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })
-      : d.toLocaleString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' })
+      : fmtDate(d, true)
   }
-  return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+  return fmtDate(d)
 }
 
 function Chart({ data }: { data: HistoryData }) {
@@ -111,7 +112,7 @@ function Chart({ data }: { data: HistoryData }) {
           </defs>
           {ticks.map((t, i) => (
             <g key={i}>
-              <line x1={pad.l} x2={pad.l + plotW} y1={y(t)} y2={y(t)} stroke={goldA(0.07)} />
+              <line x1={pad.l} x2={pad.l + plotW} y1={y(t)} y2={y(t)} stroke={GRID_LINE} strokeDasharray="4 4" />
               <text x={pad.l + plotW + 8} y={y(t) + 3} fill={C.muted} style={{ fontFamily: FONT.mono, fontSize: 10 }}>{fmt(t, data.unit)}</text>
             </g>
           ))}

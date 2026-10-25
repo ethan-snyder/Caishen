@@ -1293,3 +1293,68 @@
 2026-10-25 12:40:38.841 [INFO] tape: Yahoo live feed connected
 2026-10-25 12:40:51.066 [INFO] tape: Yahoo live feed connected
 2026-10-25 12:40:55.943 [INFO] tape: Yahoo live feed connected
+2026-10-25 12:45:19.896 [INFO] Session started
+2026-10-25 12:45:24.942 [INFO] tape: Yahoo live feed connected
+2026-10-25 12:45:25.675 [INFO] tape: Yahoo live feed connected
+2026-10-25 12:45:30.679 [INFO] tape: Yahoo live feed connected
+2026-10-25 12:46:27.520 [INFO] Fetching market overview (full data)
+2026-10-25 12:47:41.854 [INFO] Fetching top 10 cryptocurrencies (full data)
+2026-10-25 12:47:43.346 [INFO] Fetching top 10 cryptocurrencies (full data)
+2026-10-25 12:48:35.891 [INFO] Fetching bond data (full)
+2026-10-25 12:48:36.417 [INFO] Fetching market overview (full data)
+2026-10-25 12:48:46.015 [WARNING] Treasury.gov par yield curve unavailable, falling back to yfinance (HTTPSConnectionPool(host='home.treasury.gov', port=443): Read timed out. (read timeout=10))
+2026-10-25 12:48:47.869 [WARNING] Couldn't fetch Brazil 10Y [IRLTLT01BRM156N] (Bad Request.  The series does not exist.)
+2026-10-25 12:48:50.272 [INFO] Fetching bond data (full)
+2026-10-25 12:49:00.353 [WARNING] Treasury.gov par yield curve unavailable, falling back to yfinance (HTTPSConnectionPool(host='home.treasury.gov', port=443): Read timed out. (read timeout=10))
+2026-10-25 12:49:02.135 [WARNING] Couldn't fetch Brazil 10Y [IRLTLT01BRM156N] (Bad Request.  The series does not exist.)
+2026-10-25 12:50:33.121 [INFO] Fetching top 10 cryptocurrencies (full data)
+2026-10-25 12:50:33.387 [INFO] Fetching top 10 cryptocurrencies (full data)
+2026-10-25 12:50:34.984 [INFO] Fetching bond data (full)
+2026-10-25 12:50:36.366 [INFO] Fetching top 10 cryptocurrencies (full data)
+2026-10-25 12:50:36.369 [INFO] Fetching top 10 cryptocurrencies (full data)
+2026-10-25 12:50:36.586 [INFO] coinbase_stream: connected (5 products)
+2026-10-25 12:50:45.092 [WARNING] Treasury.gov par yield curve unavailable, falling back to yfinance (HTTPSConnectionPool(host='home.treasury.gov', port=443): Read timed out. (read timeout=10))
+2026-10-25 12:50:46.055 [WARNING] Couldn't fetch Brazil 10Y [IRLTLT01BRM156N] (Bad Request.  The series does not exist.)
+2026-10-25 12:50:47.954 [INFO] Fetching bond data (full)
+2026-10-25 12:50:58.024 [WARNING] Treasury.gov par yield curve unavailable, falling back to yfinance (HTTPSConnectionPool(host='home.treasury.gov', port=443): Read timed out. (read timeout=10))
+2026-10-25 12:50:58.570 [WARNING] Couldn't fetch Brazil 10Y [IRLTLT01BRM156N] (Bad Request.  The series does not exist.)
+2026-10-25 12:53:37.237 [INFO] Fetching trade profile USA X latest
+2026-10-25 12:53:37.237 [INFO] Fetching trade partners USA latest
+2026-10-25 12:53:37.256 [INFO] Trade profile USA X 2025 fetched (97 chapters, 1226 HS4 headings)
+2026-10-25 12:53:37.277 [INFO] Fetching trade trend USA
+2026-10-25 12:53:37.280 [INFO] Fetching trade partners USA latest
+2026-10-25 12:53:37.283 [INFO] Fetching trade profile USA X latest
+2026-10-25 12:53:37.287 [INFO] Trade profile USA X 2025 fetched (97 chapters, 1226 HS4 headings)
+2026-10-25 12:53:37.283 [INFO] Fetching trade trend USA
+2026-10-25 12:53:37.313 [INFO] Fetching trade heatmap X 2024 for ['USA', 'CHN', 'DEU', 'JPN', 'KOR', 'IND', 'MEX', 'BRA', 'SAU', 'AUS']
+2026-10-25 12:56:05.245 [INFO] Fetching trade profile USA X latest
+2026-10-25 12:56:05.249 [INFO] Trade profile USA X 2025 fetched (97 chapters, 1226 HS4 headings)
+2026-10-25 12:56:05.275 [INFO] Fetching trade partners USA latest
+2026-10-25 12:56:05.278 [INFO] Fetching trade trend USA
+2026-10-25 12:56:05.338 [INFO] Fetching trade heatmap X 2024 for ['USA', 'CHN', 'DEU', 'JPN', 'KOR', 'IND', 'MEX', 'BRA', 'SAU', 'AUS']
+2026-10-25 12:56:05.404 [INFO] tape: Yahoo live feed connected
+2026-10-25 12:56:10.359 [INFO] tape: Yahoo live feed connected
+2026-10-25 13:01:56.087 [INFO] Fetching market overview (full data)
+2026-10-25 13:04:40.107 [INFO] Fetching market overview (full data)
+2026-10-25 13:04:40.494 [INFO] tape: Yahoo live feed connected
+2026-10-25 13:04:45.180 [INFO] tape: Yahoo live feed connected
+2026-10-25 13:05:07.353 [INFO] tape: Yahoo live feed connected
+2026-10-25 13:05:12.143 [INFO] tape: Yahoo live feed connected
+2026-10-25 13:07:29.976 [INFO] Fetching top 10 cryptocurrencies (full data)
+2026-10-25 13:07:32.288 [INFO] Fetching top 10 cryptocurrencies (full data)
+2026-10-25 13:11:03.502 [INFO] Fetching top 10 cryptocurrencies (full data)
+2026-10-25 13:11:04.306 [INFO] tape: Yahoo live feed connected
+2026-10-25 13:11:04.523 [INFO] Fetching top 10 cryptocurrencies (full data)
+2026-10-25 13:11:08.745 [INFO] tape: Yahoo live feed connected
+2026-10-25 13:11:12.992 [INFO] Fetching history ETH-USD 1Y
+2026-10-25 13:11:15.356 [INFO] Fetching market overview (full data)
+2026-10-25 13:11:35.472 [INFO] Fetching history ^DJI 1Y
+2026-10-25 13:11:39.294 [INFO] Fetching history ^IXIC 1Y
+2026-10-25 13:11:40.445 [INFO] Fetching history ^GSPC 1Y
+2026-10-25 13:11:45.862 [INFO] Fetching history ^RUT 1Y
+2026-10-25 13:11:47.028 [INFO] Fetching history ^N225 1Y
+2026-10-25 13:11:47.773 [INFO] Fetching history TQQQ 1Y
+2026-10-25 13:11:48.426 [INFO] Fetching history ^VIX 1Y
+2026-10-25 13:11:52.201 [INFO] Fetching history ^KS11 1Y
+2026-10-25 13:16:00.460 [INFO] tape: Yahoo live feed connected
+2026-10-25 13:16:05.200 [INFO] tape: Yahoo live feed connected

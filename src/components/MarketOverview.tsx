@@ -1,14 +1,15 @@
 import { useEffect, useMemo, useState, type MouseEvent } from 'react'
 import { fetchMarket, type MarketData, type SentimentSeriesPoint } from '@/lib/api'
-import { formatPct, posNegColor } from '@/lib/format'
+import { formatPct, posNegColor, fmtDate } from '@/lib/format'
 import { Loading, ErrorBlock } from './StatusBlock'
 import Delta from './Delta'
 import { useSortableLayout } from '@/lib/layout'
 import { Draggable, AddWidgetTray, EditHint } from './LayoutKit'
 import { AxisLabels, GridLines } from './ChartGrid'
 import Nasdaq100Heatmap from './Nasdaq100Heatmap'
+import { useInExpandedTile, WhenExpanded, HistoryTileChart } from './TileChart'
 
-const border = '1px solid rgba(212,175,55,0.12)'
+const border = '1px solid rgba(155,89,182,0.5)'
 
 // ----------------------------------------------------------------------
 // Fear & Greed
@@ -229,7 +230,7 @@ function PreviousReading({ label, value }: { label: string; value: number | null
   return (
     <div style={{
       display: 'flex', alignItems: 'baseline', justifyContent: 'space-between',
-      gap: 10, padding: '5px 0', borderBottom: '1px solid rgba(212,175,55,0.07)',
+      gap: 10, padding: '5px 0', borderBottom: '1px solid rgba(155,89,182,0.5)',
     }}>
       <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: '#A391B5', letterSpacing: '0.1em' }}>
         {label}
@@ -275,7 +276,7 @@ function putCallZone(ratio: number) {
 function formatAxisDate(dateStr: string) {
   const dt = new Date(`${dateStr}T00:00:00`)
   if (Number.isNaN(dt.getTime())) return dateStr
-  return dt.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+  return fmtDate(dt)
 }
 
 interface ChartLine {
@@ -300,6 +301,9 @@ function LineChart({
   height?: number
 }) {
   const [hover, setHover] = useState<number | null>(null)
+  // Inside an expanded tile: taller, denser axis, more date labels.
+  const [rootRef, expanded] = useInExpandedTile<HTMLDivElement>()
+  const ticks = expanded ? 9 : 5
 
   const drawn = lines.filter(l => l.points.length > 0)
   if (!drawn.length) return null
@@ -318,7 +322,7 @@ function LineChart({
   const max = Math.max(...all)
   const range = max - min || 1
   const w = 300
-  const h = height
+  const h = expanded ? Math.max(Math.round(height * 2.6), 240) : height
   const step = n > 1 ? w / (n - 1) : 0
 
   const xAt = (i: number) => i * step
@@ -337,7 +341,7 @@ function LineChart({
   const multi = drawn.length > 1
 
   return (
-    <div>
+    <div ref={rootRef}>
       {multi && (
         <div style={{ display: 'flex', gap: 14, marginBottom: 6, marginLeft: 60, flexWrap: 'wrap' }}>
           {drawn.map(l => (
@@ -356,7 +360,7 @@ function LineChart({
       )}
 
       <div style={{ display: 'flex', gap: 8 }}>
-        <AxisLabels min={min} max={max} height={h} minWidth={52} format={format} />
+        <AxisLabels min={min} max={max} height={h} minWidth={52} format={format} ticks={ticks} />
         <div style={{ position: 'relative', flex: 1 }}>
           <svg
             viewBox={`0 0 ${w} ${h}`} width="100%" height={h} preserveAspectRatio="none"
@@ -364,7 +368,7 @@ function LineChart({
             onMouseLeave={() => setHover(null)}
             style={{ cursor: 'crosshair', display: 'block', overflow: 'visible' }}
           >
-            <GridLines w={w} h={h} />
+            <GridLines w={w} h={h} ticks={ticks} />
             {zeroLine && zeroY >= 0 && zeroY <= h && (
               <line x1={0} y1={zeroY} x2={w} y2={zeroY} stroke="#A391B5" strokeWidth={0.5} strokeDasharray="2,2" />
             )}
@@ -447,8 +451,9 @@ function LineChart({
         display: 'flex', justifyContent: 'space-between', marginLeft: 60,
         fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: '#7A6A8E', marginTop: 4,
       }}>
-        <span>{formatAxisDate(baseDates[0])}</span>
-        <span>{formatAxisDate(baseDates[n - 1])}</span>
+        {(expanded ? [0, 0.25, 0.5, 0.75, 1] : [0, 1]).map(f => (
+          <span key={f}>{formatAxisDate(baseDates[Math.round(f * (n - 1))])}</span>
+        ))}
       </div>
     </div>
   )
@@ -704,7 +709,7 @@ export default function MarketOverview() {
             if (sectionId === 'indices') return (
               <Draggable key="indices" id="indices" label="MAJOR INDICES" api={sections} variant="section">
                 <div style={{ marginBottom: 22 }}>
-                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(210px, 1fr))', gap: 6 }}>
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(440px, 1fr))', gap: 6 }}>
                     {indexTiles.visible.map(symbol => {
                       const idx = indexBySymbol.get(symbol)
                       if (!idx) return null
@@ -713,8 +718,8 @@ export default function MarketOverview() {
                       return (
                         <Draggable key={idx.symbol} id={idx.symbol} label={idx.name} api={indexTiles}>
                           <div style={{ backgroundColor: '#130B1B', border, padding: '14px 16px', height: '100%', transition: 'border-color 0.1s' }}
-                            onMouseEnter={e => (e.currentTarget.style.borderColor = 'rgba(212,175,55,0.3)')}
-                            onMouseLeave={e => (e.currentTarget.style.borderColor = 'rgba(212,175,55,0.12)')}
+                            onMouseEnter={e => (e.currentTarget.style.borderColor = 'rgba(180,140,219,0.85)')}
+                            onMouseLeave={e => (e.currentTarget.style.borderColor = 'rgba(155,89,182,0.5)')}
                           >
                             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8 }}>
                               <div>
@@ -732,6 +737,9 @@ export default function MarketOverview() {
                               {idx.value !== null ? `${prefix}${idx.value.toLocaleString('en-US', { maximumFractionDigits: 2 })}${suffix}` : '—'}
                             </div>
                             <Delta value={idx.change} format={v => `${prefix}${v.toFixed(2)}${suffix}`} size={15} />
+                            <WhenExpanded>
+                              <HistoryTileChart kind="index" id={idx.name} title={`${idx.name} history`} />
+                            </WhenExpanded>
                           </div>
                         </Draggable>
                       )
@@ -758,7 +766,7 @@ export default function MarketOverview() {
                     marginBottom: 10, textShadow: '0 0 8px rgba(212,175,55,0.5)',
                   }}>{'◆ SENTIMENT INDICATORS'}</div>
 
-                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(420px, 1fr))', gap: 10 }}>
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(440px, 1fr))', gap: 10 }}>
                     {sentimentTiles.visible.map(tileId => {
                       if (tileId === 'fear_greed') return (
                         <Draggable key="fear_greed" id="fear_greed" label="CNN FEAR & GREED" api={sentimentTiles}>
@@ -769,7 +777,7 @@ export default function MarketOverview() {
                               </span>
                               {fg?.history && fg.history.length > 0 && (
                                 <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: '#7A6A8E' }}>
-                                  {fg.history[fg.history.length - 1].date}
+                                  {fmtDate(fg.history[fg.history.length - 1].date)}
                                 </span>
                               )}
                             </div>
@@ -924,7 +932,7 @@ export default function MarketOverview() {
                         fontFamily: "'Cinzel', serif", fontWeight: 600, fontSize: 14, color: '#D4AF37', letterSpacing: '0.2em',
                         marginBottom: 10, textShadow: '0 0 6px rgba(212,175,55,0.4)',
                       }}>{'◆ FEAR & GREED INDICATORS'}</div>
-                      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(340px, 1fr))', gap: 10 }}>
+                      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(440px, 1fr))', gap: 10 }}>
                         {fg.components.map(c => {
                           const band = c.score != null ? fgBand(c.score) : null
                           const lineColor = band?.color ?? '#C9B8D9'
@@ -1014,7 +1022,7 @@ export default function MarketOverview() {
                                 </div>
                                 <SentimentChart points={series.history} color={color} zeroLine={cfg.zeroLine} format={cfg.format} height={90} />
                                 <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 14, color: '#7A6A8E', marginTop: 14 }}>
-                                  LATEST {series.date} · {cfg.source}
+                                  LATEST {fmtDate(series.date)} · {cfg.source}
                                 </div>
                               </>
                             ) : (
@@ -1041,7 +1049,7 @@ export default function MarketOverview() {
       <div style={{
         marginTop: 12, padding: '9px 12px',
         backgroundColor: 'rgba(212,175,55,0.02)',
-        border: '1px solid rgba(212,175,55,0.07)',
+        border: '1px solid rgba(155,89,182,0.5)',
         fontFamily: "'JetBrains Mono', monospace",
         fontSize: 13, color: '#7A6A8E',
       }}>

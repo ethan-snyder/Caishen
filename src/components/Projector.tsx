@@ -39,12 +39,12 @@ const KEYS: ScenarioKey[] = ['bear', 'base', 'bull']
 const SCENARIO_META: Record<ScenarioKey, { label: string; color: string; bg: string }> = {
   bear: { label: 'BEAR', color: '#FF4D4D', bg: 'rgba(255,77,77,0.05)' },
   base: { label: 'BASE', color: '#F2C94C', bg: 'rgba(242,201,76,0.05)' },
-  bull: { label: 'BULL', color: '#D4AF37', bg: 'rgba(212,175,55,0.05)' },
+  bull: { label: 'BULL', color: '#3DDC84', bg: 'rgba(61,220,132,0.05)' },
 }
 
 const YEARS = 3
 const CURRENT_YEAR = new Date().getFullYear()
-const border = '1px solid rgba(212,175,55,0.12)'
+const border = '1px solid rgba(155,89,182,0.5)'
 
 const DEFAULT_EPS: Record<ScenarioKey, EpsYear[]> = {
   bear: [{ epsGrowth: '3', pe: '24' }, { epsGrowth: '2', pe: '22' }, { epsGrowth: '2', pe: '20' }],
@@ -978,7 +978,7 @@ export default function Projector() {
                           swing across a 4pp band communicates it far
                           better than a caveat sentence would. */}
                       {sens.length > 0 && (
-                        <div style={{ marginTop: 12, paddingTop: 10, borderTop: '1px solid rgba(212,175,55,0.08)' }}>
+                        <div style={{ marginTop: 12, paddingTop: 10, borderTop: '1px solid rgba(155,89,182,0.5)' }}>
                           <div style={{
                             fontFamily: "'JetBrains Mono', monospace", fontSize: 11,
                             color: '#A391B5', letterSpacing: '0.1em', marginBottom: 6,
@@ -1037,7 +1037,7 @@ function Seed({ label, value, onChange, width, hint }: {
         value={value}
         onChange={e => onChange(e.target.value)}
         style={{
-          width, backgroundColor: '#0A0610', border: '1px solid rgba(212,175,55,0.15)',
+          width, backgroundColor: '#0A0610', border: '1px solid rgba(155,89,182,0.5)',
           padding: '3px 6px', fontFamily: "'JetBrains Mono', monospace", fontSize: 15,
           color: '#D4AF37', outline: 'none',
         }}

@@ -1,4 +1,4 @@
-const border = '1px solid rgba(212,175,55,0.12)'
+const border = '1px solid rgba(155,89,182,0.5)'
 
 export function Loading({ label = 'FETCHING DATA' }: { label?: string }) {
   return (

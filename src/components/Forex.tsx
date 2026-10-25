@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState, type MouseEvent } from 'react'
 import { fetchFx, fetchFxHistory, type FxPair, type FxRange, type FxHistoryPoint } from '@/lib/api'
-import { formatPct, formatLargeNum, posNegColor } from '@/lib/format'
+import { formatPct, formatLargeNum, posNegColor, fmtDate } from '@/lib/format'
 import { Loading, ErrorBlock } from './StatusBlock'
 import Delta from './Delta'
 import { useSortableLayout } from '@/lib/layout'
@@ -8,7 +8,7 @@ import { Draggable, AddWidgetTray, EditHint } from './LayoutKit'
 import { AxisLabels, GridLines } from './ChartGrid'
 import { Flag } from './Flag'
 
-const border = '1px solid rgba(212,175,55,0.12)'
+const border = '1px solid rgba(155,89,182,0.5)'
 
 function rateDecimals(rate: number | null) {
   if (rate === null) return 4
@@ -27,7 +27,7 @@ function formatHistoryDate(iso: string, range: FxRange) {
   if (range === '1h' || range === '12h' || range === '24h') {
     return dt.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })
   }
-  return dt.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+  return fmtDate(dt)
 }
 
 /** Interactive rate chart: hover crosshair + tooltip, y-axis min/max,
@@ -165,7 +165,7 @@ function ExpandedChart({ pair, decimals }: { pair: FxPair; decimals: number }) {
   }, [pairKey, range])
 
   return (
-    <div style={{ marginTop: 10, paddingTop: 10, borderTop: '1px solid rgba(212,175,55,0.1)' }}>
+    <div style={{ marginTop: 10, paddingTop: 10, borderTop: '1px solid rgba(155,89,182,0.5)' }}>
       <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap', marginBottom: 10 }}>
         {RANGES.map(r => (
           <button
@@ -332,7 +332,7 @@ export default function Forex() {
         </>
       )}
 
-      <div style={{ marginTop: 12, padding: '9px 12px', backgroundColor: 'rgba(212,175,55,0.02)', border: '1px solid rgba(212,175,55,0.07)', fontFamily: "'JetBrains Mono', monospace", fontSize: 13, color: '#7A6A8E' }}>
+      <div style={{ marginTop: 12, padding: '9px 12px', backgroundColor: 'rgba(212,175,55,0.02)', border: '1px solid rgba(155,89,182,0.5)', fontFamily: "'JetBrains Mono', monospace", fontSize: 13, color: '#7A6A8E' }}>
         {'// DATA SOURCE: yfinance · rate/change/high/low/history are live · bid/ask marked with ~ are estimated (no free live spread source) · volume is real but most FX tickers report none (no centralized tape for spot FX) · flags via flagcdn.com'}
       </div>
     </div>

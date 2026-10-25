@@ -4,14 +4,15 @@ import {
   type CryptoCoin, type CryptoRange, type CryptoHistoryPoint,
 } from '@/lib/api'
 import { AxisLabels, GridLines } from './ChartGrid'
-import { formatCryptoPrice, formatLargeNum, formatPct, posNegColor } from '@/lib/format'
+import { formatCryptoPrice, formatLargeNum, formatPct, posNegColor, fmtDate } from '@/lib/format'
 import { Loading, ErrorBlock } from './StatusBlock'
 import Delta from './Delta'
 import { useSortableLayout } from '@/lib/layout'
 import { Draggable, AddWidgetTray, EditHint } from './LayoutKit'
 import { useCryptoStream, type LiveTick } from '@/lib/cryptoStream'
+import { WhenExpanded, HistoryTileChart } from './TileChart'
 
-const border = '1px solid rgba(212,175,55,0.12)'
+const border = '1px solid rgba(155,89,182,0.5)'
 
 /** Small pulsing dot + label shown next to a price that's updating live
  * off the Coinbase feed, so it's visually obvious which numbers are
@@ -47,7 +48,7 @@ function formatHistoryDate(iso: string, range: CryptoRange) {
   if (range === '1h' || range === '12h' || range === '24h') {
     return dt.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })
   }
-  return dt.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+  return fmtDate(dt)
 }
 
 /** Interactive price chart: hover crosshair + tooltip, y-axis min/max, x-axis start/end. */
@@ -402,8 +403,8 @@ export default function Crypto() {
                 padding: '22px 24px', height: '100%', cursor: 'pointer', transition: 'border-color 0.1s',
                 boxShadow: isOpen ? '0 0 14px rgba(212,175,55,0.15)' : 'none',
               }}
-              onMouseEnter={e => { if (!isOpen) e.currentTarget.style.borderColor = 'rgba(212,175,55,0.3)' }}
-              onMouseLeave={e => { if (!isOpen) e.currentTarget.style.borderColor = 'rgba(212,175,55,0.12)' }}
+              onMouseEnter={e => { if (!isOpen) e.currentTarget.style.borderColor = 'rgba(180,140,219,0.85)' }}
+              onMouseLeave={e => { if (!isOpen) e.currentTarget.style.borderColor = 'rgba(155,89,182,0.5)' }}
             >
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 14 }}>
                 <div>
@@ -443,6 +444,9 @@ export default function Crypto() {
                 <Metric label="24H LOW" value={formatCryptoPrice(isLive ? tick?.low24h ?? c.low_24h : c.low_24h)} />
                 <Metric label="FROM ATH" value={formatPct(c.ath_change_pct)} color={posNegColor(c.ath_change_pct)} />
               </div>
+              <WhenExpanded>
+                <HistoryTileChart kind="crypto" id={c.symbol} title={`${c.name} price`} />
+              </WhenExpanded>
             </div>
             </Draggable>
             )
@@ -451,7 +455,7 @@ export default function Crypto() {
       )}
       {coins && <AddWidgetTray api={cards} title="HIDDEN COINS" />}
 
-      <div style={{ marginTop: 12, padding: '9px 12px', backgroundColor: 'rgba(212,175,55,0.02)', border: '1px solid rgba(212,175,55,0.07)', fontFamily: "'JetBrains Mono', monospace", fontSize: 13, color: '#7A6A8E' }}>
+      <div style={{ marginTop: 12, padding: '9px 12px', backgroundColor: 'rgba(212,175,55,0.02)', border: '1px solid rgba(155,89,182,0.5)', fontFamily: "'JetBrains Mono', monospace", fontSize: 13, color: '#7A6A8E' }}>
         {'// PRICE/CHANGE/24H HI-LO: live via Coinbase WebSocket where available (LIVE badge) · everything else (rank, dominance, supply, ATH/ATL, history): CoinGecko · click a coin to expand'}
       </div>
     </div>

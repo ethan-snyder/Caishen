@@ -37,8 +37,15 @@ export const C = {
 export const goldA = (a: number) => `rgba(212,175,55,${a})`
 export const purpleA = (a: number) => `rgba(107,42,122,${a})`
 
-export const border = `1px solid ${goldA(0.14)}`
-export const borderHover = goldA(0.4)
+// Box outline: soft glowing purple (the glow comes from index.css, keyed on
+// this exact color). Clicking a box turns its outline gold -- see App.tsx.
+export const BOX_PURPLE = 'rgba(155,89,182,0.5)'
+export const BOX_PURPLE_HOVER = 'rgba(180,140,219,0.85)'
+export const border = `1px solid ${BOX_PURPLE}`
+export const borderHover = BOX_PURPLE_HOVER
+
+/** Horizontal gridline drawn at every y-axis label in every chart. */
+export const GRID_LINE = 'rgba(155,89,182,0.32)'
 
 export const FONT = {
   display: "'Twemoji Country Flags', 'Cinzel', 'Trajan Pro', Georgia, serif",

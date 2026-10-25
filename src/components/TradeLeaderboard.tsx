@@ -90,7 +90,7 @@ export default function TradeLeaderboard({ onNavigate }: { onNavigate?: Navigate
 
       {data && (
         <>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(170px, 1fr))', gap: 8, marginBottom: 14 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(440px, 1fr))', gap: 8, marginBottom: 14 }}>
             <Kpi label="WORLD MERCHANDISE TRADE" value={money(data.world_total)} sub={`${data.year} · exports + imports`} />
             <Kpi label="#1 TRADER" value={leader ? `${leader.flag ?? ''} ${leader.iso3}`.trim() : '—'} sub={leader ? `${leader.name} · ${pct(leader.world_share)} of world` : undefined} />
             <Kpi label="TOP 10 SHARE" value={pct(top10Share)} sub="of world trade" />

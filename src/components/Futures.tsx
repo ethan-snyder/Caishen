@@ -1,13 +1,13 @@
 import { useEffect, useMemo, useState, type MouseEvent } from 'react'
 import { fetchFutures, fetchFuturesHistory, type FuturesContract, type FuturesRange, type FuturesHistoryPoint } from '@/lib/api'
-import { formatPct, posNegColor, formatLargeNum } from '@/lib/format'
+import { formatPct, posNegColor, formatLargeNum, fmtDate } from '@/lib/format'
 import { Loading, ErrorBlock } from './StatusBlock'
 import Delta from './Delta'
 import { useSortableLayout } from '@/lib/layout'
 import { Draggable, AddWidgetTray, EditHint } from './LayoutKit'
 import { AxisLabels, GridLines } from './ChartGrid'
 
-const border = '1px solid rgba(212,175,55,0.12)'
+const border = '1px solid rgba(155,89,182,0.5)'
 
 function priceDecimals(price: number | null) {
   if (price === null) return 2
@@ -33,7 +33,7 @@ function formatHistoryDate(iso: string, range: FuturesRange) {
   if (range === '1h' || range === '12h' || range === '24h') {
     return dt.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })
   }
-  return dt.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+  return fmtDate(dt)
 }
 
 /** Interactive price chart: hover crosshair + tooltip, y-axis min/max,
@@ -170,7 +170,7 @@ function ExpandedChart({ contract, decimals }: { contract: FuturesContract; deci
   }, [contract.symbol, range])
 
   return (
-    <div style={{ marginTop: 10, paddingTop: 10, borderTop: '1px solid rgba(212,175,55,0.1)' }}>
+    <div style={{ marginTop: 10, paddingTop: 10, borderTop: '1px solid rgba(155,89,182,0.5)' }}>
       <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap', marginBottom: 10 }}>
         {RANGES.map(r => (
           <button
@@ -331,7 +331,7 @@ export default function Futures() {
         </>
       )}
 
-      <div style={{ marginTop: 12, padding: '9px 12px', backgroundColor: 'rgba(212,175,55,0.02)', border: '1px solid rgba(212,175,55,0.07)', fontFamily: "'JetBrains Mono', monospace", fontSize: 13, color: '#7A6A8E' }}>
+      <div style={{ marginTop: 12, padding: '9px 12px', backgroundColor: 'rgba(212,175,55,0.02)', border: '1px solid rgba(155,89,182,0.5)', fontFamily: "'JetBrains Mono', monospace", fontSize: 13, color: '#7A6A8E' }}>
         {'// DATA SOURCE: yfinance · price/change/volume/history are live · 1Y change is a single extra period=1y fetch, real but not shown if yfinance lacks enough history · open interest not available via free data, omitted rather than guessed · $ shown only for contracts genuinely quoted as a dollar price (equity index futures are index points, not dollars)'}
       </div>
     </div>

@@ -10,6 +10,7 @@ import Delta from './Delta'
 import { useSortableLayout } from '@/lib/layout'
 import { Draggable, AddWidgetTray, EditHint } from './LayoutKit'
 import { buildColorMap } from '@/lib/palette'
+import { WhenExpanded } from './TileChart'
 import {
   useMetricConfig, MetricPicker, ConfirmRemove, LineChart, PieChart, BarRow,
   DetailStat, RangeButtons, Panel,
@@ -17,7 +18,7 @@ import {
   type MetricDef, type PieSlice,
 } from './TrackingKit'
 
-const border = '1px solid rgba(212,175,55,0.12)'
+const border = '1px solid rgba(155,89,182,0.5)'
 
 const PORTFOLIO_SECTIONS = [
   { id: 'add_form', label: 'ADD HOLDING FORM' },
@@ -132,6 +133,57 @@ function PerformanceChart() {
         {skipped.length > 0 && ` Excluded (no usable history): ${skipped.join(', ')}.`}
       </div>
     </Panel>
+  )
+}
+
+/** Chart shown inside an expanded summary tile: the basket's value over
+ * time (same /api/portfolio/history series as the PERFORMANCE panel), with
+ * the cost basis as a reference line. Dividend tiles have no history
+ * source, so they say so instead of drawing something misleading. */
+function PortfolioTileChart({ tileId }: { tileId: string }) {
+  const [range, setRange] = useState<PortfolioRange>('1y')
+  const [hist, setHist] = useState<{ points: PortfolioHistoryPoint[]; cost: number | null } | null>(null)
+  const [err, setErr] = useState<string | null>(null)
+  const noHistory = tileId === 'div_yield' || tileId === 'div_income'
+
+  useEffect(() => {
+    if (noHistory) return
+    let cancelled = false
+    setHist(null)
+    setErr(null)
+    fetchPortfolioHistory(range)
+      .then(h => { if (!cancelled) setHist({ points: h.points, cost: h.cost_basis }) })
+      .catch(e => { if (!cancelled) setErr(e.message) })
+    return () => { cancelled = true }
+  }, [range, noHistory])
+
+  const note = (t: string) => (
+    <div style={{ marginTop: 14, fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: '#7A6A8E' }}>{t}</div>
+  )
+  if (noHistory) return note('// no dividend history source -- portfolio.txt records positions, not past payouts')
+
+  return (
+    <div style={{ marginTop: 16, paddingTop: 12, borderTop: '1px solid rgba(212,175,55,0.12)' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10, flexWrap: 'wrap', gap: 8 }}>
+        <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: '#A391B5', letterSpacing: '0.12em' }}>PORTFOLIO VALUE</span>
+        <div onPointerDown={e => e.stopPropagation()}>
+          <RangeButtons ranges={RANGES} value={range} onChange={setRange} />
+        </div>
+      </div>
+      {err && note(`// couldn't load history: ${err}`)}
+      {!err && !hist && note('loading…')}
+      {hist && (
+        <LineChart
+          points={hist.points}
+          intraday={range === '1d'}
+          refLine={hist.cost}
+          refLabel={hist.cost ? `COST BASIS ${formatMoney(hist.cost, 0)}` : undefined}
+          formatValue={v => formatMoney(v, 0)}
+          height={260}
+          detailed
+        />
+      )}
+    </div>
   )
 }
 
@@ -437,7 +489,7 @@ export default function Portfolio() {
         if (sectionId === 'summary') return (
           <Draggable key="summary" id="summary" label="SUMMARY TOTALS" api={sections} variant="section">
             <>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: 6, marginBottom: 16 }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(440px, 1fr))', gap: 6, marginBottom: 16 }}>
                 {visibleSummary.map(id => {
                   const s = summaryByIdShown[id]
                   return (
@@ -445,6 +497,7 @@ export default function Portfolio() {
                       <div style={{ backgroundColor: '#130B1B', border, padding: '14px 16px', height: '100%' }}>
                         <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: '#A391B5', letterSpacing: '0.12em', marginBottom: 6 }}>{s.label}</div>
                         <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 18, fontWeight: 600, color: s.color, textShadow: `0 0 8px ${s.color}60` }}>{s.value}</div>
+                        <WhenExpanded><PortfolioTileChart tileId={id} /></WhenExpanded>
                       </div>
                     </Draggable>
                   )
@@ -453,7 +506,7 @@ export default function Portfolio() {
               <AddWidgetTray api={summaryTiles} title="HIDDEN SUMMARY TILES" />
 
               {!hasCostBasis && (
-                <div style={{ marginBottom: 12, padding: '9px 12px', backgroundColor: 'rgba(212,175,55,0.02)', border: '1px solid rgba(212,175,55,0.07)', fontFamily: "'JetBrains Mono', monospace", fontSize: 13, color: '#7A6A8E' }}>
+                <div style={{ marginBottom: 12, padding: '9px 12px', backgroundColor: 'rgba(212,175,55,0.02)', border: '1px solid rgba(155,89,182,0.5)', fontFamily: "'JetBrains Mono', monospace", fontSize: 13, color: '#7A6A8E' }}>
                   {'// Add an AVG COST when adding a holding to unlock gain/loss tracking'}
                 </div>
               )}
@@ -575,7 +628,7 @@ export default function Portfolio() {
 
       <AddWidgetTray api={sections} title="HIDDEN SECTIONS" />
 
-      <div style={{ marginTop: 10, padding: '9px 12px', backgroundColor: 'rgba(212,175,55,0.02)', border: '1px solid rgba(212,175,55,0.07)', fontFamily: "'JetBrains Mono', monospace", fontSize: 13, color: '#7A6A8E' }}>
+      <div style={{ marginTop: 10, padding: '9px 12px', backgroundColor: 'rgba(212,175,55,0.02)', border: '1px solid rgba(155,89,182,0.5)', fontFamily: "'JetBrains Mono', monospace", fontSize: 13, color: '#7A6A8E' }}>
         {'// DATA SOURCE: yfinance · positions saved to portfolio.txt on the backend · metric columns and their visibility are saved in this browser'}
       </div>
 

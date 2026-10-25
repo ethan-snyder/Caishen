@@ -16,6 +16,7 @@ import { LayoutProvider, useSortableLayout } from '@/lib/layout'
 import { EditModeButton, Draggable, AddWidgetTray } from './components/LayoutKit'
 import TickerTape from './components/TickerTape'
 import { ErrorBoundary } from './components/ErrorBoundary'
+import { TILE_EXPAND_EVENT } from './components/TileChart'
 import { C, FONT, border, purpleA } from './lib/theme'
 
 type Tab =
@@ -108,6 +109,89 @@ function AppShell() {
   useEffect(() => {
     try { localStorage.setItem(ACTIVE_TAB_KEY, active) } catch { /* storage unavailable */ }
   }, [active])
+
+  // Click a box (panel, tile, row, input) and its outline turns gold until
+  // you click somewhere else. "Box" = the innermost element under the
+  // pointer whose inline border is the theme's box purple; the gold comes
+  // from the [data-box-selected] rule in index.css.
+  //
+  // If that box sits in a tile grid (or is inside a card that does), the
+  // card also expands: it stays where it is and stretches to the end of its
+  // row (starting a fresh row if it was the last tile in its row), so the
+  // tiles after it are pushed down to the next row. Tiles before it in the
+  // same row keep their own height ([data-has-expanded] in index.css). A
+  // one-column grid has no room to widen, so there the card grows taller.
+  // Clicking the expanded card again collapses it.
+  useEffect(() => {
+    const BOX = '[style*="rgba(155, 89, 182, 0.5)"], [style*="rgba(180, 140, 219, 0.85)"]'
+    let selected: Element | null = null
+    let expanded: HTMLElement | null = null
+
+    const gridTileFor = (box: Element | null): HTMLElement | null => {
+      for (let el = box; el && el !== document.body; el = el.parentElement) {
+        const parent = el.parentElement
+        if (!parent || !el.matches(BOX)) continue
+        const cs = getComputedStyle(parent)
+        if (cs.display === 'grid' || cs.display === 'inline-grid') return el as HTMLElement
+      }
+      return null
+    }
+
+    const select = (box: Element | null) => {
+      if (box === selected) return
+      selected?.removeAttribute('data-box-selected')
+      selected = box
+      box?.setAttribute('data-box-selected', 'true')
+    }
+
+    const collapse = () => {
+      if (!expanded) return
+      expanded.removeAttribute('data-tile-expanded')
+      expanded.style.removeProperty('grid-column')
+      expanded.parentElement?.removeAttribute('data-has-expanded')
+      expanded = null
+    }
+
+    const expand = (tile: HTMLElement) => {
+      const grid = tile.parentElement!
+      const gcs = getComputedStyle(grid)
+      const widths = gcs.gridTemplateColumns.split(' ').filter(Boolean).map(parseFloat)
+      const cols = widths.length
+      if (cols >= 2) {
+        // Which column the tile currently starts in (0-based).
+        const gap = parseFloat(gcs.columnGap) || 0
+        const x = tile.getBoundingClientRect().left - grid.getBoundingClientRect().left - (parseFloat(gcs.paddingLeft) || 0)
+        let col = 0
+        for (let acc = 0; col < cols - 1 && x > acc + widths[col] / 2; col++) acc += widths[col] + gap
+        // Last column = no room to its right: take a full row instead.
+        tile.style.gridColumn = col >= cols - 1 ? '1 / -1' : `${col + 1} / -1`
+        tile.setAttribute('data-tile-expanded', 'wide')
+      } else {
+        tile.setAttribute('data-tile-expanded', 'tall')
+      }
+      grid.setAttribute('data-has-expanded', 'true')
+      expanded = tile
+    }
+
+    const onDown = (e: PointerEvent) => {
+      const box = (e.target as Element | null)?.closest?.(BOX) ?? null
+      const tile = gridTileFor(box)
+
+      if (tile && tile === expanded) {
+        // Second click on the expanded card: collapse it and drop the gold.
+        collapse()
+        select(null)
+      } else {
+        select(box)
+        collapse()
+        if (tile) expand(tile)
+      }
+      // Tell tile contents (charts) to re-check -- see useInExpandedTile.
+      window.dispatchEvent(new Event(TILE_EXPAND_EVENT))
+    }
+    document.addEventListener('pointerdown', onDown)
+    return () => document.removeEventListener('pointerdown', onDown)
+  }, [])
 
   // Ticks once a second. This used to be a one-shot useState initialiser,
   // which meant the sidebar clock froze at whatever time the page happened
@@ -237,39 +321,41 @@ function AppShell() {
 
       {/* ── Main ── */}
       <div style={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0 }}>
-        {/* Sticky top: colonnade of gold Ionic columns holding up the top of
-            the window, standing directly on a gold bar (the stylobate),
-            then the ticker tape + EDIT LAYOUT row underneath. */}
-        <div style={{
-          flexShrink: 0,
-          position: 'sticky',
-          top: 0,
-          zIndex: 5,
-          backgroundColor: C.bg,
-        }}>
+        {/* Top border: colonnade of gold Ionic columns holding up the top of
+            the window, standing directly on a gold bar (the stylobate). It
+            scrolls away with the page, so it collapses as you scroll down
+            and comes back at the top. */}
+        <div style={{ flexShrink: 0, backgroundColor: C.bg }}>
           <div aria-hidden="true" className="colonnade" style={{ height: BRAND_H }} />
           <div aria-hidden="true" style={{
             height: barH,
             background: `linear-gradient(180deg, ${C.goldBright} 0%, ${C.gold} 40%, ${C.goldDeep} 100%)`,
             boxShadow: '0 0 12px rgba(212,175,55,0.3)',
           }} />
-          {/* Ticker tape. Only the EDIT LAYOUT button is kept beside it --
-              it's the one control up here that actually does something. */}
-          <header style={{
-            borderBottom: border,
-            padding: '0 0 0 12px',
-            height: 44,
-            display: 'flex',
-            alignItems: 'center',
-            gap: 12,
-            backgroundColor: C.shell,
-          }}>
-            <TickerTape />
-            <div style={{ flexShrink: 0, paddingRight: 28 }}>
-              <EditModeButton />
-            </div>
-          </header>
         </div>
+
+        {/* Ticker tape + EDIT LAYOUT: stays pinned to the top while the page
+            scrolls. EDIT LAYOUT is the one control up here that actually
+            does something, so it's the only one kept beside the tape. */}
+        <header style={{
+          position: 'sticky',
+          top: 0,
+          zIndex: 5,
+          flexShrink: 0,
+          borderBottom: border,
+          padding: '0 0 0 12px',
+          height: 44,
+          display: 'flex',
+          alignItems: 'center',
+          gap: 12,
+          backgroundColor: C.shell,
+          boxShadow: '0 4px 14px rgba(0,0,0,0.45)',
+        }}>
+          <TickerTape />
+          <div style={{ flexShrink: 0, paddingRight: 28 }}>
+            <EditModeButton />
+          </div>
+        </header>
 
         {/* Content */}
         <main style={{ flex: 1, padding: '24px 28px', overflow: 'auto' }}>

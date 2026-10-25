@@ -38,3 +38,21 @@ export function formatNum(value: number | null | undefined, decimals = 2): strin
 /** Gain/loss color (green/red). Prefer <Delta /> for gain/loss figures -- it adds the ▲/▼ arrow. */
 export const posNegColor = (value: number | null | undefined) =>
   value !== null && value !== undefined && value >= 0 ? '#3DDC84' : '#FF4D4D'
+
+/**
+ * The app's one date format: MM/DD/YY (with `withTime`, "MM/DD/YY h:mm AM").
+ * Accepts 'YYYY-MM-DD' (treated as a local calendar date, not UTC midnight,
+ * so it never shifts a day), full ISO timestamps, epoch ms, or a Date.
+ */
+export function fmtDate(v: string | number | Date | null | undefined, withTime = false): string {
+  if (v === null || v === undefined || v === '') return '—'
+  let d: Date
+  if (v instanceof Date) d = v
+  else if (typeof v === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(v)) d = new Date(`${v}T00:00:00`)
+  else d = new Date(v)
+  if (Number.isNaN(d.getTime())) return typeof v === 'string' ? v : '—'
+  const p = (n: number) => String(n).padStart(2, '0')
+  const date = `${p(d.getMonth() + 1)}/${p(d.getDate())}/${p(d.getFullYear() % 100)}`
+  if (!withTime) return date
+  return `${date} ${d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}`
+}
