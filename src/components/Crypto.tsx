@@ -1,13 +1,16 @@
 import { useEffect, useState } from 'react'
 import { fetchCrypto, type CryptoCoin } from '@/lib/api'
-import { formatCryptoPrice, formatLargeNum, formatPct, posNegColor } from '@/lib/format'
+import { formatCryptoPrice, formatLargeNum } from '@/lib/format'
 import { Loading, ErrorBlock } from './StatusBlock'
+import Delta from './Delta'
+import PriceChart, { chartRowProps, type ChartTarget } from './PriceChart'
 
-const border = '1px solid rgba(0,255,136,0.12)'
+const border = '1px solid rgba(212,175,55,0.12)'
 
 export default function Crypto() {
   const [coins, setCoins] = useState<CryptoCoin[] | null>(null)
   const [error, setError] = useState<string | null>(null)
+  const [chart, setChart] = useState<ChartTarget | null>(null)
 
   const load = () => {
     setError(null)
@@ -29,13 +32,13 @@ export default function Crypto() {
   return (
     <div>
       <div style={{ display: 'flex', alignItems: 'baseline', gap: 16, marginBottom: 20, flexWrap: 'wrap' }}>
-        <span style={{ fontFamily: "'VT323', monospace", fontSize: 32, color: '#C8FFD4', letterSpacing: '0.04em', textShadow: '0 0 10px rgba(200,255,212,0.3)' }}>
+        <span style={{ fontFamily: "'Cinzel', serif", fontSize: 26, fontWeight: 600, color: '#F4EFE6', letterSpacing: '0.12em', textShadow: '0 0 10px rgba(212,175,55,0.35)' }}>
           CRYPTO MARKETS
         </span>
         {coins && coins.length > 0 && (
-          <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10, color: '#2D6644' }}>
-            TOTAL MKTCAP: <span style={{ color: '#00FF88' }}>{formatLargeNum(totalMktCap, '$')}</span>
-            &nbsp;·&nbsp;BTC DOM: <span style={{ color: '#FFD700' }}>{btc?.dominance != null ? `${btc.dominance.toFixed(1)}%` : '—'}</span>
+          <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10, color: '#8C7A9E' }}>
+            TOTAL MKTCAP: <span style={{ color: '#FFFFFF' }}>{formatLargeNum(totalMktCap, '$')}</span>
+            &nbsp;·&nbsp;BTC DOM: <span style={{ color: '#FFFFFF' }}>{btc?.dominance != null ? `${btc.dominance.toFixed(1)}%` : '—'}</span>
           </span>
         )}
       </div>
@@ -46,31 +49,22 @@ export default function Crypto() {
       {coins && (
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: 6 }}>
           {coins.map(c => (
-            <div key={c.symbol} style={{ backgroundColor: '#060E18', border, padding: '16px' }}
-              onMouseEnter={e => (e.currentTarget.style.borderColor = 'rgba(0,255,136,0.3)')}
-              onMouseLeave={e => (e.currentTarget.style.borderColor = 'rgba(0,255,136,0.12)')}
+            <div key={c.symbol} {...chartRowProps(() => setChart({ kind: 'crypto', id: c.symbol, label: c.name, sub: `${c.symbol} / USD` }))} style={{ backgroundColor: '#130B1B', border, padding: '16px', cursor: 'pointer' }}
+              onMouseEnter={e => (e.currentTarget.style.borderColor = 'rgba(212,175,55,0.3)')}
+              onMouseLeave={e => (e.currentTarget.style.borderColor = 'rgba(212,175,55,0.12)')}
             >
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 10 }}>
                 <div>
-                  <div style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: 14, color: '#C8FFD4', marginBottom: 2 }}>{c.name}</div>
-                  <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10, color: '#2D6644', letterSpacing: '0.1em' }}>{c.symbol}/USD</div>
+                  <div style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: 14, color: '#FFFFFF', marginBottom: 2 }}>{c.name}</div>
+                  <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10, color: '#8C7A9E', letterSpacing: '0.1em' }}>{c.symbol}/USD</div>
                 </div>
-                <div style={{
-                  fontFamily: "'JetBrains Mono', monospace", fontSize: 10,
-                  color: posNegColor(c.change_pct_24h),
-                  backgroundColor: (c.change_pct_24h ?? 0) >= 0 ? 'rgba(0,255,136,0.07)' : 'rgba(255,59,59,0.07)',
-                  border: `1px solid ${(c.change_pct_24h ?? 0) >= 0 ? 'rgba(0,255,136,0.2)' : 'rgba(255,59,59,0.2)'}`,
-                  padding: '2px 6px',
-                  textShadow: `0 0 6px ${posNegColor(c.change_pct_24h)}`,
-                }}>
-                  {formatPct(c.change_pct_24h)}
-                </div>
+                <Delta value={c.change_pct_24h} format={v => `${v.toFixed(2)}%`} size={11} badge />
               </div>
-              <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 22, fontWeight: 600, color: '#00FF88', letterSpacing: '-0.02em', textShadow: '0 0 10px rgba(0,255,136,0.4)', marginBottom: 4 }}>
+              <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 22, fontWeight: 600, color: '#FFFFFF', textShadow: '0 0 8px rgba(255,255,255,0.22)', letterSpacing: '-0.02em', marginBottom: 4 }}>
                 {formatCryptoPrice(c.price)}
               </div>
-              <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: posNegColor(c.change_24h), marginBottom: 10 }}>
-                {c.change_24h != null ? `${c.change_24h >= 0 ? '+' : ''}$${Math.abs(c.change_24h).toLocaleString('en-US', { maximumFractionDigits: 3 })}` : '—'}
+              <div style={{ marginBottom: 10 }}>
+                <Delta value={c.change_24h} format={v => `$${v.toLocaleString('en-US', { maximumFractionDigits: 3 })}`} size={12} />
               </div>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 4 }}>
                 {[
@@ -78,9 +72,9 @@ export default function Crypto() {
                   { l: 'VOL 24H', v: formatLargeNum(c.volume) },
                   { l: 'DOMINANCE', v: c.dominance != null ? `${c.dominance.toFixed(1)}%` : '—' },
                 ].map(m => (
-                  <div key={m.l} style={{ backgroundColor: '#03080F', padding: '5px 7px' }}>
-                    <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 8, color: '#1D4A30', letterSpacing: '0.1em', marginBottom: 3 }}>{m.l}</div>
-                    <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 11, color: '#4DCC88' }}>{m.v}</div>
+                  <div key={m.l} style={{ backgroundColor: '#0A0610', padding: '5px 7px' }}>
+                    <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 8, color: '#5E4D70', letterSpacing: '0.1em', marginBottom: 3 }}>{m.l}</div>
+                    <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 11, color: '#FFFFFF' }}>{m.v}</div>
                   </div>
                 ))}
               </div>
@@ -89,9 +83,10 @@ export default function Crypto() {
         </div>
       )}
 
-      <div style={{ marginTop: 12, padding: '9px 12px', backgroundColor: 'rgba(0,255,136,0.02)', border: '1px solid rgba(0,255,136,0.07)', fontFamily: "'JetBrains Mono', monospace", fontSize: 10, color: '#1D4A30' }}>
+      <div style={{ marginTop: 12, padding: '9px 12px', backgroundColor: 'rgba(212,175,55,0.02)', border: '1px solid rgba(212,175,55,0.07)', fontFamily: "'JetBrains Mono', monospace", fontSize: 10, color: '#5E4D70' }}>
         {'// DATA SOURCE: CoinGecko (free public API) · updates on tab load'}
       </div>
+      {chart && <PriceChart target={chart} onClose={() => setChart(null)} />}
     </div>
   )
 }

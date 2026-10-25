@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react'
 import { fetchFx, type FxPair } from '@/lib/api'
-import { formatPct, posNegColor } from '@/lib/format'
 import { Loading, ErrorBlock } from './StatusBlock'
+import Delta from './Delta'
+import PriceChart, { chartRowProps, type ChartTarget } from './PriceChart'
 
-const border = '1px solid rgba(0,255,136,0.12)'
+const border = '1px solid rgba(212,175,55,0.12)'
 
 function rateDecimals(rate: number | null) {
   if (rate === null) return 4
@@ -13,6 +14,7 @@ function rateDecimals(rate: number | null) {
 export default function Forex() {
   const [pairs, setPairs] = useState<FxPair[] | null>(null)
   const [error, setError] = useState<string | null>(null)
+  const [chart, setChart] = useState<ChartTarget | null>(null)
 
   const load = () => {
     setError(null)
@@ -24,7 +26,7 @@ export default function Forex() {
 
   return (
     <div>
-      <span style={{ fontFamily: "'VT323', monospace", fontSize: 32, color: '#C8FFD4', letterSpacing: '0.04em', textShadow: '0 0 10px rgba(200,255,212,0.3)', display: 'block', marginBottom: 20 }}>
+      <span style={{ fontFamily: "'Twemoji Country Flags', 'Cinzel', serif", fontSize: 26, fontWeight: 600, color: '#F4EFE6', letterSpacing: '0.12em', textShadow: '0 0 10px rgba(212,175,55,0.35)', display: 'block', marginBottom: 20 }}>
         FOREX
       </span>
 
@@ -35,7 +37,7 @@ export default function Forex() {
         <>
           <div style={{ display: 'grid', gridTemplateColumns: '140px 1fr 1fr 1fr 1fr 1fr', gap: 6, padding: '0 14px 8px', marginBottom: 4 }}>
             {['PAIR', 'RATE', 'CHANGE', 'BID', 'ASK', '24H'].map(h => (
-              <div key={h} style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 9, color: '#1D4A30', letterSpacing: '0.12em' }}>{h}</div>
+              <div key={h} style={{ fontFamily: "'Twemoji Country Flags', 'JetBrains Mono', monospace", fontSize: 9, color: '#5E4D70', letterSpacing: '0.12em' }}>{h}</div>
             ))}
           </div>
 
@@ -43,52 +45,40 @@ export default function Forex() {
             {pairs.map(p => {
               const dec = rateDecimals(p.rate)
               return (
-                <div key={p.pair} style={{
+                <div key={p.pair} {...chartRowProps(() => setChart({ kind: 'fx', id: `${p.base}/${p.quote}`, sub: 'Currency pair' }))} style={{
+                  cursor: 'pointer',
                   display: 'grid',
                   gridTemplateColumns: '140px 1fr 1fr 1fr 1fr 1fr',
                   gap: 6,
                   alignItems: 'center',
-                  backgroundColor: '#060E18',
+                  backgroundColor: '#130B1B',
                   border,
                   padding: '12px 14px',
                   transition: 'border-color 0.1s',
                 }}
-                onMouseEnter={e => (e.currentTarget.style.borderColor = 'rgba(0,255,136,0.3)')}
-                onMouseLeave={e => (e.currentTarget.style.borderColor = 'rgba(0,255,136,0.12)')}
+                onMouseEnter={e => (e.currentTarget.style.borderColor = 'rgba(212,175,55,0.3)')}
+                onMouseLeave={e => (e.currentTarget.style.borderColor = 'rgba(212,175,55,0.12)')}
                 >
                   <div>
-                    <div style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: 14, color: '#C8FFD4', marginBottom: 2 }}>
+                    <div style={{ fontFamily: "'Twemoji Country Flags', 'Share Tech Mono', monospace", fontSize: 14, color: '#FFFFFF', marginBottom: 2 }}>
                       {p.base_flag && <span style={{ marginRight: 5 }}>{p.base_flag}</span>}
                       {p.base}/{p.quote_flag && <span style={{ margin: '0 3px' }}>{p.quote_flag}</span>}{p.quote}
                     </div>
-                    <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 9, color: '#2D6644', letterSpacing: '0.08em' }}>
+                    <div style={{ fontFamily: "'Twemoji Country Flags', 'JetBrains Mono', monospace", fontSize: 9, color: '#8C7A9E', letterSpacing: '0.08em' }}>
                       {p.base} · {p.quote}
                     </div>
                   </div>
-                  <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 18, fontWeight: 600, color: '#00FF88', textShadow: '0 0 8px rgba(0,255,136,0.4)' }}>
+                  <div style={{ fontFamily: "'Twemoji Country Flags', 'JetBrains Mono', monospace", fontSize: 18, fontWeight: 600, color: '#FFFFFF', textShadow: '0 0 8px rgba(255,255,255,0.22)' }}>
                     {p.rate !== null ? p.rate.toFixed(dec) : '—'}
                   </div>
-                  <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 13, color: posNegColor(p.change), textShadow: `0 0 6px ${posNegColor(p.change)}` }}>
-                    {p.change !== null ? `${p.change >= 0 ? '+' : ''}${p.change.toFixed(dec)}` : '—'}
-                  </div>
-                  <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 13, color: '#4DCC88' }} title={p.bid_ask_is_estimate ? 'Estimated (no live bid/ask from this data source)' : undefined}>
+                  <div><Delta value={p.change} format={v => v.toFixed(dec)} size={13} /></div>
+                  <div style={{ fontFamily: "'Twemoji Country Flags', 'JetBrains Mono', monospace", fontSize: 13, color: '#FFFFFF' }} title={p.bid_ask_is_estimate ? 'Estimated (no live bid/ask from this data source)' : undefined}>
                     {p.bid !== null ? `${p.bid_ask_is_estimate ? '~' : ''}${p.bid.toFixed(dec)}` : '—'}
                   </div>
-                  <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 13, color: '#4DCC88' }} title={p.bid_ask_is_estimate ? 'Estimated (no live bid/ask from this data source)' : undefined}>
+                  <div style={{ fontFamily: "'Twemoji Country Flags', 'JetBrains Mono', monospace", fontSize: 13, color: '#FFFFFF' }} title={p.bid_ask_is_estimate ? 'Estimated (no live bid/ask from this data source)' : undefined}>
                     {p.ask !== null ? `${p.bid_ask_is_estimate ? '~' : ''}${p.ask.toFixed(dec)}` : '—'}
                   </div>
-                  <div style={{
-                    fontFamily: "'JetBrains Mono', monospace",
-                    fontSize: 12,
-                    color: posNegColor(p.change_pct),
-                    backgroundColor: (p.change_pct ?? 0) >= 0 ? 'rgba(0,255,136,0.07)' : 'rgba(255,59,59,0.07)',
-                    border: `1px solid ${(p.change_pct ?? 0) >= 0 ? 'rgba(0,255,136,0.2)' : 'rgba(255,59,59,0.2)'}`,
-                    padding: '2px 8px',
-                    display: 'inline-block',
-                    textShadow: `0 0 6px ${posNegColor(p.change_pct)}`,
-                  }}>
-                    {formatPct(p.change_pct)}
-                  </div>
+                  <div><Delta value={p.change_pct} format={v => `${v.toFixed(2)}%`} size={12} badge /></div>
                 </div>
               )
             })}
@@ -96,9 +86,10 @@ export default function Forex() {
         </>
       )}
 
-      <div style={{ marginTop: 12, padding: '9px 12px', backgroundColor: 'rgba(0,255,136,0.02)', border: '1px solid rgba(0,255,136,0.07)', fontFamily: "'JetBrains Mono', monospace", fontSize: 10, color: '#1D4A30' }}>
+      <div style={{ marginTop: 12, padding: '9px 12px', backgroundColor: 'rgba(212,175,55,0.02)', border: '1px solid rgba(212,175,55,0.07)', fontFamily: "'Twemoji Country Flags', 'JetBrains Mono', monospace", fontSize: 10, color: '#5E4D70' }}>
         {'// DATA SOURCE: yfinance · rate/change are live · bid/ask marked with ~ are estimated (no free live spread source)'}
       </div>
+      {chart && <PriceChart target={chart} onClose={() => setChart(null)} />}
     </div>
   )
 }

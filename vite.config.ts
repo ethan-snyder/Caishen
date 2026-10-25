@@ -29,6 +29,12 @@ export default defineConfig({
     host: '0.0.0.0',
     port: parseInt(process.env.PORT || '8443'),
     strictPort: true,
+    // The backend writes events_log.txt / trade_cache.json inside backend/
+    // on every API call; without this, Vite treats those writes as source
+    // changes and full-reloads the page (bouncing you back to the first tab).
+    watch: {
+      ignored: ['**/backend/**'],
+    },
     proxy: {
       // Frontend code calls fetch('/api/...'); Vite forwards it to the
       // FastAPI backend (run separately: `uvicorn api:app --port 8000`

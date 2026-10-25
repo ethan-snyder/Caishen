@@ -127,3 +127,148 @@
 2026-08-14 22:14:23.248 [INFO] Session started
 2026-08-14 22:14:30.121 [INFO] Fetching market overview (full data)
 2026-08-14 22:14:40.984 [INFO] Fetching market overview (full data)
+2026-08-14 22:54:49.021 [INFO] Session started
+2026-08-14 22:55:14.160 [INFO] Fetching market overview (full data)
+2026-08-14 22:55:16.536 [WARNING] FRED consumer sentiment (UMCSENT) fetch failed (FRED_API_KEY not set (get a free key at fred.stlouisfed.org/docs/api/api_key.html))
+2026-08-14 22:55:16.537 [WARNING] FRED financial stress index (STLFSI4) fetch failed (FRED_API_KEY not set (get a free key at fred.stlouisfed.org/docs/api/api_key.html))
+2026-08-14 22:55:16.537 [WARNING] FRED high-yield OAS spread (BAMLH0A0HYM2) fetch failed (FRED_API_KEY not set (get a free key at fred.stlouisfed.org/docs/api/api_key.html))
+2026-08-14 22:55:17.386 [WARNING] FRED policy uncertainty index (USEPUINDXD) fetch failed (FRED_API_KEY not set (get a free key at fred.stlouisfed.org/docs/api/api_key.html))
+2026-08-14 22:55:17.387 [WARNING] FRED 10Y-2Y yield spread (T10Y2Y) fetch failed (FRED_API_KEY not set (get a free key at fred.stlouisfed.org/docs/api/api_key.html))
+2026-08-14 22:55:17.387 [WARNING] FRED IG credit spread (BAMLC0A0CM) fetch failed (FRED_API_KEY not set (get a free key at fred.stlouisfed.org/docs/api/api_key.html))
+2026-08-14 22:55:17.387 [WARNING] FRED inflation expectations (MICH) fetch failed (FRED_API_KEY not set (get a free key at fred.stlouisfed.org/docs/api/api_key.html))
+2026-08-14 22:55:17.711 [INFO] Fetching market overview (full data)
+2026-08-14 22:55:19.605 [WARNING] FRED consumer sentiment (UMCSENT) fetch failed (FRED_API_KEY not set (get a free key at fred.stlouisfed.org/docs/api/api_key.html))
+2026-08-14 22:55:19.606 [WARNING] FRED financial stress index (STLFSI4) fetch failed (FRED_API_KEY not set (get a free key at fred.stlouisfed.org/docs/api/api_key.html))
+2026-08-14 22:55:19.606 [WARNING] FRED high-yield OAS spread (BAMLH0A0HYM2) fetch failed (FRED_API_KEY not set (get a free key at fred.stlouisfed.org/docs/api/api_key.html))
+2026-08-14 22:55:19.879 [WARNING] FRED policy uncertainty index (USEPUINDXD) fetch failed (FRED_API_KEY not set (get a free key at fred.stlouisfed.org/docs/api/api_key.html))
+2026-08-14 22:55:19.879 [WARNING] FRED 10Y-2Y yield spread (T10Y2Y) fetch failed (FRED_API_KEY not set (get a free key at fred.stlouisfed.org/docs/api/api_key.html))
+2026-08-14 22:55:19.880 [WARNING] FRED IG credit spread (BAMLC0A0CM) fetch failed (FRED_API_KEY not set (get a free key at fred.stlouisfed.org/docs/api/api_key.html))
+2026-08-14 22:55:19.880 [WARNING] FRED inflation expectations (MICH) fetch failed (FRED_API_KEY not set (get a free key at fred.stlouisfed.org/docs/api/api_key.html))
+2026-10-24 19:51:33.762 [INFO] Session started
+2026-10-24 19:52:41.564 [INFO] Fetching market overview (full data)
+2026-10-24 19:53:01.570 [INFO] Fetching market overview (full data)
+2026-10-24 19:53:10.828 [INFO] Fetching market overview (full data)
+2026-10-24 19:53:10.828 [INFO] Fetching market overview (full data)
+2026-10-24 19:53:44.506 [INFO] Fetching stock data (full) for AAPL
+2026-10-24 19:54:07.725 [INFO] Fetching market overview (full data)
+2026-10-24 19:54:27.729 [INFO] Fetching market overview (full data)
+2026-10-24 19:55:50.824 [INFO] Fetching market overview (full data)
+2026-10-24 19:56:10.827 [INFO] Fetching market overview (full data)
+2026-10-24 19:56:50.840 [INFO] Session started
+2026-10-24 19:56:51.727 [INFO] Session started
+2026-10-24 20:00:47.589 [INFO] Fetching stock data (full) for AAPL
+2026-10-24 20:01:34.099 [INFO] Fetching market overview (full data)
+2026-10-24 20:01:38.597 [WARNING] FRED consumer sentiment (UMCSENT) fetch failed (None)
+2026-10-24 20:01:54.102 [INFO] Fetching market overview (full data)
+2026-10-24 20:05:55.523 [INFO] Fetching stock data (full) for AAPL
+2026-10-24 20:06:07.607 [ERROR] Failed to fetch data for AAPL: DNSError('Failed to perform, curl: (6) Could not resolve host: query2.finance.yahoo.com. See https://curl.se/libcurl/c/libcurl-errors.html first for more details.')
+2026-10-24 20:07:30.610 [INFO] Session started
+2026-10-24 20:08:09.344 [INFO] Fetching stock data (full) for AAPL
+2026-10-24 20:08:22.417 [INFO] Fetching market overview (full data)
+2026-10-24 20:08:40.746 [INFO] Fetching market overview (full data)
+2026-10-24 20:10:15.918 [INFO] Session started
+2026-10-24 20:10:16.780 [INFO] Session started
+2026-10-24 20:10:18.392 [INFO] Session started
+2026-10-24 20:13:15.646 [INFO] Session started
+2026-10-24 20:13:22.506 [INFO] Fetching trade partners USA latest
+2026-10-24 20:13:22.506 [INFO] Fetching trade profile USA X latest
+2026-10-24 20:13:22.507 [INFO] Fetching trade trend USA
+2026-10-24 20:13:22.570 [INFO] Fetching trade heatmap X 2024 for ['USA', 'CHN', 'DEU', 'JPN', 'KOR', 'IND', 'MEX', 'BRA', 'SAU', 'AUS']
+2026-10-24 20:13:29.402 [INFO] Fetching trade trend USA
+2026-10-24 20:13:32.125 [INFO] Fetching trade partners USA latest
+2026-10-24 20:13:40.993 [INFO] Trade profile USA X 2025 fetched (97 chapters)
+2026-10-24 20:13:40.999 [INFO] Fetching trade profile USA X latest
+2026-10-24 20:13:40.999 [INFO] Trade profile USA X 2025 fetched (97 chapters)
+2026-10-24 20:16:22.516 [INFO] Fetching market overview (full data)
+2026-10-24 20:16:36.265 [INFO] Fetching market overview (full data)
+2026-10-24 20:17:08.429 [INFO] Session started
+2026-10-24 20:18:36.073 [INFO] Fetching trade profile USA X latest
+2026-10-24 20:18:36.073 [INFO] Fetching trade partners USA latest
+2026-10-24 20:18:36.073 [INFO] Fetching trade trend USA
+2026-10-24 20:18:36.075 [INFO] Trade profile USA X 2025 fetched (97 chapters)
+2026-10-24 20:18:36.081 [INFO] Fetching trade trend USA
+2026-10-24 20:18:36.082 [INFO] Fetching trade partners USA latest
+2026-10-24 20:18:36.082 [INFO] Fetching trade profile USA X latest
+2026-10-24 20:18:36.083 [INFO] Trade profile USA X 2025 fetched (97 chapters)
+2026-10-24 20:18:36.136 [INFO] Fetching trade heatmap X 2024 for ['USA', 'CHN', 'DEU', 'JPN', 'KOR', 'IND', 'MEX', 'BRA', 'SAU', 'AUS']
+2026-10-24 20:18:57.640 [INFO] Fetching trade profile USA X 2025
+2026-10-24 20:18:57.641 [INFO] Trade profile USA X 2025 fetched (97 chapters)
+2026-10-24 20:18:57.641 [INFO] Fetching trade partners USA 2025
+2026-10-24 20:18:57.643 [INFO] Fetching trade heatmap X 2025 for ['USA', 'CHN', 'DEU', 'JPN', 'KOR', 'IND', 'MEX', 'BRA', 'SAU', 'AUS']
+2026-10-24 20:18:58.754 [INFO] Fetching trade profile USA X 2021
+2026-10-24 20:18:58.754 [INFO] Fetching trade partners USA 2021
+2026-10-24 20:18:58.755 [INFO] Fetching trade heatmap X 2021 for ['USA', 'CHN', 'DEU', 'JPN', 'KOR', 'IND', 'MEX', 'BRA', 'SAU', 'AUS']
+2026-10-24 20:19:16.483 [INFO] Trade profile USA X 2021 fetched (97 chapters)
+2026-10-24 20:19:51.337 [INFO] Fetching trade profile USA X 2025
+2026-10-24 20:19:51.338 [INFO] Trade profile USA X 2025 fetched (97 chapters)
+2026-10-24 20:19:51.338 [INFO] Fetching trade partners USA 2025
+2026-10-24 20:19:51.340 [INFO] Fetching trade heatmap X 2025 for ['USA', 'CHN', 'DEU', 'JPN', 'KOR', 'IND', 'MEX', 'BRA', 'SAU', 'AUS']
+2026-10-24 20:22:19.034 [INFO] Fetching trade profile RUS X 2025
+2026-10-24 20:22:19.034 [INFO] Fetching trade partners RUS 2025
+2026-10-24 20:22:19.035 [INFO] Fetching trade trend RUS
+2026-10-24 20:35:52.080 [INFO] Session started
+2026-10-24 20:37:23.100 [INFO] Fetching trade partners USA latest
+2026-10-24 20:37:23.100 [INFO] Fetching trade profile USA X latest
+2026-10-24 20:37:23.101 [INFO] Fetching trade trend USA
+2026-10-24 20:37:23.111 [INFO] Fetching trade trend USA
+2026-10-24 20:37:23.112 [INFO] Fetching trade partners USA latest
+2026-10-24 20:37:23.136 [INFO] Fetching trade heatmap X 2024 for ['USA', 'CHN', 'DEU', 'JPN', 'KOR', 'IND', 'MEX', 'BRA', 'SAU', 'AUS']
+2026-10-24 20:37:39.663 [INFO] Trade profile USA X 2025 fetched (97 chapters, 1226 HS4 headings)
+2026-10-24 20:37:39.678 [INFO] Fetching trade profile USA X latest
+2026-10-24 20:37:39.680 [INFO] Trade profile USA X 2025 fetched (97 chapters, 1226 HS4 headings)
+2026-10-24 20:43:55.134 [INFO] Fetching trade partners POL latest
+2026-10-24 20:43:55.134 [INFO] Fetching trade profile POL X latest
+2026-10-24 20:43:55.135 [INFO] Fetching trade trend POL
+2026-10-24 20:44:18.694 [INFO] Trade profile POL X 2025 fetched (97 chapters, 1219 HS4 headings)
+2026-10-24 20:48:42.485 [INFO] Fetching trade profile POL M latest
+2026-10-24 20:48:42.488 [INFO] Fetching trade heatmap M 2024 for ['USA', 'CHN', 'DEU', 'JPN', 'KOR', 'IND', 'MEX', 'BRA', 'SAU', 'AUS']
+2026-10-24 20:49:14.479 [INFO] Trade profile POL M 2025 fetched (97 chapters, 1224 HS4 headings)
+2026-10-24 20:56:24.177 [INFO] Session started
+2026-10-24 20:56:25.098 [INFO] Session started
+2026-10-24 20:58:00.415 [INFO] Session started
+2026-10-24 20:58:10.233 [INFO] Fetching trade partners USA latest
+2026-10-24 20:58:10.233 [INFO] Fetching trade trend USA
+2026-10-24 20:58:10.233 [INFO] Fetching trade profile USA X latest
+2026-10-24 20:58:10.245 [INFO] Trade profile USA X 2025 fetched (97 chapters, 1226 HS4 headings)
+2026-10-24 20:58:10.266 [INFO] Fetching trade trend USA
+2026-10-24 20:58:10.268 [INFO] Fetching trade profile USA X latest
+2026-10-24 20:58:10.269 [INFO] Trade profile USA X 2025 fetched (97 chapters, 1226 HS4 headings)
+2026-10-24 20:58:10.283 [INFO] Fetching trade partners USA latest
+2026-10-24 20:58:10.290 [INFO] Fetching trade heatmap X 2024 for ['USA', 'CHN', 'DEU', 'JPN', 'KOR', 'IND', 'MEX', 'BRA', 'SAU', 'AUS']
+2026-10-24 20:58:11.777 [INFO] Fetching trade leaderboard latest
+2026-10-24 20:58:16.402 [INFO] Fetching trade leaderboard latest
+2026-10-24 20:59:51.752 [INFO] Fetching trade comparison ['USA', 'CHN', 'DEU', 'JPN', 'IND', 'MEX'] 2005-2025
+2026-10-24 20:59:53.369 [INFO] Fetching trade comparison ['USA', 'CHN', 'DEU', 'JPN', 'IND', 'MEX'] 2005-2025
+2026-10-24 20:59:55.921 [INFO] Fetching trade comparison ['USA', 'CHN', 'DEU', 'JPN', 'IND', 'MEX', 'ALB'] 2005-2025
+2026-10-24 21:00:16.420 [INFO] Fetching trade leaderboard latest
+2026-10-24 21:00:16.426 [INFO] Fetching trade leaderboard latest
+2026-10-24 21:03:05.942 [INFO] Fetching trade comparison ['USA', 'DEU', 'JPN', 'IND', 'MEX', 'ALB', 'CHN'] 2005-2025
+2026-10-24 21:03:05.950 [INFO] Fetching trade comparison ['USA', 'DEU', 'JPN', 'IND', 'MEX', 'ALB', 'CHN'] 2005-2025
+2026-10-24 21:04:53.729 [INFO] Fetching top 10 cryptocurrencies (full data)
+2026-10-24 21:04:54.471 [INFO] Fetching top 10 cryptocurrencies (full data)
+2026-10-24 21:04:57.356 [INFO] Fetching market overview (full data)
+2026-10-24 21:05:08.364 [INFO] Fetching market overview (full data)
+2026-10-24 21:05:50.791 [INFO] Fetching trade profile USA X latest
+2026-10-24 21:05:50.793 [INFO] Trade profile USA X 2025 fetched (97 chapters, 1226 HS4 headings)
+2026-10-24 21:05:50.806 [INFO] Fetching trade trend USA
+2026-10-24 21:05:50.807 [INFO] Fetching trade partners USA latest
+2026-10-24 21:05:50.811 [INFO] Fetching trade heatmap X 2024 for ['USA', 'CHN', 'DEU', 'JPN', 'KOR', 'IND', 'MEX', 'BRA', 'SAU', 'AUS']
+2026-10-24 21:05:50.811 [INFO] Fetching trade profile USA X latest
+2026-10-24 21:05:50.842 [INFO] Trade profile USA X 2025 fetched (97 chapters, 1226 HS4 headings)
+2026-10-24 21:05:50.858 [INFO] Fetching trade trend USA
+2026-10-24 21:05:50.858 [INFO] Fetching trade partners USA latest
+2026-10-24 21:05:52.048 [INFO] Fetching top 10 cryptocurrencies (full data)
+2026-10-24 21:05:52.486 [INFO] Fetching top 10 cryptocurrencies (full data)
+2026-10-24 21:06:56.785 [INFO] Fetching market overview (full data)
+2026-10-24 21:07:03.951 [INFO] Fetching market overview (full data)
+2026-10-24 21:07:14.998 [INFO] Fetching market overview (full data)
+2026-10-24 21:07:25.299 [INFO] Fetching market overview (full data)
+2026-10-24 21:07:39.147 [WARNING] FRED inflation expectations (MICH) fetch failed (<urlopen error [WinError 10054] An existing connection was forcibly closed by the remote host>)
+2026-10-24 21:17:09.433 [INFO] Session started
+2026-10-24 21:17:10.333 [INFO] Session started
+2026-10-24 21:21:35.022 [INFO] Fetching top 10 cryptocurrencies (full data)
+2026-10-24 21:21:36.265 [INFO] Fetching top 10 cryptocurrencies (full data)
+2026-10-24 21:21:37.106 [INFO] Fetching history USDT-USD 1Y
+2026-10-24 21:21:47.140 [INFO] Fetching history BTC-USD 1Y
+2026-10-24 21:21:52.880 [INFO] Fetching history ^IRX 1Y
+2026-10-24 21:22:39.073 [INFO] Fetching history GBPUSD=X 1Y

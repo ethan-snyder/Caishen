@@ -1,28 +1,43 @@
-@import url('https://fonts.googleapis.com/css2?family=VT323&family=Share+Tech+Mono&family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Share+Tech+Mono&family=JetBrains+Mono:wght@400;500;600&display=swap');
 @import 'tailwindcss';
 
+/* Country-flag emoji for Windows. Windows' emoji font has no flag glyphs, so
+   Chrome/Edge there show the two-letter code ("CN") instead of the flag. This
+   self-hosted font (public/fonts) covers ONLY the flag code points via
+   unicode-range, so listing it first in a font stack changes nothing else.
+   Font: "Twemoji Country Flags" from talkjs/country-flag-emoji-polyfill (MIT);
+   artwork from Twemoji, CC-BY 4.0 (https://github.com/twitter/twemoji). */
+@font-face {
+  font-family: 'Twemoji Country Flags';
+  src: url('/fonts/TwemojiCountryFlags.woff2') format('woff2');
+  unicode-range: U+1F1E6-1F1FF, U+1F3F4, U+E0062-E0063, U+E0065, U+E0067, U+E006C, U+E006E, U+E0073-E0074, U+E0077, U+E007F;
+  font-display: swap;
+}
+
+/* Moneta — imperial purple + Roman gold. Token source of truth for
+   components is src/lib/theme.ts; these mirror it for Tailwind/global CSS. */
 @theme inline {
-  --color-background: #03080F;
-  --color-foreground: #C8FFD4;
-  --color-card: #060E18;
-  --color-card-foreground: #C8FFD4;
-  --color-primary: #00FF88;
-  --color-primary-foreground: #03080F;
-  --color-secondary: #081220;
-  --color-secondary-foreground: #4DCC88;
-  --color-muted: #060E18;
-  --color-muted-foreground: #2D6644;
-  --color-accent: #0A2418;
-  --color-accent-foreground: #00FF88;
-  --color-border: rgba(0,255,136,0.1);
-  --color-ring: #00FF88;
-  --color-positive: #00FF88;
-  --color-negative: #FF3B3B;
+  --color-background: #0A0610;
+  --color-foreground: #F4EFE6;
+  --color-card: #130B1B;
+  --color-card-foreground: #F4EFE6;
+  --color-primary: #D4AF37;
+  --color-primary-foreground: #0A0610;
+  --color-secondary: #1C1226;
+  --color-secondary-foreground: #C9B8D9;
+  --color-muted: #130B1B;
+  --color-muted-foreground: #8C7A9E;
+  --color-accent: #6B2A7A;
+  --color-accent-foreground: #D4AF37;
+  --color-border: rgba(212,175,55,0.14);
+  --color-ring: #D4AF37;
+  --color-positive: #3DDC84;
+  --color-negative: #FF4D4D;
   --radius: 0px;
 
-  --font-display: 'VT323', 'Courier New', monospace;
-  --font-sans: 'Share Tech Mono', 'Courier New', monospace;
-  --font-mono: 'JetBrains Mono', 'Courier New', monospace;
+  --font-display: 'Twemoji Country Flags', 'Cinzel', 'Trajan Pro', Georgia, serif;
+  --font-sans: 'Twemoji Country Flags', 'Share Tech Mono', 'Courier New', monospace;
+  --font-mono: 'Twemoji Country Flags', 'JetBrains Mono', 'Courier New', monospace;
 }
 
 *, *::before, *::after {
@@ -36,10 +51,28 @@ html, body, #root {
 }
 
 body {
-  background-color: #03080F;
-  color: #C8FFD4;
-  font-family: 'Share Tech Mono', 'Courier New', monospace;
+  background-color: #0A0610;
+  background-image:
+    radial-gradient(ellipse 80% 60% at 70% -10%, rgba(107,42,122,0.22), transparent 70%),
+    radial-gradient(ellipse 60% 50% at 0% 110%, rgba(212,175,55,0.05), transparent 70%);
+  background-attachment: fixed;
+  color: #F4EFE6;
+  font-family: 'Twemoji Country Flags', 'JetBrains Mono', 'Courier New', monospace;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/* Colonnade band along the top of the main area: gold Ionic columns roughly
+   every 100px whose capitals touch the top of the window (as if holding it
+   up) and whose plinths stand directly on the gold bar below the band. `space` fits only
+   whole columns into the band at any width and spreads the leftover space
+   evenly, so no column is ever cut off at the right edge. */
+.colonnade {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='96' viewBox='0 0 100 95' preserveAspectRatio='none'%3E%3Cg fill='%23D4AF37'%3E%3Crect x='33' y='0' width='34' height='4'/%3E%3Crect x='37' y='4' width='26' height='3'/%3E%3Ccircle cx='37.5' cy='8.5' r='3.6' fill='none' stroke='%23D4AF37' stroke-width='1.4'/%3E%3Ccircle cx='62.5' cy='8.5' r='3.6' fill='none' stroke='%23D4AF37' stroke-width='1.4'/%3E%3Ccircle cx='37.5' cy='8.5' r='1'/%3E%3Ccircle cx='62.5' cy='8.5' r='1'/%3E%3Crect x='41' y='7' width='18' height='3'/%3E%3Crect x='42' y='10' width='16' height='71' fill-opacity='0.85'/%3E%3Crect x='40' y='81' width='20' height='3'/%3E%3Crect x='38' y='85' width='24' height='3'/%3E%3Crect x='36' y='89' width='28' height='6'/%3E%3C/g%3E%3Cg stroke='%2307040B' stroke-opacity='0.55' stroke-width='1'%3E%3Cpath d='M45.5 12v67M50 12v67M54.5 12v67'/%3E%3C/g%3E%3C/svg%3E");
+  background-repeat: space no-repeat;
+  background-position: left top;
+  background-size: 100px 96px;
 }
 
 /* CRT scanline overlay */
@@ -51,8 +84,8 @@ body::after {
     0deg,
     transparent,
     transparent 2px,
-    rgba(0, 0, 0, 0.08) 2px,
-    rgba(0, 0, 0, 0.08) 4px
+    rgba(0, 0, 0, 0.12) 2px,
+    rgba(0, 0, 0, 0.12) 4px
   );
   pointer-events: none;
   z-index: 9999;
@@ -67,16 +100,6 @@ body::after {
   text-shadow: 0 0 4px currentColor, 0 0 10px currentColor;
 }
 
-/* Blink animation */
-@keyframes blink {
-  0%, 49% { opacity: 1; }
-  50%, 100% { opacity: 0; }
-}
-
-.blink {
-  animation: blink 1s step-end infinite;
-}
-
 /* CRT flicker */
 @keyframes flicker {
   0%, 100% { opacity: 1; }
@@ -89,10 +112,29 @@ body::after {
   animation: flicker 8s infinite;
 }
 
+/* Blink animation (cursor / loading marker) */
+@keyframes blink {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+
+.blink {
+  animation: blink 1s step-end infinite;
+}
+
+input::placeholder {
+  color: #5E4D70;
+}
+
+::selection {
+  background: rgba(107,42,122,0.6);
+  color: #FFFFFF;
+}
+
 ::-webkit-scrollbar {
   width: 4px;
   height: 4px;
 }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: rgba(200,146,42,0.3); border-radius: 2px; }
-::-webkit-scrollbar-thumb:hover { background: rgba(200,146,42,0.6); }
+::-webkit-scrollbar-thumb { background: rgba(212,175,55,0.3); border-radius: 2px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(212,175,55,0.6); }

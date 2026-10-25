@@ -1,8 +1,8 @@
 """
-api.py — Caishen's web API.
+api.py — Moneta's web API.
 
-FastAPI wrapper around the existing Caishen modules (stock_info, market_info,
-portfolio, watchlist, crypto_info, forex, futures, bonds). Each endpoint
+FastAPI wrapper around the existing Moneta modules (stock_info, market_info,
+portfolio, watchlist, crypto_info, forex, futures, bonds, trade). Each endpoint
 calls a "get_*_full()" / "*_full()" data function that returns clean,
 JSON-serializable, frontend-shaped data rather than the console-printing
 CLI functions those same modules also expose.
@@ -27,8 +27,10 @@ import crypto_info
 import forex
 import futures
 import bonds
+import trade
+import history
 
-app = FastAPI(title="Caishen API")
+app = FastAPI(title="Moneta API")
 
 # The Vite dev server runs on 8443 by default (see AGENTS.md / vite.config.ts);
 # also allow localhost:5173, Vite's own default, in case that's used instead.
@@ -132,6 +134,62 @@ def get_bonds():
 
 
 # ----------------------------------------------------------------------
+# Trade (country imports/exports -- see trade.py)
+# ----------------------------------------------------------------------
+
+def _trade_flow(flow: str) -> str:
+    f = flow.strip().upper()
+    if f not in ("X", "M"):
+        raise HTTPException(status_code=400, detail="flow must be 'X' (exports) or 'M' (imports)")
+    return f
+
+
+def _trade_country(country: str) -> str:
+    try:
+        trade.resolve_country(country)
+    except KeyError as e:
+        raise HTTPException(status_code=404, detail=str(e.args[0]))
+    return country
+
+
+@app.get("/api/trade/meta")
+def get_trade_meta():
+    return trade.get_trade_meta_full()
+
+
+@app.get("/api/trade/profile/{country}")
+def get_trade_profile(country: str, flow: str = "X", year: int | None = None):
+    return _safe_call(trade.get_trade_profile_full, _trade_country(country), _trade_flow(flow), year)
+
+
+@app.get("/api/trade/partners/{country}")
+def get_trade_partners(country: str, year: int | None = None, limit: int = 20):
+    return _safe_call(trade.get_trade_partners_full, _trade_country(country), year, limit)
+
+
+@app.get("/api/trade/trend/{country}")
+def get_trade_trend(country: str):
+    return _safe_call(trade.get_trade_trend_full, _trade_country(country))
+
+
+@app.get("/api/trade/leaderboard")
+def get_trade_leaderboard(year: int | None = None):
+    return _safe_call(trade.get_trade_leaderboard_full, year)
+
+
+@app.get("/api/trade/compare")
+def get_trade_compare(countries: str | None = None, start: int | None = None, end: int | None = None):
+    idents = [c for c in (countries or "").split(",") if c.strip()] or None
+    return _safe_call(trade.get_trade_compare_full, idents, start, end)
+
+
+@app.get("/api/trade/heatmap")
+def get_trade_heatmap(countries: str | None = None, flow: str = "X", year: int | None = None):
+    idents = [c for c in (countries or "").split(",") if c.strip()] or None
+    return _safe_call(trade.get_trade_heatmap_full, idents, _trade_flow(flow), year)
+
+
+# ----------------------------------------------------------------------
 # Portfolio
 # ----------------------------------------------------------------------
 
@@ -197,6 +255,24 @@ def delete_watchlist_ticker(list_name: str, ticker: str):
     if not removed:
         raise HTTPException(status_code=404, detail=f"'{ticker}' not found in watchlist '{list_name}'")
     return _safe_call(watchlist.get_watchlists_full)
+
+
+# ----------------------------------------------------------------------
+# Price / yield history (click-to-chart popups -- see history.py)
+# ----------------------------------------------------------------------
+
+@app.get("/api/history")
+def get_history(kind: str, id: str, range: str = "1Y"):
+    try:
+        history._resolve(kind, id)
+    except (KeyError, ValueError) as e:
+        raise HTTPException(status_code=404, detail=str(e.args[0]) if e.args else str(e))
+    if range.upper() not in history.RANGES:
+        raise HTTPException(status_code=400, detail=f"range must be one of {', '.join(history.RANGES)}")
+    data = _safe_call(history.get_history_full, kind, id, range)
+    if not data["points"]:
+        raise HTTPException(status_code=404, detail=f"No price history for {data['symbol']}")
+    return data
 
 
 @app.get("/api/health")

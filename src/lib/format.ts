@@ -35,5 +35,6 @@ export function formatNum(value: number | null | undefined, decimals = 2): strin
   return value.toFixed(decimals)
 }
 
+/** Arrow color only — numbers themselves stay white (see components/Delta.tsx). */
 export const posNegColor = (value: number | null | undefined) =>
-  value !== null && value !== undefined && value >= 0 ? '#00FF88' : '#FF3B3B'
+  value !== null && value !== undefined && value >= 0 ? '#3DDC84' : '#FF4D4D'

@@ -24,14 +24,14 @@ SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 PORTFOLIO_FILE = os.path.join(SCRIPT_DIR, "portfolio.txt")
 
 TEMPLATE = """\
-# Caishen portfolio file
+# Moneta portfolio file
 # One holding per line: TICKER, QUANTITY
 # Optionally add a third column for average cost (enables gain/loss):
 #   TICKER, QUANTITY, AVG_COST
 # Lines starting with # are ignored.
 #
 # Edit this file directly (in any text editor), save it, then re-run the
-# Portfolio option from the Caishen menu to see it valued.
+# Portfolio option from the Moneta menu to see it valued.
 #
 # Example:
 # AAPL, 10, 171.22

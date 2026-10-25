@@ -3,14 +3,16 @@ import {
   fetchWatchlists, createWatchlist, addWatchlistTicker, removeWatchlistTicker,
   type WatchlistsData,
 } from '@/lib/api'
-import { posNegColor } from '@/lib/format'
 import { Loading, ErrorBlock } from './StatusBlock'
+import Delta from './Delta'
+import PriceChart, { chartRowProps, type ChartTarget } from './PriceChart'
 
-const border = '1px solid rgba(0,255,136,0.12)'
+const border = '1px solid rgba(212,175,55,0.12)'
 
 export default function Watchlist() {
   const [data, setData] = useState<WatchlistsData | null>(null)
   const [error, setError] = useState<string | null>(null)
+  const [chart, setChart] = useState<ChartTarget | null>(null)
   const [active, setActive] = useState<string | null>(null)
   const [newListName, setNewListName] = useState('')
   const [newTicker, setNewTicker] = useState('')
@@ -57,7 +59,7 @@ export default function Watchlist() {
   return (
     <div>
       <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', marginBottom: 16, flexWrap: 'wrap', gap: 10 }}>
-        <span style={{ fontFamily: "'VT323', monospace", fontSize: 32, color: '#C8FFD4', letterSpacing: '0.04em', textShadow: '0 0 10px rgba(200,255,212,0.3)' }}>
+        <span style={{ fontFamily: "'Cinzel', serif", fontSize: 26, fontWeight: 600, color: '#F4EFE6', letterSpacing: '0.12em', textShadow: '0 0 10px rgba(212,175,55,0.35)' }}>
           WATCHLIST
         </span>
         <form onSubmit={handleCreateList} style={{ display: 'flex', gap: 6 }}>
@@ -66,15 +68,15 @@ export default function Watchlist() {
             onChange={e => setNewListName(e.target.value)}
             placeholder="NEW LIST NAME"
             style={{
-              backgroundColor: '#060E18', border, padding: '7px 12px',
-              fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: '#C8FFD4',
-              letterSpacing: '0.06em', outline: 'none', width: 150, caretColor: '#00FF88',
+              backgroundColor: '#130B1B', border, padding: '7px 12px',
+              fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: '#FFFFFF',
+              letterSpacing: '0.06em', outline: 'none', width: 150, caretColor: '#D4AF37',
             }}
           />
           <button type="submit" style={{
-            backgroundColor: 'rgba(0,255,136,0.1)', color: '#00FF88',
+            backgroundColor: 'rgba(212,175,55,0.1)', color: '#D4AF37',
             fontFamily: "'Share Tech Mono', monospace", fontSize: 11,
-            border: '1px solid rgba(0,255,136,0.3)', padding: '7px 14px',
+            border: '1px solid rgba(212,175,55,0.3)', padding: '7px 14px',
             cursor: 'pointer', letterSpacing: '0.06em',
           }}>+ NEW LIST</button>
         </form>
@@ -83,7 +85,7 @@ export default function Watchlist() {
       {error && <div style={{ marginBottom: 12 }}><ErrorBlock message={error} /></div>}
 
       {listNames.length === 0 ? (
-        <div style={{ backgroundColor: '#060E18', border, padding: '30px', textAlign: 'center', fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: '#2D6644' }}>
+        <div style={{ backgroundColor: '#130B1B', border, padding: '30px', textAlign: 'center', fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: '#8C7A9E' }}>
           No watchlists yet — create one above.
         </div>
       ) : (
@@ -93,12 +95,11 @@ export default function Watchlist() {
             {listNames.map(name => (
               <button key={name} onClick={() => setActive(name)} style={{
                 fontFamily: "'Share Tech Mono', monospace", fontSize: 12,
-                color: active === name ? '#00FF88' : '#2D6644',
-                background: active === name ? 'rgba(0,255,136,0.08)' : 'transparent',
-                border: `1px solid ${active === name ? 'rgba(0,255,136,0.3)' : 'rgba(0,255,136,0.1)'}`,
+                color: active === name ? '#D4AF37' : '#8C7A9E',
+                background: active === name ? 'rgba(107,42,122,0.35)' : 'transparent',
+                border: `1px solid ${active === name ? 'rgba(212,175,55,0.3)' : 'rgba(212,175,55,0.1)'}`,
                 padding: '5px 12px', cursor: 'pointer', letterSpacing: '0.06em',
-                textShadow: active === name ? '0 0 6px #00FF88' : 'none',
-              }}>{name} <span style={{ color: '#1D4A30', marginLeft: 4 }}>{(data[name] ?? []).length}</span></button>
+                              }}>{name} <span style={{ color: '#5E4D70', marginLeft: 4 }}>{(data[name] ?? []).length}</span></button>
             ))}
           </div>
 
@@ -109,21 +110,21 @@ export default function Watchlist() {
               onChange={e => setNewTicker(e.target.value.toUpperCase())}
               placeholder="ADD TICKER"
               style={{
-                backgroundColor: '#060E18', border, padding: '7px 12px',
-                fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: '#00FF88',
-                letterSpacing: '0.08em', outline: 'none', width: 140, caretColor: '#00FF88',
+                backgroundColor: '#130B1B', border, padding: '7px 12px',
+                fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: '#D4AF37',
+                letterSpacing: '0.08em', outline: 'none', width: 140, caretColor: '#D4AF37',
               }}
             />
             <button type="submit" style={{
-              backgroundColor: 'rgba(0,255,136,0.1)', color: '#00FF88',
+              backgroundColor: 'rgba(212,175,55,0.1)', color: '#D4AF37',
               fontFamily: "'Share Tech Mono', monospace", fontSize: 11,
-              border: '1px solid rgba(0,255,136,0.3)', padding: '7px 14px',
+              border: '1px solid rgba(212,175,55,0.3)', padding: '7px 14px',
               cursor: 'pointer', letterSpacing: '0.06em',
             }}>ADD</button>
           </form>
 
           {items.length === 0 ? (
-            <div style={{ backgroundColor: '#060E18', border, padding: '24px', textAlign: 'center', fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: '#2D6644' }}>
+            <div style={{ backgroundColor: '#130B1B', border, padding: '24px', textAlign: 'center', fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: '#8C7A9E' }}>
               This list is empty — add a ticker above. Works with stocks, indexes (^GSPC), FX (EURUSD=X), futures (GC=F), Treasury yields (^TNX), or crypto (BTC-USD).
             </div>
           ) : (
@@ -131,36 +132,34 @@ export default function Watchlist() {
               {/* Header */}
               <div style={{ display: 'grid', gridTemplateColumns: '80px 1fr 90px 90px 70px 40px', gap: 6, padding: '0 14px 8px' }}>
                 {['TICKER', 'NAME', 'PRICE', 'CHANGE', 'P/E', ''].map(h => (
-                  <div key={h} style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 9, color: '#1D4A30', letterSpacing: '0.1em' }}>{h}</div>
+                  <div key={h} style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 9, color: '#5E4D70', letterSpacing: '0.1em' }}>{h}</div>
                 ))}
               </div>
 
               <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
                 {items.map(item => (
-                  <div key={item.ticker} style={{
-                    display: 'grid', gridTemplateColumns: '80px 1fr 90px 90px 70px 40px', gap: 6,
-                    alignItems: 'center', backgroundColor: '#060E18', border, padding: '12px 14px', transition: 'border-color 0.1s',
+                  <div key={item.ticker} {...chartRowProps(() => setChart({ kind: 'stock', id: item.ticker, sub: item.name ?? undefined }))} style={{
+                    cursor: 'pointer', display: 'grid', gridTemplateColumns: '80px 1fr 90px 90px 70px 40px', gap: 6,
+                    alignItems: 'center', backgroundColor: '#130B1B', border, padding: '12px 14px', transition: 'border-color 0.1s',
                   }}
-                  onMouseEnter={e => (e.currentTarget.style.borderColor = 'rgba(0,255,136,0.3)')}
-                  onMouseLeave={e => (e.currentTarget.style.borderColor = 'rgba(0,255,136,0.12)')}
+                  onMouseEnter={e => (e.currentTarget.style.borderColor = 'rgba(212,175,55,0.3)')}
+                  onMouseLeave={e => (e.currentTarget.style.borderColor = 'rgba(212,175,55,0.12)')}
                   >
-                    <div style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: 14, color: '#00FF88', textShadow: '0 0 6px rgba(0,255,136,0.4)' }}>{item.ticker}</div>
-                    <div style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: 11, color: '#4DCC88' }}>{item.name ?? '—'}</div>
-                    <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 14, color: '#C8FFD4', fontWeight: 600 }}>
+                    <div style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: 14, fontWeight: 700, color: '#D4AF37' }}>{item.ticker}</div>
+                    <div style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: 11, color: '#C9B8D9' }}>{item.name ?? '—'}</div>
+                    <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 14, color: '#FFFFFF', fontWeight: 600 }}>
                       {item.price !== null ? `$${item.price.toFixed(item.price > 10 ? 2 : 4)}` : '—'}
                     </div>
-                    <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: posNegColor(item.change_pct), textShadow: item.change_pct !== null ? `0 0 5px ${posNegColor(item.change_pct)}` : undefined }}>
-                      {item.change_pct !== null ? `${item.change_pct >= 0 ? '+' : ''}${item.change_pct.toFixed(2)}%` : '—'}
-                    </div>
-                    <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: '#C8FFD4' }}>
+                    <div><Delta value={item.change_pct} format={v => `${v.toFixed(2)}%`} size={12} /></div>
+                    <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: '#FFFFFF' }}>
                       {item.pe !== null && item.pe > 0 ? item.pe.toFixed(1) : '—'}
                     </div>
-                    <button onClick={() => handleRemove(item.ticker)} style={{
-                      fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: '#1D4A30',
+                    <button onClick={e => { e.stopPropagation(); handleRemove(item.ticker) }} style={{
+                      fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: '#5E4D70',
                       background: 'transparent', border: 'none', cursor: 'pointer', padding: '4px 8px',
                     }}
-                    onMouseEnter={e => (e.currentTarget.style.color = '#FF3B3B')}
-                    onMouseLeave={e => (e.currentTarget.style.color = '#1D4A30')}
+                    onMouseEnter={e => (e.currentTarget.style.color = '#FF4D4D')}
+                    onMouseLeave={e => (e.currentTarget.style.color = '#5E4D70')}
                     >✕</button>
                   </div>
                 ))}
@@ -170,9 +169,10 @@ export default function Watchlist() {
         </>
       )}
 
-      <div style={{ marginTop: 12, padding: '9px 12px', backgroundColor: 'rgba(0,255,136,0.02)', border: '1px solid rgba(0,255,136,0.07)', fontFamily: "'JetBrains Mono', monospace", fontSize: 10, color: '#1D4A30' }}>
+      <div style={{ marginTop: 12, padding: '9px 12px', backgroundColor: 'rgba(212,175,55,0.02)', border: '1px solid rgba(212,175,55,0.07)', fontFamily: "'JetBrains Mono', monospace", fontSize: 10, color: '#5E4D70' }}>
         {'// DATA SOURCE: yfinance · saved to watchlists.txt on the backend · P/E only applies to individual stocks'}
       </div>
+      {chart && <PriceChart target={chart} onClose={() => setChart(null)} />}
     </div>
   )
 }

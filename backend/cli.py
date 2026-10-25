@@ -1,5 +1,5 @@
 """
-Caishen — an all-in-one investing terminal tool.
+Moneta — an all-in-one investing terminal tool.
 
 Run:  python cli.py  (this is the terminal version -- see api.py for the web API)
 """
@@ -26,23 +26,24 @@ from crypto_info import top_cryptos
 from forex import fx_rates
 from futures import futures_info
 from bonds import bonds_info
+from trade import trade_profile
 
-GREEN = "\033[32m"
+GOLD = "\033[33m"
 RESET = "\033[0m"
 
 BANNER = r'''
-  /$$$$$$            /$$           /$$                                 /$$$$$$                                           /$$                        
- /$$__  $$          |__/          | $$                                |_  $$_/                                          | $$                        
-| $$  \__/  /$$$$$$  /$$  /$$$$$$$| $$$$$$$   /$$$$$$  /$$$$$$$         | $$   /$$$$$$$  /$$    /$$ /$$$$$$   /$$$$$$$ /$$$$$$    /$$$$$$   /$$$$$$ 
-| $$       |____  $$| $$ /$$_____/| $$__  $$ /$$__  $$| $$__  $$        | $$  | $$__  $$|  $$  /$$//$$__  $$ /$$_____/|_  $$_/   /$$__  $$ /$$__  $$
-| $$        /$$$$$$$| $$|  $$$$$$ | $$  \ $$| $$$$$$$$| $$  \ $$        | $$  | $$  \ $$ \  $$/$$/| $$$$$$$$|  $$$$$$   | $$    | $$  \ $$| $$  \__/
-| $$    $$ /$$__  $$| $$ \____  $$| $$  | $$| $$_____/| $$  | $$        | $$  | $$  | $$  \  $$$/ | $$_____/ \____  $$  | $$ /$$| $$  | $$| $$      
-|  $$$$$$/|  $$$$$$$| $$ /$$$$$$$/| $$  | $$|  $$$$$$$| $$  | $$       /$$$$$$| $$  | $$   \  $/  |  $$$$$$$ /$$$$$$$/  |  $$$$/|  $$$$$$/| $$      
- \______/  \_______/|__/|_______/ |__/  |__/ \_______/|__/  |__/      |______/|__/  |__/    \_/    \_______/|_______/    \___/   \______/ |__/                                                                                                                                    
+ /$$      /$$                                 /$$
+| $$$    /$$$                                | $$
+| $$$$  /$$$$  /$$$$$$  /$$$$$$$   /$$$$$$  /$$$$$$    /$$$$$$
+| $$ $$/$$ $$ /$$__  $$| $$__  $$ /$$__  $$|_  $$_/   |____  $$
+| $$  $$$| $$| $$  \ $$| $$  \ $$| $$$$$$$$  | $$      /$$$$$$$
+| $$\  $ | $$| $$  | $$| $$  | $$| $$_____/  | $$ /$$ /$$__  $$
+| $$ \/  | $$|  $$$$$$/| $$  | $$|  $$$$$$$  |  $$$$/|  $$$$$$$
+|__/     |__/ \______/ |__/  |__/ \_______/   \___/   \_______/
 '''
 
 MENU = """
-==================== CAISHEN ====================
+==================== MONETA =====================
 1) Current Stock Info      (metrics for one ticker)
 2) Price Projector         (3-year bear/base/bull)
 3) Market Overview         (indexes & sentiment)
@@ -52,7 +53,8 @@ MENU = """
 7) FX Rates                   (major currency pairs)
 8) Futures                    (major index & commodity futures)
 9) Bonds                      (U.S. Treasury yields)
-10) Quit
+10) Trade                     (country exports/imports)
+11) Quit
 ===================================================
 """
 
@@ -66,23 +68,24 @@ DISPATCH = {
     "7": ("FX Rates", fx_rates),
     "8": ("Futures", futures_info),
     "9": ("Bonds", bonds_info),
+    "10": ("Trade", trade_profile),
 }
 
 
 def main():
-    print(f"{GREEN}{BANNER}{RESET}")
+    print(f"{GOLD}{BANNER}{RESET}")
     while True:
         print(MENU)
-        choice = input("Select an option (1-10): ").strip()
+        choice = input("Select an option (1-11): ").strip()
 
-        if choice == "10":
+        if choice == "11":
             log_event("Session ended (user selected Quit)")
             print("Goodbye!")
             break
 
         entry = DISPATCH.get(choice)
         if entry is None:
-            print("Invalid choice, please select 1-10.")
+            print("Invalid choice, please select 1-11.")
             continue
 
         label, func = entry
