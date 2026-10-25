@@ -799,7 +799,7 @@ export default function Projector() {
                   // PEG 1.0 is Lynch's anchor: below it the stock is
                   // cheap relative to its growth, above it expensive.
                   const pegColor = res.peg === null ? '#FFFFFF'
-                    : res.peg < 1 ? '#D4AF37'
+                    : res.peg < 1 ? '#3DDC84'
                       : res.peg <= 1.5 ? '#F2C94C' : '#FF4D4D'
                   return (
                     <ScenarioShell

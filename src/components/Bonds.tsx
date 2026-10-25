@@ -156,8 +156,8 @@ function CurveTile({ entry }: { entry: CurveEntry }) {
       <div style={{ display: 'flex', alignItems: 'baseline', gap: 14, marginBottom: 14 }}>
         <div style={{
           fontFamily: "'JetBrains Mono', monospace", fontSize: 44, fontWeight: 600,
-          color: yieldValue !== null ? '#D4AF37' : '#7A6A8E',
-          textShadow: yieldValue !== null ? '0 0 10px rgba(212,175,55,0.4)' : 'none',
+          color: yieldValue !== null ? '#FFFFFF' : '#7A6A8E',
+          textShadow: yieldValue !== null ? '0 0 10px rgba(255,255,255,0.22)' : 'none',
           letterSpacing: '-0.02em', lineHeight: 1,
         }}>
           {yieldValue !== null ? `${yieldValue.toFixed(2)}%` : '—'}
@@ -286,7 +286,7 @@ function YieldTile({ row, showDate, square }: { row: FredYieldRow; showDate?: bo
       </div>
       <div style={{
         fontFamily: "'JetBrains Mono', monospace", fontSize: 24, fontWeight: 600,
-        color: row.yield !== null ? '#D4AF37' : '#7A6A8E',
+        color: row.yield !== null ? '#FFFFFF' : '#7A6A8E',
         textShadow: row.yield !== null ? '0 0 8px rgba(212,175,55,0.35)' : 'none',
         letterSpacing: '-0.02em',
       }}>

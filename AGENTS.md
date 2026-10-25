@@ -36,6 +36,17 @@ somewhere other than `localhost:8000`.
 - `src/lib/tradeNav.ts` - Small shared store for the TRADE tabs (selected country, COMPARE list)
 - `src/lib/theme.ts` - Moneta color/font tokens (imperial purple + Roman gold)
 - `src/components/Delta.tsx` - Gain/loss display: ▲/▼ arrow + number, tinted green/red
+- `src/lib/layout.tsx` + `src/components/LayoutKit.tsx` - EDIT LAYOUT system: `useSortableLayout(key, items)` scopes (order + hidden saved in localStorage as `layout.<key>`), `<Draggable>`, `<AddWidgetTray>`, `<EditHint>`, `<EditModeButton>`
+- `src/components/TrackingKit.tsx` - Portfolio/Watchlist building blocks: configurable metric columns, LineChart, PieChart, BarRow, Panel, formatters
+- `src/components/ChartGrid.tsx` - shared y-axis labels + gridlines for the SVG line charts
+- `src/lib/valuation.ts` - Projector model math (EPS×P/E, driver, EV/EBITDA, reverse, Lynch, Gordon)
+- `src/lib/cryptoStream.ts` - live crypto ticks over `/ws/crypto`; `backend/coinbase_stream.py` relays Coinbase's public ticker feed
+- `src/components/TickerTape.tsx` - top-bar tape over `/api/tape` + `/ws/tape` (`backend/tape.py`)
+- `src/components/Economics.tsx` - ECONOMICS tab (`backend/econ.py`: FRED indicators + release calendar, Fed RSS)
+- `src/components/Nasdaq100Heatmap.tsx` - MARKET heatmap (`backend/heatmap.py`)
+- `src/components/AnalystInsights.tsx`, `Flag.tsx`, `ErrorBoundary.tsx`, `src/lib/palette.ts` - analyst coverage panel, flagcdn flags, page-level error boundary, portfolio colors
+
+> The files above were rebuilt from their call sites after the originals (from the August UI overhaul) turned out never to have been committed. They match every import/usage but are re-implementations, not the originals.
 - `src/index.css` - Global CSS entrypoint and Tailwind CSS v4 import
 - `index.html` - Vite HTML shell containing the `#root` element and loading `src/main.tsx`
 - `package.json` - Project dependencies and the Vite build, development, preview, and formatting scripts

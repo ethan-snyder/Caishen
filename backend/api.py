@@ -133,9 +133,10 @@ def get_market():
 
 @app.get("/api/market/heatmap")
 def get_market_heatmap():
-    """Top-60-by-weight S&P 500 heatmap -- not all 500 names; see
-    heatmap.py's module docstring for why. Cached for 10 minutes since
-    this is a single batched yfinance call, not a live feed."""
+    """Nasdaq-100 heatmap (tile size = share of the basket's market cap,
+    color = today's move); see heatmap.py's module docstring. Cached for
+    10 minutes since this is a single batched yfinance call, not a live
+    feed."""
     return _safe_call(heatmap.get_heatmap)
 
 
