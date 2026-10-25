@@ -1,5 +1,5 @@
 """
-utils.py — shared helpers for Caishen.
+utils.py — shared helpers for Moneta.
 
 Holds:
   - CAPM / WACC calculations (done manually since no free API reports these

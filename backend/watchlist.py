@@ -38,7 +38,7 @@ SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 WATCHLISTS_FILE = os.path.join(SCRIPT_DIR, "watchlists.txt")
 
 TEMPLATE = """\
-# Caishen watchlists file
+# Moneta watchlists file
 # Start a new watchlist with a line like [Watchlist Name], then list one
 # ticker per line underneath it. Lines starting with # are ignored.
 #

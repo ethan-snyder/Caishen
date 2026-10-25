@@ -2,12 +2,13 @@ import { useEffect, useMemo, useState, type MouseEvent } from 'react'
 import { fetchFx, fetchFxHistory, type FxPair, type FxRange, type FxHistoryPoint } from '@/lib/api'
 import { formatPct, formatLargeNum, posNegColor } from '@/lib/format'
 import { Loading, ErrorBlock } from './StatusBlock'
+import Delta from './Delta'
 import { useSortableLayout } from '@/lib/layout'
 import { Draggable, AddWidgetTray, EditHint } from './LayoutKit'
 import { AxisLabels, GridLines } from './ChartGrid'
 import { Flag } from './Flag'
 
-const border = '1px solid rgba(0,255,136,0.12)'
+const border = '1px solid rgba(212,175,55,0.12)'
 
 function rateDecimals(rate: number | null) {
   if (rate === null) return 4
@@ -43,7 +44,7 @@ function RateChart({ points, range, decimals, height = 130 }: {
     return (
       <div style={{
         height, display: 'flex', alignItems: 'center', justifyContent: 'center',
-        fontFamily: "'JetBrains Mono', monospace", fontSize: 14, color: '#3C8F5F',
+        fontFamily: "'JetBrains Mono', monospace", fontSize: 14, color: '#7A6A8E',
       }}>
         not enough history for this range
       </div>
@@ -65,7 +66,7 @@ function RateChart({ points, range, decimals, height = 130 }: {
   const first = points[0].value
   const last = points[points.length - 1].value
   const up = last >= first
-  const lineColor = up ? '#00FF88' : '#FF3B3B'
+  const lineColor = up ? '#3DDC84' : '#FF4D4D'
   const fillId = `fx-fill-${up ? 'up' : 'down'}-${range}`
 
   const handleMove = (e: MouseEvent<SVGSVGElement>) => {
@@ -114,7 +115,7 @@ function RateChart({ points, range, decimals, height = 130 }: {
               left: `${(xAt(hover) / w) * 100}%`,
               top: `${(yAt(points[hover].value) / h) * 100}%`,
               width: 7, height: 7, borderRadius: '50%',
-              backgroundColor: lineColor, border: '1px solid #060E18',
+              backgroundColor: lineColor, border: '1px solid #130B1B',
               transform: 'translate(-50%, -50%)', pointerEvents: 'none',
             }} />
           )}
@@ -123,19 +124,19 @@ function RateChart({ points, range, decimals, height = 130 }: {
               position: 'absolute', top: -6,
               left: `${tooltipPct}%`,
               transform: tooltipPct > 65 ? 'translate(-100%, -100%)' : 'translate(0, -100%)',
-              backgroundColor: '#0A1420', border: `1px solid ${lineColor}`, padding: '5px 10px',
-              fontFamily: "'JetBrains Mono', monospace", fontSize: 15, color: '#C8FFD4',
+              backgroundColor: '#1C1226', border: `1px solid ${lineColor}`, padding: '5px 10px',
+              fontFamily: "'JetBrains Mono', monospace", fontSize: 15, color: '#FFFFFF',
               whiteSpace: 'nowrap', pointerEvents: 'none', zIndex: 10,
             }}>
               <div style={{ color: lineColor, fontWeight: 600 }}>{hoverPoint.value.toFixed(decimals)}</div>
-              <div style={{ fontSize: 13, color: '#4a5a52', marginTop: 1 }}>{formatHistoryDate(hoverPoint.date, range)}</div>
+              <div style={{ fontSize: 13, color: '#8C7A9E', marginTop: 1 }}>{formatHistoryDate(hoverPoint.date, range)}</div>
             </div>
           )}
         </div>
       </div>
       <div style={{
         display: 'flex', justifyContent: 'space-between', marginLeft: 76,
-        fontFamily: "'JetBrains Mono', monospace", fontSize: 13, color: '#3C8F5F', marginTop: 6,
+        fontFamily: "'JetBrains Mono', monospace", fontSize: 13, color: '#7A6A8E', marginTop: 6,
       }}>
         <span>{formatHistoryDate(points[0].date, range)}</span>
         <span>{formatHistoryDate(points[points.length - 1].date, range)}</span>
@@ -164,7 +165,7 @@ function ExpandedChart({ pair, decimals }: { pair: FxPair; decimals: number }) {
   }, [pairKey, range])
 
   return (
-    <div style={{ marginTop: 10, paddingTop: 10, borderTop: '1px solid rgba(0,255,136,0.1)' }}>
+    <div style={{ marginTop: 10, paddingTop: 10, borderTop: '1px solid rgba(212,175,55,0.1)' }}>
       <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap', marginBottom: 10 }}>
         {RANGES.map(r => (
           <button
@@ -174,9 +175,9 @@ function ExpandedChart({ pair, decimals }: { pair: FxPair; decimals: number }) {
             style={{
               fontFamily: "'JetBrains Mono', monospace", fontSize: 13, letterSpacing: '0.06em',
               padding: '3px 8px', cursor: 'pointer',
-              backgroundColor: range === r.key ? 'rgba(0,255,136,0.15)' : 'transparent',
-              border: `1px solid ${range === r.key ? 'rgba(0,255,136,0.4)' : 'rgba(0,255,136,0.12)'}`,
-              color: range === r.key ? '#00FF88' : '#4DCC88',
+              backgroundColor: range === r.key ? 'rgba(212,175,55,0.15)' : 'transparent',
+              border: `1px solid ${range === r.key ? 'rgba(212,175,55,0.4)' : 'rgba(212,175,55,0.12)'}`,
+              color: range === r.key ? '#D4AF37' : '#C9B8D9',
             }}
           >
             {r.label}
@@ -184,13 +185,13 @@ function ExpandedChart({ pair, decimals }: { pair: FxPair; decimals: number }) {
         ))}
       </div>
       {histError && (
-        <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 13, color: '#FF3B3B' }}>
+        <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 13, color: '#FF4D4D' }}>
           {`// couldn't load history: ${histError}`}
         </div>
       )}
       {!histError && !history && (
         <div style={{ height: 130, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 14, color: '#3C8F5F' }}>loading…</span>
+          <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 14, color: '#7A6A8E' }}>loading…</span>
         </div>
       )}
       {!histError && history && <RateChart points={history} range={range} decimals={decimals} />}
@@ -201,8 +202,8 @@ function ExpandedChart({ pair, decimals }: { pair: FxPair; decimals: number }) {
 function DataCell({ label, value }: { label: string; value: string }) {
   return (
     <div>
-      <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 11, color: '#3C8F5F', letterSpacing: '0.1em', marginBottom: 2 }}>{label}</div>
-      <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 15, color: '#4DCC88' }}>{value}</div>
+      <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 11, color: '#7A6A8E', letterSpacing: '0.1em', marginBottom: 2 }}>{label}</div>
+      <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 15, color: '#C9B8D9' }}>{value}</div>
     </div>
   )
 }
@@ -241,7 +242,7 @@ export default function Forex() {
 
   return (
     <div>
-      <span style={{ fontFamily: "'VT323', monospace", fontSize: 32, color: '#C8FFD4', letterSpacing: '0.04em', textShadow: '0 0 10px rgba(200,255,212,0.3)', display: 'block', marginBottom: 20 }}>
+      <span style={{ fontFamily: "'Cinzel', serif", fontWeight: 600, fontSize: 26, color: '#F4EFE6', letterSpacing: '0.12em', textShadow: '0 0 10px rgba(212,175,55,0.35)', display: 'block', marginBottom: 20 }}>
         FOREX
       </span>
 
@@ -260,7 +261,7 @@ export default function Forex() {
               const isOpen = expanded.has(p.pair)
               return (
                 <Draggable key={p.pair} id={p.pair} label={`${p.base}/${p.quote}`} api={rows}>
-                  <div style={{ backgroundColor: '#060E18', border, padding: '14px 16px' }}>
+                  <div style={{ backgroundColor: '#130B1B', border, padding: '14px 16px' }}>
                     <div
                       onClick={() => toggleExpanded(p.pair)}
                       style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 12, cursor: 'pointer' }}
@@ -268,48 +269,38 @@ export default function Forex() {
                       {/* Left: flags + pair name + rate + change */}
                       <div style={{ display: 'flex', alignItems: 'center', gap: 14, flexWrap: 'wrap' }}>
                         <div style={{ minWidth: 130 }}>
-                          <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontFamily: "'Share Tech Mono', monospace", fontSize: 16, color: '#C8FFD4' }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontFamily: "'Share Tech Mono', monospace", fontSize: 16, color: '#FFFFFF' }}>
                             <Flag code={p.base_flag_code} />
                             <span>{p.base}</span>
-                            <span style={{ color: '#52A877' }}>/</span>
+                            <span style={{ color: '#A391B5' }}>/</span>
                             <Flag code={p.quote_flag_code} />
                             <span>{p.quote}</span>
                           </div>
                           {p.exchange && (
-                            <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: '#52A877', letterSpacing: '0.06em', marginTop: 2 }}>
+                            <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: '#A391B5', letterSpacing: '0.06em', marginTop: 2 }}>
                               {p.exchange}
                             </div>
                           )}
                         </div>
 
-                        <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 20, fontWeight: 600, color: '#00FF88', textShadow: '0 0 8px rgba(0,255,136,0.4)' }}>
+                        <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 20, fontWeight: 600, color: '#FFFFFF', textShadow: '0 0 8px rgba(255,255,255,0.22)' }}>
                           {p.rate !== null ? p.rate.toFixed(dec) : '—'}
                         </div>
 
-                        <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 15, color: posNegColor(p.change) }}>
-                          {p.change !== null ? `${p.change >= 0 ? '+' : ''}${p.change.toFixed(dec)}` : '—'}
-                        </div>
+                        <div><Delta value={p.change} format={v => v.toFixed(dec)} size={15} /></div>
 
-                        <div style={{
-                          fontFamily: "'JetBrains Mono', monospace", fontSize: 15,
-                          color: posNegColor(p.change_pct),
-                          backgroundColor: (p.change_pct ?? 0) >= 0 ? 'rgba(0,255,136,0.07)' : 'rgba(255,59,59,0.07)',
-                          border: `1px solid ${(p.change_pct ?? 0) >= 0 ? 'rgba(0,255,136,0.2)' : 'rgba(255,59,59,0.2)'}`,
-                          padding: '2px 8px',
-                        }}>
-                          {formatPct(p.change_pct)}
-                        </div>
+                        <div><Delta value={p.change_pct} format={v => `${v.toFixed(2)}%`} size={15} badge /></div>
                       </div>
 
                       {/* Top right: symbol/symbol badge + expand chevron */}
                       <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexShrink: 0 }}>
                         {(p.base_symbol || p.quote_symbol) && (
-                          <span style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: 16, color: '#4DCC88' }}>
+                          <span style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: 16, color: '#C9B8D9' }}>
                             {p.base_symbol ?? '?'}/{p.quote_symbol ?? '?'}
                           </span>
                         )}
                         <span style={{
-                          fontFamily: "'JetBrains Mono', monospace", fontSize: 14, color: '#4DCC88',
+                          fontFamily: "'JetBrains Mono', monospace", fontSize: 14, color: '#C9B8D9',
                           transform: isOpen ? 'rotate(180deg)' : 'none', transition: 'transform 0.12s', display: 'inline-block',
                         }}>
                           ▾
@@ -341,7 +332,7 @@ export default function Forex() {
         </>
       )}
 
-      <div style={{ marginTop: 12, padding: '9px 12px', backgroundColor: 'rgba(0,255,136,0.02)', border: '1px solid rgba(0,255,136,0.07)', fontFamily: "'JetBrains Mono', monospace", fontSize: 13, color: '#3C8F5F' }}>
+      <div style={{ marginTop: 12, padding: '9px 12px', backgroundColor: 'rgba(212,175,55,0.02)', border: '1px solid rgba(212,175,55,0.07)', fontFamily: "'JetBrains Mono', monospace", fontSize: 13, color: '#7A6A8E' }}>
         {'// DATA SOURCE: yfinance · rate/change/high/low/history are live · bid/ask marked with ~ are estimated (no free live spread source) · volume is real but most FX tickers report none (no centralized tape for spot FX) · flags via flagcdn.com'}
       </div>
     </div>

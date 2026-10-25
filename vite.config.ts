@@ -34,13 +34,13 @@ export default defineConfig({
     // reloaded the whole app every few seconds:
     //
     //   page loads -> frontend calls /api/... -> backend appends a line to
-    //   backend/events_log.txt -> Vite's watcher sees a file change under
-    //   root -> full page reload -> page loads -> ...
+    //   backend/events_log.txt (or trade_cache.json) -> Vite's watcher sees a
+    //   file change under root -> full page reload -> page loads -> ...
     //
     // It never settled, because the app always fetches something on load,
     // and the ticker tape keeps the backend logging even while idle. From
     // the user's seat this looked like the screen randomly blinking out
-    // for a second.
+    // for a second (and bounced you back to the first tab).
     //
     // None of these paths are part of the frontend module graph, so there
     // is nothing here Vite could ever hot-update. Watching them was pure

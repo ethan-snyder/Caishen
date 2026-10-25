@@ -505,6 +505,250 @@ export interface BondData {
 export const fetchBonds = () => request<BondData>('/api/bonds')
 
 // ---------------------------------------------------------------------
+// Trade (country imports/exports)
+// ---------------------------------------------------------------------
+
+export type TradeFlow = 'X' | 'M'
+
+export interface TradeCountry {
+  code: number
+  iso2: string
+  iso3: string
+  name: string
+  flag: string | null
+}
+
+export interface TradeGroup {
+  id: string
+  name: string
+}
+
+export interface TradeSectionMeta {
+  id: string
+  name: string
+  short: string
+  group: string
+  chapters?: [number, number]
+}
+
+export interface TradeMeta {
+  countries: TradeCountry[]
+  default_heatmap: string[]
+  groups: TradeGroup[]
+  sections: TradeSectionMeta[]
+  years: number[]
+}
+
+export interface TradeChapter {
+  code: string
+  name: string
+  value: number
+  share: number | null
+  section?: string
+  group?: string
+}
+
+/** An HS4 heading (or a chapter-level fallback / "Other ..." remainder). */
+export interface TradeProduct {
+  code: string
+  name: string
+  full: string
+  chapter: string
+  value: number
+  share: number | null          // % of the country's total flow
+  section_share: number | null  // % of its section
+  section?: string
+}
+
+export interface TradeSection extends Omit<TradeSectionMeta, 'chapters'> {
+  value: number
+  share: number | null
+  chapters: TradeChapter[]
+  products: TradeProduct[]
+}
+
+export interface TradeProfile {
+  country: TradeCountry
+  flow: TradeFlow
+  flow_name: string
+  year: number | null
+  world_exports: number | null
+  world_imports: number | null
+  total: number | null
+  sections: TradeSection[]
+  top_chapters: TradeChapter[]
+  top_products: TradeProduct[]
+  /** 'HS4' = product headings; 'HS2' = chapter-level fallback */
+  detail: 'HS4' | 'HS2' | null
+  source: string
+  note?: string
+}
+
+export interface TradePartner {
+  code: number
+  name: string
+  flag: string | null
+  iso3: string | null
+  exports: number
+  imports: number
+  total: number
+  balance: number
+  export_share: number | null
+  import_share: number | null
+}
+
+export interface TradePartners {
+  country: TradeCountry
+  year: number | null
+  world_exports: number | null
+  world_imports: number | null
+  partners: TradePartner[]
+  source: string
+  note?: string
+}
+
+export interface TradeTrendPoint {
+  year: number
+  exports: number | null
+  imports: number | null
+  balance: number | null
+}
+
+export interface TradeTrend {
+  country: TradeCountry
+  points: TradeTrendPoint[]
+  source: string
+  note?: string
+}
+
+export interface TradeHeatmapRow {
+  country: TradeCountry
+  total: number | null
+  missing: boolean
+  cells: Record<string, { value: number; share: number | null }>
+}
+
+export interface TradeHeatmap {
+  flow: TradeFlow
+  flow_name: string
+  year: number
+  rows: TradeHeatmapRow[]
+  sections: TradeSectionMeta[]
+  source: string
+}
+
+const yearParam = (year: number | null | undefined) => (year ? `&year=${year}` : '')
+
+export const fetchTradeMeta = () => request<TradeMeta>('/api/trade/meta')
+
+export const fetchTradeProfile = (iso3: string, flow: TradeFlow, year?: number | null) =>
+  request<TradeProfile>(`/api/trade/profile/${encodeURIComponent(iso3)}?flow=${flow}${yearParam(year)}`)
+
+export const fetchTradePartners = (iso3: string, year?: number | null) =>
+  request<TradePartners>(`/api/trade/partners/${encodeURIComponent(iso3)}?limit=20${yearParam(year)}`)
+
+export const fetchTradeTrend = (iso3: string) =>
+  request<TradeTrend>(`/api/trade/trend/${encodeURIComponent(iso3)}`)
+
+export interface WorldEconomy {
+  iso3: string
+  name: string
+  flag: string | null
+  region: string | null
+  /** true when the COUNTRY tab (UN Comtrade product detail) supports it */
+  has_profile: boolean
+}
+
+export interface LeaderboardRow extends WorldEconomy {
+  rank: number
+  rank_change: number | null
+  exports: number
+  imports: number
+  total: number
+  balance: number
+  world_share: number | null
+  growth: number | null
+}
+
+export interface TradeLeaderboard {
+  year: number
+  years: number[]
+  world_exports: number | null
+  world_imports: number | null
+  world_total: number
+  countries: LeaderboardRow[]
+  regions: string[]
+  source: string
+  note: string
+}
+
+export interface ComparePoint {
+  year: number
+  exports: number | null
+  imports: number | null
+  total: number | null
+  balance: number | null
+  world_share?: number | null
+}
+
+export interface CompareSeries extends WorldEconomy {
+  points: ComparePoint[]
+}
+
+export interface TradeCompare {
+  start: number
+  end: number
+  series: CompareSeries[]
+  world: ComparePoint[]
+  countries: WorldEconomy[]
+  max_countries: number
+  source: string
+}
+
+export const fetchTradeLeaderboard = (year?: number | null) =>
+  request<TradeLeaderboard>(`/api/trade/leaderboard${year ? `?year=${year}` : ''}`)
+
+export const fetchTradeCompare = (countries: string[], start?: number | null, end?: number | null) =>
+  request<TradeCompare>(
+    `/api/trade/compare?countries=${encodeURIComponent(countries.join(','))}${start ? `&start=${start}` : ''}${end ? `&end=${end}` : ''}`,
+  )
+
+export const fetchTradeHeatmap = (countries: string[], flow: TradeFlow, year?: number | null) =>
+  request<TradeHeatmap>(
+    `/api/trade/heatmap?countries=${encodeURIComponent(countries.join(','))}&flow=${flow}${yearParam(year)}`,
+  )
+
+// ---------------------------------------------------------------------
+// Price / yield history (click-to-chart popups)
+// ---------------------------------------------------------------------
+
+export type ChartKind = 'stock' | 'index' | 'crypto' | 'fx' | 'future' | 'bond'
+export type ChartRange = '1D' | '5D' | '1M' | '6M' | 'YTD' | '1Y' | '5Y' | 'MAX'
+
+export interface HistoryData {
+  kind: ChartKind
+  id: string
+  symbol: string
+  name: string
+  /** how to format values: usd prices, index points, fx rate, or % yield */
+  unit: 'usd' | 'points' | 'rate' | 'yield'
+  range: ChartRange
+  ranges: ChartRange[]
+  intraday: boolean
+  points: { t: string; v: number }[]
+  first: number | null
+  last: number | null
+  change: number | null
+  change_pct: number | null
+  high: number | null
+  low: number | null
+  source: string
+}
+
+export const fetchHistory = (kind: ChartKind, id: string, range: ChartRange) =>
+  request<HistoryData>(`/api/history?kind=${kind}&id=${encodeURIComponent(id)}&range=${range}`)
+
+// ---------------------------------------------------------------------
 // Portfolio
 // ---------------------------------------------------------------------
 

@@ -5,6 +5,8 @@ import {
 } from '@/lib/api'
 import { formatMoney, posNegColor } from '@/lib/format'
 import { Loading, ErrorBlock } from './StatusBlock'
+import PriceChart, { chartRowProps, type ChartTarget } from './PriceChart'
+import Delta from './Delta'
 import { useSortableLayout } from '@/lib/layout'
 import { Draggable, AddWidgetTray, EditHint } from './LayoutKit'
 import { buildColorMap } from '@/lib/palette'
@@ -15,7 +17,7 @@ import {
   type MetricDef, type PieSlice,
 } from './TrackingKit'
 
-const border = '1px solid rgba(0,255,136,0.12)'
+const border = '1px solid rgba(212,175,55,0.12)'
 
 const PORTFOLIO_SECTIONS = [
   { id: 'add_form', label: 'ADD HOLDING FORM' },
@@ -98,25 +100,21 @@ function PerformanceChart() {
     >
       {periodChange !== null && (
         <div style={{ display: 'flex', alignItems: 'baseline', gap: 12, marginBottom: 12, flexWrap: 'wrap' }}>
-          <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 24, fontWeight: 600, color: '#C8FFD4' }}>
+          <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 24, fontWeight: 600, color: '#FFFFFF' }}>
             {formatMoney(last, 0)}
           </span>
-          <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 16, color: posNegColor(periodChange) }}>
-            {fmtSignedMoney(periodChange, 0)}
-          </span>
-          <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 16, color: posNegColor(periodChangePct) }}>
-            {fmtSignedPct(periodChangePct)}
-          </span>
-          <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 13, color: '#3C8F5F' }}>
+          <Delta value={periodChange} format={v => formatMoney(v, 0)} size={16} />
+          <Delta value={periodChangePct} format={v => `${v.toFixed(2)}%`} size={16} />
+          <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 13, color: '#7A6A8E' }}>
             over {RANGES.find(r => r.key === range)?.label}
           </span>
         </div>
       )}
 
-      {err && <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 13, color: '#FF3B3B' }}>{`// couldn't load history: ${err}`}</div>}
+      {err && <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 13, color: '#FF4D4D' }}>{`// couldn't load history: ${err}`}</div>}
       {!err && !points && (
         <div style={{ height: 180, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 14, color: '#3C8F5F' }}>loading…</span>
+          <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 14, color: '#7A6A8E' }}>loading…</span>
         </div>
       )}
       {!err && points && (
@@ -129,7 +127,7 @@ function PerformanceChart() {
         />
       )}
 
-      <div style={{ marginTop: 10, fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: '#3C8F5F', lineHeight: 1.5 }}>
+      <div style={{ marginTop: 10, fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: '#7A6A8E', lineHeight: 1.5 }}>
         {'// Values today\'s share counts at historical prices — "what this exact basket would have been worth". portfolio.txt records quantities, not dated buys/sells, so this is not an account-balance history if your positions changed over the window.'}
         {skipped.length > 0 && ` Excluded (no usable history): ${skipped.join(', ')}.`}
       </div>
@@ -161,7 +159,7 @@ function AllocationPanel({ holdings, totalValue, colorMap }: {
     key: h.ticker,
     label: h.ticker,
     value: h.value ?? 0,
-    color: colorMap.get(h.ticker) ?? '#00FF88',
+    color: colorMap.get(h.ticker) ?? '#D4AF37',
   }))
 
   const sel = sorted.find(h => h.ticker === effectiveSelected) ?? null
@@ -196,8 +194,8 @@ function AllocationPanel({ holdings, totalValue, colorMap }: {
             style={{ display: 'flex', alignItems: 'center', gap: 5, cursor: 'pointer', opacity: effectiveSelected === h.ticker ? 1 : 0.7 }}
           >
             <div style={{ width: 8, height: 8, backgroundColor: colorMap.get(h.ticker) }} />
-            <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 13, color: '#4DCC88' }}>{h.ticker}</span>
-            <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 13, color: '#52A877' }}>
+            <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 13, color: '#C9B8D9' }}>{h.ticker}</span>
+            <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 13, color: '#A391B5' }}>
               {(((h.value ?? 0) / totalValue) * 100).toFixed(1)}%
             </span>
           </div>
@@ -220,7 +218,7 @@ function AllocationPanel({ holdings, totalValue, colorMap }: {
                 }}>
                   {sel.ticker}
                 </span>
-                <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 14, color: '#52A877' }}>
+                <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 14, color: '#A391B5' }}>
                   {sel.name ?? ''}
                 </span>
               </div>
@@ -236,7 +234,7 @@ function AllocationPanel({ holdings, totalValue, colorMap }: {
               </div>
             </>
           ) : (
-            <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 14, color: '#3C8F5F' }}>
+            <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 14, color: '#7A6A8E' }}>
               Click a slice to see its details.
             </span>
           )}
@@ -273,11 +271,11 @@ function BreakdownPanel({ holdings, totalValue, colorMap }: {
     <Panel title="/// BREAKDOWN">
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 24 }}>
         <div>
-          <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: '#52A877', letterSpacing: '0.12em', marginBottom: 8 }}>
+          <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: '#A391B5', letterSpacing: '0.12em', marginBottom: 8 }}>
             BY SECTOR
           </div>
           {sectors.length === 0 && (
-            <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 13, color: '#3C8F5F' }}>no sector data</span>
+            <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 13, color: '#7A6A8E' }}>no sector data</span>
           )}
           {sectors.map(([sector, value], i) => (
             <BarRow
@@ -292,11 +290,11 @@ function BreakdownPanel({ holdings, totalValue, colorMap }: {
         </div>
 
         <div>
-          <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: '#52A877', letterSpacing: '0.12em', marginBottom: 8 }}>
+          <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: '#A391B5', letterSpacing: '0.12em', marginBottom: 8 }}>
             GAIN / LOSS CONTRIBUTION
           </div>
           {gainRows.length === 0 && (
-            <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 13, color: '#3C8F5F' }}>
+            <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 13, color: '#7A6A8E' }}>
               add an avg cost to a holding to see this
             </span>
           )}
@@ -306,13 +304,13 @@ function BreakdownPanel({ holdings, totalValue, colorMap }: {
               label={h.ticker}
               value={Math.abs(h.gain ?? 0)}
               max={maxAbsGain}
-              color={(h.gain ?? 0) >= 0 ? '#00FF88' : '#FF3B3B'}
+              color={(h.gain ?? 0) >= 0 ? '#3DDC84' : '#FF4D4D'}
               valueLabel={fmtSignedMoney(h.gain, 0)}
             />
           ))}
         </div>
       </div>
-      <div style={{ marginTop: 10, fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: '#3C8F5F' }}>
+      <div style={{ marginTop: 10, fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: '#7A6A8E' }}>
         {'// Sector colors are independent of the allocation palette — they group holdings, not individual positions.'}
       </div>
     </Panel>
@@ -322,6 +320,7 @@ function BreakdownPanel({ holdings, totalValue, colorMap }: {
 export default function Portfolio() {
   const [data, setData] = useState<PortfolioData | null>(null)
   const [error, setError] = useState<string | null>(null)
+  const [chart, setChart] = useState<ChartTarget | null>(null)
   const [sortBy, setSortBy] = useState<'value' | 'gain_pct' | 'gain'>('value')
   const [tickerIn, setTickerIn] = useState('')
   const [qtyIn, setQtyIn] = useState('')
@@ -379,13 +378,13 @@ export default function Portfolio() {
   const hasCostBasis = data.total_cost_basis !== null
 
   const summaryByIdShown: Record<string, { label: string; value: string; color: string; show: boolean }> = {
-    total_value:  { label: 'TOTAL VALUE', value: formatMoney(data.total_value, 0), color: '#C8FFD4', show: true },
-    total_cost:   { label: 'TOTAL COST', value: formatMoney(data.total_cost_basis, 0), color: '#4DCC88', show: hasCostBasis },
+    total_value:  { label: 'TOTAL VALUE', value: formatMoney(data.total_value, 0), color: '#FFFFFF', show: true },
+    total_cost:   { label: 'TOTAL COST', value: formatMoney(data.total_cost_basis, 0), color: '#C9B8D9', show: hasCostBasis },
     total_gain:   { label: 'TOTAL GAIN', value: fmtSignedMoney(data.total_gain, 0), color: posNegColor(data.total_gain), show: hasCostBasis },
     total_return: { label: 'TOTAL RETURN', value: fmtSignedPct(data.total_gain_pct), color: posNegColor(data.total_gain_pct), show: hasCostBasis },
     day_gain:     { label: 'DAY GAIN', value: data.total_day_gain !== null ? `${fmtSignedMoney(data.total_day_gain, 0)} (${fmtSignedPct(data.total_day_gain_pct)})` : '—', color: posNegColor(data.total_day_gain), show: data.total_day_gain !== null },
-    div_yield:    { label: 'DIV YIELD', value: fmtPct(data.total_dividend_yield), color: '#FFD700', show: data.total_dividend_yield !== null },
-    div_income:   { label: 'DIV / YEAR', value: formatMoney(data.total_annual_dividend, 0), color: '#FFD700', show: data.total_annual_dividend !== null },
+    div_yield:    { label: 'DIV YIELD', value: fmtPct(data.total_dividend_yield), color: '#F2C94C', show: data.total_dividend_yield !== null },
+    div_income:   { label: 'DIV / YEAR', value: formatMoney(data.total_annual_dividend, 0), color: '#F2C94C', show: data.total_annual_dividend !== null },
   }
   const visibleSummary = summaryTiles.visible.filter(id => summaryByIdShown[id]?.show)
 
@@ -394,14 +393,14 @@ export default function Portfolio() {
 
   return (
     <div>
-      <span style={{ fontFamily: "'VT323', monospace", fontSize: 32, color: '#C8FFD4', letterSpacing: '0.04em', textShadow: '0 0 10px rgba(200,255,212,0.3)', display: 'block', marginBottom: 16 }}>
+      <span style={{ fontFamily: "'Cinzel', serif", fontWeight: 600, fontSize: 26, color: '#F4EFE6', letterSpacing: '0.12em', textShadow: '0 0 10px rgba(212,175,55,0.35)', display: 'block', marginBottom: 16 }}>
         PORTFOLIO
       </span>
 
       {error && <div style={{ marginBottom: 12 }}><ErrorBlock message={error} /></div>}
 
       {data.errors.length > 0 && (
-        <div style={{ marginBottom: 12, padding: '9px 12px', backgroundColor: 'rgba(255,215,0,0.05)', border: '1px solid rgba(255,215,0,0.2)', fontFamily: "'JetBrains Mono', monospace", fontSize: 13, color: '#FFD700' }}>
+        <div style={{ marginBottom: 12, padding: '9px 12px', backgroundColor: 'rgba(242,201,76,0.05)', border: '1px solid rgba(242,201,76,0.2)', fontFamily: "'JetBrains Mono', monospace", fontSize: 13, color: '#F2C94C' }}>
           {data.errors.map((e, i) => <div key={i}>{'// '}{e}</div>)}
         </div>
       )}
@@ -413,20 +412,20 @@ export default function Portfolio() {
           <Draggable key="add_form" id="add_form" label="ADD HOLDING FORM" api={sections} variant="section">
             <form onSubmit={handleAdd} style={{ display: 'flex', gap: 6, marginBottom: 16, flexWrap: 'wrap' }}>
               <input value={tickerIn} onChange={e => setTickerIn(e.target.value.toUpperCase())} placeholder="TICKER" style={{
-                backgroundColor: '#060E18', border, padding: '7px 12px', fontFamily: "'JetBrains Mono', monospace",
-                fontSize: 15, color: '#00FF88', letterSpacing: '0.08em', outline: 'none', width: 100, caretColor: '#00FF88',
+                backgroundColor: '#130B1B', border, padding: '7px 12px', fontFamily: "'JetBrains Mono', monospace",
+                fontSize: 15, color: '#D4AF37', letterSpacing: '0.08em', outline: 'none', width: 100, caretColor: '#D4AF37',
               }} />
               <input value={qtyIn} onChange={e => setQtyIn(e.target.value)} placeholder="QTY" type="number" step="any" style={{
-                backgroundColor: '#060E18', border, padding: '7px 12px', fontFamily: "'JetBrains Mono', monospace",
-                fontSize: 15, color: '#C8FFD4', outline: 'none', width: 90, caretColor: '#00FF88',
+                backgroundColor: '#130B1B', border, padding: '7px 12px', fontFamily: "'JetBrains Mono', monospace",
+                fontSize: 15, color: '#FFFFFF', outline: 'none', width: 90, caretColor: '#D4AF37',
               }} />
               <input value={costIn} onChange={e => setCostIn(e.target.value)} placeholder="AVG COST (optional)" type="number" step="any" style={{
-                backgroundColor: '#060E18', border, padding: '7px 12px', fontFamily: "'JetBrains Mono', monospace",
-                fontSize: 15, color: '#C8FFD4', outline: 'none', width: 150, caretColor: '#00FF88',
+                backgroundColor: '#130B1B', border, padding: '7px 12px', fontFamily: "'JetBrains Mono', monospace",
+                fontSize: 15, color: '#FFFFFF', outline: 'none', width: 150, caretColor: '#D4AF37',
               }} />
               <button type="submit" disabled={submitting} style={{
-                backgroundColor: 'rgba(0,255,136,0.1)', color: '#00FF88', fontFamily: "'Share Tech Mono', monospace",
-                fontSize: 14, border: '1px solid rgba(0,255,136,0.3)', padding: '7px 14px',
+                backgroundColor: 'rgba(212,175,55,0.1)', color: '#D4AF37', fontFamily: "'Share Tech Mono', monospace",
+                fontSize: 14, border: '1px solid rgba(212,175,55,0.3)', padding: '7px 14px',
                 cursor: submitting ? 'default' : 'pointer', letterSpacing: '0.06em', opacity: submitting ? 0.5 : 1,
               }}>{submitting ? 'ADDING...' : 'ADD HOLDING'}</button>
             </form>
@@ -443,8 +442,8 @@ export default function Portfolio() {
                   const s = summaryByIdShown[id]
                   return (
                     <Draggable key={id} id={id} label={s.label} api={summaryTiles}>
-                      <div style={{ backgroundColor: '#060E18', border, padding: '14px 16px', height: '100%' }}>
-                        <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: '#52A877', letterSpacing: '0.12em', marginBottom: 6 }}>{s.label}</div>
+                      <div style={{ backgroundColor: '#130B1B', border, padding: '14px 16px', height: '100%' }}>
+                        <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: '#A391B5', letterSpacing: '0.12em', marginBottom: 6 }}>{s.label}</div>
                         <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 18, fontWeight: 600, color: s.color, textShadow: `0 0 8px ${s.color}60` }}>{s.value}</div>
                       </div>
                     </Draggable>
@@ -454,7 +453,7 @@ export default function Portfolio() {
               <AddWidgetTray api={summaryTiles} title="HIDDEN SUMMARY TILES" />
 
               {!hasCostBasis && (
-                <div style={{ marginBottom: 12, padding: '9px 12px', backgroundColor: 'rgba(0,255,136,0.02)', border: '1px solid rgba(0,255,136,0.07)', fontFamily: "'JetBrains Mono', monospace", fontSize: 13, color: '#3C8F5F' }}>
+                <div style={{ marginBottom: 12, padding: '9px 12px', backgroundColor: 'rgba(212,175,55,0.02)', border: '1px solid rgba(212,175,55,0.07)', fontFamily: "'JetBrains Mono', monospace", fontSize: 13, color: '#7A6A8E' }}>
                   {'// Add an AVG COST when adding a holding to unlock gain/loss tracking'}
                 </div>
               )}
@@ -472,15 +471,15 @@ export default function Portfolio() {
           <Draggable key="holdings" id="holdings" label="HOLDINGS TABLE" api={sections} variant="section">
             <>
               <div style={{ display: 'flex', gap: 4, marginBottom: 8, alignItems: 'center', flexWrap: 'wrap' }}>
-                <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 13, color: '#3C8F5F', marginRight: 6 }}>SORT:</span>
+                <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 13, color: '#7A6A8E', marginRight: 6 }}>SORT:</span>
                 {(['value', 'gain', 'gain_pct'] as const).map(s => (
                   <button key={s} type="button" onClick={() => setSortBy(s)} style={{
                     fontFamily: "'Share Tech Mono', monospace", fontSize: 14,
-                    color: sortBy === s ? '#00FF88' : '#52A877',
-                    background: sortBy === s ? 'rgba(0,255,136,0.08)' : 'transparent',
-                    border: `1px solid ${sortBy === s ? 'rgba(0,255,136,0.3)' : 'rgba(0,255,136,0.1)'}`,
+                    color: sortBy === s ? '#D4AF37' : '#A391B5',
+                    background: sortBy === s ? 'rgba(107,42,122,0.35)' : 'transparent',
+                    border: `1px solid ${sortBy === s ? 'rgba(212,175,55,0.3)' : 'rgba(212,175,55,0.1)'}`,
                     padding: '3px 10px', cursor: 'pointer', letterSpacing: '0.06em',
-                    textShadow: sortBy === s ? '0 0 6px #00FF88' : 'none',
+                    textShadow: sortBy === s ? '0 0 6px #D4AF37' : 'none',
                   }}>
                     {s === 'value' ? 'VALUE' : s === 'gain' ? 'GAIN $' : 'GAIN %'}
                   </button>
@@ -497,19 +496,19 @@ export default function Portfolio() {
               <div style={{ overflowX: 'auto' }}>
                 <div style={{ minWidth: 'min-content' }}>
                   <div style={{ display: 'grid', gridTemplateColumns: gridCols, gap: 6, padding: '0 14px 8px' }}>
-                    <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: '#3C8F5F', letterSpacing: '0.1em' }}>TICKER</div>
-                    <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: '#3C8F5F', letterSpacing: '0.1em' }}>NAME</div>
+                    <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: '#7A6A8E', letterSpacing: '0.1em' }}>TICKER</div>
+                    <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: '#7A6A8E', letterSpacing: '0.1em' }}>NAME</div>
                     {metricCfg.active.map(m => (
-                      <div key={m.id} style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: '#3C8F5F', letterSpacing: '0.1em' }}>{m.short}</div>
+                      <div key={m.id} style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: '#7A6A8E', letterSpacing: '0.1em' }}>{m.short}</div>
                     ))}
                     <div />
                   </div>
 
                   <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
                     {holdings.map(h => (
-                      <div key={h.ticker} style={{
-                        display: 'grid', gridTemplateColumns: gridCols, gap: 6,
-                        alignItems: 'center', backgroundColor: '#060E18', border, padding: '11px 14px',
+                      <div key={h.ticker} {...chartRowProps(() => setChart({ kind: 'stock', id: h.ticker, sub: h.name ?? undefined }))} style={{
+                        cursor: 'pointer', display: 'grid', gridTemplateColumns: gridCols, gap: 6,
+                        alignItems: 'center', backgroundColor: '#130B1B', border, padding: '11px 14px',
                         transition: 'border-color 0.1s',
                         // Color stripe identifying this holding, matching
                         // its allocation slice.
@@ -519,31 +518,31 @@ export default function Portfolio() {
                           // Only the non-stripe sides -- `borderColor` is a
                           // shorthand that would also clobber the
                           // borderRight color stripe set above.
-                          e.currentTarget.style.borderTopColor = 'rgba(0,255,136,0.3)'
-                          e.currentTarget.style.borderBottomColor = 'rgba(0,255,136,0.3)'
-                          e.currentTarget.style.borderLeftColor = 'rgba(0,255,136,0.3)'
+                          e.currentTarget.style.borderTopColor = 'rgba(212,175,55,0.3)'
+                          e.currentTarget.style.borderBottomColor = 'rgba(212,175,55,0.3)'
+                          e.currentTarget.style.borderLeftColor = 'rgba(212,175,55,0.3)'
                         }}
                         onMouseLeave={e => {
-                          e.currentTarget.style.borderTopColor = 'rgba(0,255,136,0.12)'
-                          e.currentTarget.style.borderBottomColor = 'rgba(0,255,136,0.12)'
-                          e.currentTarget.style.borderLeftColor = 'rgba(0,255,136,0.12)'
+                          e.currentTarget.style.borderTopColor = 'rgba(212,175,55,0.12)'
+                          e.currentTarget.style.borderBottomColor = 'rgba(212,175,55,0.12)'
+                          e.currentTarget.style.borderLeftColor = 'rgba(212,175,55,0.12)'
                         }}
                       >
-                        <div style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: 15, color: '#00FF88', textShadow: '0 0 6px rgba(0,255,136,0.4)' }}>{h.ticker}</div>
-                        <div style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: 14, color: '#4DCC88', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={h.name ?? ''}>{h.name ?? '—'}</div>
+                        <div style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: 15, color: '#D4AF37', textShadow: '0 0 6px rgba(212,175,55,0.4)' }}>{h.ticker}</div>
+                        <div style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: 14, color: '#C9B8D9', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={h.name ?? ''}>{h.name ?? '—'}</div>
                         {metricCfg.active.map(m => {
                           const raw = m.get(h)
                           return (
                             <div key={m.id} style={{
                               fontFamily: "'JetBrains Mono', monospace", fontSize: 15,
-                              color: m.signed ? posNegColor(raw) : '#C8FFD4',
+                              color: m.signed ? posNegColor(raw) : '#FFFFFF',
                               overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
                             }}>
                               {m.format(raw, h)}
                             </div>
                           )
                         })}
-                        <ConfirmRemove onConfirm={() => handleRemove(h.ticker)} title={h.ticker} />
+                        <span onClick={e => e.stopPropagation()} onKeyDown={e => e.stopPropagation()}><ConfirmRemove onConfirm={() => handleRemove(h.ticker)} title={h.ticker} /></span>
                       </div>
                     ))}
                   </div>
@@ -569,16 +568,18 @@ export default function Portfolio() {
       })}
 
       {holdings.length === 0 && (
-        <div style={{ backgroundColor: '#060E18', border, padding: '30px', textAlign: 'center', fontFamily: "'JetBrains Mono', monospace", fontSize: 15, color: '#52A877' }}>
+        <div style={{ backgroundColor: '#130B1B', border, padding: '30px', textAlign: 'center', fontFamily: "'JetBrains Mono', monospace", fontSize: 15, color: '#A391B5' }}>
           No holdings yet — add one above.
         </div>
       )}
 
       <AddWidgetTray api={sections} title="HIDDEN SECTIONS" />
 
-      <div style={{ marginTop: 10, padding: '9px 12px', backgroundColor: 'rgba(0,255,136,0.02)', border: '1px solid rgba(0,255,136,0.07)', fontFamily: "'JetBrains Mono', monospace", fontSize: 13, color: '#3C8F5F' }}>
+      <div style={{ marginTop: 10, padding: '9px 12px', backgroundColor: 'rgba(212,175,55,0.02)', border: '1px solid rgba(212,175,55,0.07)', fontFamily: "'JetBrains Mono', monospace", fontSize: 13, color: '#7A6A8E' }}>
         {'// DATA SOURCE: yfinance · positions saved to portfolio.txt on the backend · metric columns and their visibility are saved in this browser'}
       </div>
+
+      {chart && <PriceChart target={chart} onClose={() => setChart(null)} />}
     </div>
   )
 }

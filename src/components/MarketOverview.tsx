@@ -2,12 +2,13 @@ import { useEffect, useMemo, useState, type MouseEvent } from 'react'
 import { fetchMarket, type MarketData, type SentimentSeriesPoint } from '@/lib/api'
 import { formatPct, posNegColor } from '@/lib/format'
 import { Loading, ErrorBlock } from './StatusBlock'
+import Delta from './Delta'
 import { useSortableLayout } from '@/lib/layout'
 import { Draggable, AddWidgetTray, EditHint } from './LayoutKit'
 import { AxisLabels, GridLines } from './ChartGrid'
 import Nasdaq100Heatmap from './Nasdaq100Heatmap'
 
-const border = '1px solid rgba(0,255,136,0.12)'
+const border = '1px solid rgba(212,175,55,0.12)'
 
 // ----------------------------------------------------------------------
 // Fear & Greed
@@ -16,10 +17,10 @@ const border = '1px solid rgba(0,255,136,0.12)'
 // CNN's five bands. Kept as one table so the gauge arc, the needle colour
 // and the text label can never disagree about where a boundary sits.
 const FG_BANDS = [
-  { from: 0,  to: 25,  label: 'EXTREME FEAR',  color: '#FF3B3B' },
+  { from: 0,  to: 25,  label: 'EXTREME FEAR',  color: '#FF4D4D' },
   { from: 25, to: 45,  label: 'FEAR',          color: '#FF8C00' },
-  { from: 45, to: 55,  label: 'NEUTRAL',       color: '#FFD700' },
-  { from: 55, to: 75,  label: 'GREED',         color: '#00FF88' },
+  { from: 45, to: 55,  label: 'NEUTRAL',       color: '#F2C94C' },
+  { from: 55, to: 75,  label: 'GREED',         color: '#3DDC84' },
   { from: 75, to: 100, label: 'EXTREME GREED', color: '#00E5FF' },
 ]
 
@@ -151,7 +152,7 @@ function FearGreedGauge({ value }: { value: number }) {
               style={live ? { filter: `drop-shadow(0 0 7px ${b.color}aa)` } : undefined}
             />
             {fits ? (
-              <text fill={live ? b.color : '#52A877'} style={labelStyle}>
+              <text fill={live ? b.color : '#A391B5'} style={labelStyle}>
                 <textPath href={`#fg-lbl-${b.from}`} startOffset="50%" textAnchor="middle">
                   {b.label}
                 </textPath>
@@ -159,7 +160,7 @@ function FearGreedGauge({ value }: { value: number }) {
             ) : (
               <text
                 x={ox} y={oy} textAnchor="middle" dominantBaseline="central"
-                fill={live ? b.color : '#52A877'} style={labelStyle}
+                fill={live ? b.color : '#A391B5'} style={labelStyle}
               >
                 {b.label}
               </text>
@@ -173,13 +174,13 @@ function FearGreedGauge({ value }: { value: number }) {
         .filter(v => v % 25 !== 0)
         .map(v => {
           const [x, y] = dialPoint(v, D.rDot)
-          return <circle key={v} cx={x} cy={y} r={1.4} fill="#3C8F5F" />
+          return <circle key={v} cx={x} cy={y} r={1.4} fill="#7A6A8E" />
         })}
       {[0, 25, 50, 75, 100].map(v => {
         const [x, y] = dialPoint(v, D.rNum)
         return (
           <text
-            key={v} x={x} y={y} textAnchor="middle" dominantBaseline="central" fill="#52A877"
+            key={v} x={x} y={y} textAnchor="middle" dominantBaseline="central" fill="#A391B5"
             // viewBox units. The gauge has its own internal scale (see
             // FG_LABEL_SIZE, which bandLabelFits() depends on for clipping),
             // so it sits outside the page-wide type scale -- bumping only
@@ -195,7 +196,7 @@ function FearGreedGauge({ value }: { value: number }) {
 
       <circle
         cx={D.cx} cy={D.hubY} r={D.hubR}
-        fill="#060E18" stroke={band.color} strokeOpacity={0.55} strokeWidth={1.5}
+        fill="#130B1B" stroke={band.color} strokeOpacity={0.55} strokeWidth={1.5}
       />
       <text
         x={D.cx} y={D.hubY} textAnchor="middle" dominantBaseline="central" fill={band.color}
@@ -228,16 +229,16 @@ function PreviousReading({ label, value }: { label: string; value: number | null
   return (
     <div style={{
       display: 'flex', alignItems: 'baseline', justifyContent: 'space-between',
-      gap: 10, padding: '5px 0', borderBottom: '1px solid rgba(0,255,136,0.07)',
+      gap: 10, padding: '5px 0', borderBottom: '1px solid rgba(212,175,55,0.07)',
     }}>
-      <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: '#52A877', letterSpacing: '0.1em' }}>
+      <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: '#A391B5', letterSpacing: '0.1em' }}>
         {label}
       </span>
       <span style={{ display: 'flex', alignItems: 'baseline', gap: 6 }}>
-        <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 16, fontWeight: 600, color: band?.color ?? '#3C8F5F' }}>
+        <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 16, fontWeight: 600, color: band?.color ?? '#7A6A8E' }}>
           {value !== null ? value.toFixed(1) : '—'}
         </span>
-        <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 11, color: '#52A877', minWidth: 74, textAlign: 'right' }}>
+        <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 11, color: '#A391B5', minWidth: 74, textAlign: 'right' }}>
           {band?.label ?? ''}
         </span>
       </span>
@@ -254,9 +255,9 @@ function PreviousReading({ label, value }: { label: string; value: number | null
 const PC_MIN = 0.4
 const PC_MAX = 1.4
 const PC_ZONES = [
-  { id: 'bull', from: 0.4, to: 0.7, color: '#00FF88', label: 'BULLISH' },
-  { id: 'neutral', from: 0.7, to: 1.0, color: '#FFD700', label: 'NEUTRAL' },
-  { id: 'bear', from: 1.0, to: 1.4, color: '#FF3B3B', label: 'BEARISH' },
+  { id: 'bull', from: 0.4, to: 0.7, color: '#3DDC84', label: 'BULLISH' },
+  { id: 'neutral', from: 0.7, to: 1.0, color: '#F2C94C', label: 'NEUTRAL' },
+  { id: 'bear', from: 1.0, to: 1.4, color: '#FF4D4D', label: 'BEARISH' },
 ]
 
 const pcPct = (v: number) => ((v - PC_MIN) / (PC_MAX - PC_MIN)) * 100
@@ -348,7 +349,7 @@ function LineChart({
                   opacity={l.dashed ? 0.75 : 1}
                 />
               </svg>
-              <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: '#4DCC88' }}>{l.label}</span>
+              <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: '#C9B8D9' }}>{l.label}</span>
             </span>
           ))}
         </div>
@@ -365,7 +366,7 @@ function LineChart({
           >
             <GridLines w={w} h={h} />
             {zeroLine && zeroY >= 0 && zeroY <= h && (
-              <line x1={0} y1={zeroY} x2={w} y2={zeroY} stroke="#52A877" strokeWidth={0.5} strokeDasharray="2,2" />
+              <line x1={0} y1={zeroY} x2={w} y2={zeroY} stroke="#A391B5" strokeWidth={0.5} strokeDasharray="2,2" />
             )}
             {drawn.map((l, li) => (
               <polyline
@@ -412,7 +413,7 @@ function LineChart({
                   left: `${(xAt(hover) / w) * 100}%`,
                   top: `${(yAt(v) / h) * 100}%`,
                   width: 7, height: 7, borderRadius: '50%',
-                  backgroundColor: l.color, border: '1px solid #060E18',
+                  backgroundColor: l.color, border: '1px solid #130B1B',
                   transform: 'translate(-50%, -50%)', pointerEvents: 'none',
                 }}
               />
@@ -423,8 +424,8 @@ function LineChart({
               position: 'absolute', top: -6,
               left: `${tooltipPct}%`,
               transform: tooltipPct > 65 ? 'translate(-100%, -100%)' : 'translate(0, -100%)',
-              backgroundColor: '#0A1420', border: `1px solid ${drawn[0].color}`, padding: '4px 8px',
-              fontFamily: "'JetBrains Mono', monospace", fontSize: 14, color: '#C8FFD4',
+              backgroundColor: '#1C1226', border: `1px solid ${drawn[0].color}`, padding: '4px 8px',
+              fontFamily: "'JetBrains Mono', monospace", fontSize: 14, color: '#FFFFFF',
               whiteSpace: 'nowrap', pointerEvents: 'none', zIndex: 10,
             }}>
               {drawn.map((l, li) => {
@@ -432,19 +433,19 @@ function LineChart({
                 if (v === undefined) return null
                 return (
                   <div key={l.label} style={{ display: 'flex', gap: 8, justifyContent: 'space-between' }}>
-                    {multi && <span style={{ color: '#4a5a52', fontSize: 12 }}>{l.label}</span>}
+                    {multi && <span style={{ color: '#8C7A9E', fontSize: 12 }}>{l.label}</span>}
                     <span style={{ color: l.color, fontWeight: 600 }}>{format(v)}</span>
                   </div>
                 )
               })}
-              <div style={{ fontSize: 12, color: '#4a5a52', marginTop: 1 }}>{formatAxisDate(hoverDate)}</div>
+              <div style={{ fontSize: 12, color: '#8C7A9E', marginTop: 1 }}>{formatAxisDate(hoverDate)}</div>
             </div>
           )}
         </div>
       </div>
       <div style={{
         display: 'flex', justifyContent: 'space-between', marginLeft: 60,
-        fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: '#3C8F5F', marginTop: 4,
+        fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: '#7A6A8E', marginTop: 4,
       }}>
         <span>{formatAxisDate(baseDates[0])}</span>
         <span>{formatAxisDate(baseDates[n - 1])}</span>
@@ -500,14 +501,14 @@ const SENTIMENT_CARDS: SentimentCardConfig[] = [
     title: 'CONSUMER SENTIMENT',
     source: 'FRED · UMCSENT',
     format: v => v.toFixed(1),
-    color: v => (v >= 80 ? '#00FF88' : v >= 60 ? '#FFD700' : '#FF3B3B'),
+    color: v => (v >= 80 ? '#3DDC84' : v >= 60 ? '#F2C94C' : '#FF4D4D'),
   },
   {
     key: 'financial_stress',
     title: 'FINANCIAL STRESS INDEX',
     source: 'FRED · STLFSI4',
     format: v => v.toFixed(2),
-    color: v => (v <= -0.5 ? '#00FF88' : v <= 0.5 ? '#FFD700' : '#FF3B3B'),
+    color: v => (v <= -0.5 ? '#3DDC84' : v <= 0.5 ? '#F2C94C' : '#FF4D4D'),
     zeroLine: true,
   },
   {
@@ -515,14 +516,14 @@ const SENTIMENT_CARDS: SentimentCardConfig[] = [
     title: 'HY CREDIT SPREAD',
     source: 'FRED · BAMLH0A0HYM2',
     format: v => `${v.toFixed(2)}%`,
-    color: v => (v <= 4 ? '#00FF88' : v <= 6 ? '#FFD700' : '#FF3B3B'),
+    color: v => (v <= 4 ? '#3DDC84' : v <= 6 ? '#F2C94C' : '#FF4D4D'),
   },
   {
     key: 'futures_positioning',
     title: 'S&P FUTURES POSITIONING',
     source: 'CFTC · Commitments of Traders',
     format: v => `${v >= 0 ? '+' : ''}${v.toFixed(1)}% OI`,
-    color: v => (v >= 0 ? '#00FF88' : '#FF3B3B'),
+    color: v => (v >= 0 ? '#3DDC84' : '#FF4D4D'),
     zeroLine: true,
   },
   {
@@ -530,14 +531,14 @@ const SENTIMENT_CARDS: SentimentCardConfig[] = [
     title: 'ECONOMIC POLICY UNCERTAINTY',
     source: 'FRED · USEPUINDXD',
     format: v => v.toFixed(1),
-    color: v => (v <= 100 ? '#00FF88' : v <= 200 ? '#FFD700' : '#FF3B3B'),
+    color: v => (v <= 100 ? '#3DDC84' : v <= 200 ? '#F2C94C' : '#FF4D4D'),
   },
   {
     key: 'yield_curve_spread',
     title: '10Y-2Y TREASURY SPREAD',
     source: 'FRED · T10Y2Y',
     format: v => `${v >= 0 ? '+' : ''}${v.toFixed(2)}%`,
-    color: v => (v < 0 ? '#FF3B3B' : v < 0.5 ? '#FFD700' : '#00FF88'),
+    color: v => (v < 0 ? '#FF4D4D' : v < 0.5 ? '#F2C94C' : '#3DDC84'),
     zeroLine: true,
   },
   {
@@ -545,14 +546,14 @@ const SENTIMENT_CARDS: SentimentCardConfig[] = [
     title: 'IG CREDIT SPREAD',
     source: 'FRED · BAMLC0A0CM',
     format: v => `${v.toFixed(2)}%`,
-    color: v => (v <= 1.2 ? '#00FF88' : v <= 2 ? '#FFD700' : '#FF3B3B'),
+    color: v => (v <= 1.2 ? '#3DDC84' : v <= 2 ? '#F2C94C' : '#FF4D4D'),
   },
   {
     key: 'inflation_expectations',
     title: 'INFLATION EXPECTATIONS',
     source: 'FRED · MICH (UMich)',
     format: v => `${v.toFixed(1)}%`,
-    color: v => (v <= 3 ? '#00FF88' : v <= 4.5 ? '#FFD700' : '#FF3B3B'),
+    color: v => (v <= 3 ? '#3DDC84' : v <= 4.5 ? '#F2C94C' : '#FF4D4D'),
   },
 ]
 
@@ -677,8 +678,8 @@ export default function MarketOverview() {
     <div>
       <div style={{ marginBottom: 20 }}>
         <span style={{
-          fontFamily: "'VT323', monospace", fontSize: 32, color: '#C8FFD4',
-          letterSpacing: '0.04em', textShadow: '0 0 10px rgba(200,255,212,0.3)',
+          fontFamily: "'Cinzel', serif", fontWeight: 600, fontSize: 26, color: '#F4EFE6',
+          letterSpacing: '0.12em', textShadow: '0 0 10px rgba(212,175,55,0.35)',
         }}>MARKET OVERVIEW</span>
         {/* Refreshes no longer change the page, which is the point -- but
             that also means there's no longer any sign one is happening.
@@ -686,7 +687,7 @@ export default function MarketOverview() {
         {refreshing && data && (
           <span style={{
             fontFamily: "'JetBrains Mono', monospace", fontSize: 12,
-            color: '#52A877', letterSpacing: '0.12em', marginLeft: 12,
+            color: '#A391B5', letterSpacing: '0.12em', marginLeft: 12,
           }}>
             <span className="blink">●</span> REFRESHING
           </span>
@@ -711,41 +712,26 @@ export default function MarketOverview() {
                       const suffix = idx.quote === 'pct' ? '%' : ''
                       return (
                         <Draggable key={idx.symbol} id={idx.symbol} label={idx.name} api={indexTiles}>
-                          <div style={{ backgroundColor: '#060E18', border, padding: '14px 16px', height: '100%', transition: 'border-color 0.1s' }}
-                            onMouseEnter={e => (e.currentTarget.style.borderColor = 'rgba(0,255,136,0.3)')}
-                            onMouseLeave={e => (e.currentTarget.style.borderColor = 'rgba(0,255,136,0.12)')}
+                          <div style={{ backgroundColor: '#130B1B', border, padding: '14px 16px', height: '100%', transition: 'border-color 0.1s' }}
+                            onMouseEnter={e => (e.currentTarget.style.borderColor = 'rgba(212,175,55,0.3)')}
+                            onMouseLeave={e => (e.currentTarget.style.borderColor = 'rgba(212,175,55,0.12)')}
                           >
                             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8 }}>
                               <div>
-                                <div style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: 15, color: '#C8FFD4', marginBottom: 2 }}>{idx.name}</div>
-                                <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: '#52A877', letterSpacing: '0.08em' }}>
+                                <div style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: 15, color: '#FFFFFF', marginBottom: 2 }}>{idx.name}</div>
+                                <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: '#A391B5', letterSpacing: '0.08em' }}>
                                   {idx.symbol} · {idx.region}
                                 </div>
                               </div>
-                              <div style={{
-                                fontFamily: "'JetBrains Mono', monospace",
-                                fontSize: 13,
-                                color: posNegColor(idx.change_pct),
-                                backgroundColor: (idx.change_pct ?? 0) >= 0 ? 'rgba(0,255,136,0.07)' : 'rgba(255,59,59,0.07)',
-                                border: `1px solid ${(idx.change_pct ?? 0) >= 0 ? 'rgba(0,255,136,0.2)' : 'rgba(255,59,59,0.2)'}`,
-                                padding: '2px 6px',
-                                height: 'fit-content',
-                                textShadow: `0 0 6px ${posNegColor(idx.change_pct)}`,
-                              }}>
-                                {formatPct(idx.change_pct)}
-                              </div>
+                              <Delta value={idx.change_pct} format={v => `${v.toFixed(2)}%`} size={13} badge />
                             </div>
                             <div style={{
-                              fontFamily: "'JetBrains Mono', monospace", fontSize: 22, fontWeight: 600, color: '#C8FFD4',
-                              letterSpacing: '-0.02em', marginBottom: 3, textShadow: '0 0 8px rgba(200,255,212,0.2)',
+                              fontFamily: "'JetBrains Mono', monospace", fontSize: 22, fontWeight: 600, color: '#FFFFFF',
+                              letterSpacing: '-0.02em', marginBottom: 3, textShadow: '0 0 8px rgba(255,255,255,0.2)',
                             }}>
                               {idx.value !== null ? `${prefix}${idx.value.toLocaleString('en-US', { maximumFractionDigits: 2 })}${suffix}` : '—'}
                             </div>
-                            <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 15, color: posNegColor(idx.change) }}>
-                              {idx.change !== null
-                                ? `${idx.change >= 0 ? '+' : '-'}${prefix}${Math.abs(idx.change).toFixed(2)}${suffix}`
-                                : '—'}
-                            </div>
+                            <Delta value={idx.change} format={v => `${prefix}${v.toFixed(2)}${suffix}`} size={15} />
                           </div>
                         </Draggable>
                       )
@@ -768,21 +754,21 @@ export default function MarketOverview() {
               <Draggable key="sentiment" id="sentiment" label="SENTIMENT INDICATORS" api={sections} variant="section">
                 <div style={{ marginBottom: 22 }}>
                   <div style={{
-                    fontFamily: "'VT323', monospace", fontSize: 20, color: '#00FF88', letterSpacing: '0.1em',
-                    marginBottom: 10, textShadow: '0 0 8px rgba(0,255,136,0.5)',
-                  }}>{'/// SENTIMENT INDICATORS'}</div>
+                    fontFamily: "'Cinzel', serif", fontWeight: 600, fontSize: 15, color: '#D4AF37', letterSpacing: '0.2em',
+                    marginBottom: 10, textShadow: '0 0 8px rgba(212,175,55,0.5)',
+                  }}>{'◆ SENTIMENT INDICATORS'}</div>
 
                   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(420px, 1fr))', gap: 10 }}>
                     {sentimentTiles.visible.map(tileId => {
                       if (tileId === 'fear_greed') return (
                         <Draggable key="fear_greed" id="fear_greed" label="CNN FEAR & GREED" api={sentimentTiles}>
-                          <div style={{ backgroundColor: '#060E18', border, padding: '16px 18px', height: '100%' }}>
+                          <div style={{ backgroundColor: '#130B1B', border, padding: '16px 18px', height: '100%' }}>
                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 4 }}>
-                              <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: '#52A877', letterSpacing: '0.12em' }}>
+                              <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: '#A391B5', letterSpacing: '0.12em' }}>
                                 CNN FEAR {'&'} GREED INDEX
                               </span>
                               {fg?.history && fg.history.length > 0 && (
-                                <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: '#3C8F5F' }}>
+                                <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: '#7A6A8E' }}>
                                   {fg.history[fg.history.length - 1].date}
                                 </span>
                               )}
@@ -797,7 +783,7 @@ export default function MarketOverview() {
                                   <div>
                                     <FearGreedGauge value={fg.score} />
                                     <div style={{
-                                      fontFamily: "'VT323', monospace", fontSize: 22, color: fgBandNow.color,
+                                      fontFamily: "'Cinzel', serif", fontWeight: 600, fontSize: 17, color: fgBandNow.color,
                                       textShadow: `0 0 10px ${fgBandNow.color}`, textAlign: 'center',
                                       letterSpacing: '0.08em', marginTop: -6,
                                     }}>
@@ -814,7 +800,7 @@ export default function MarketOverview() {
 
                                 {fg.history && fg.history.length > 1 && (
                                   <div style={{ marginTop: 14 }}>
-                                    <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: '#52A877', letterSpacing: '0.1em', marginBottom: 6 }}>
+                                    <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: '#A391B5', letterSpacing: '0.1em', marginBottom: 6 }}>
                                       1-YEAR TREND
                                     </div>
                                     <SentimentChart
@@ -833,8 +819,8 @@ export default function MarketOverview() {
                                     style={{
                                       marginTop: 12, width: '100%',
                                       fontFamily: "'Share Tech Mono', monospace", fontSize: 14,
-                                      color: '#00FF88', background: 'rgba(0,255,136,0.06)',
-                                      border: '1px solid rgba(0,255,136,0.25)', padding: '6px 12px',
+                                      color: '#D4AF37', background: 'rgba(212,175,55,0.06)',
+                                      border: '1px solid rgba(212,175,55,0.25)', padding: '6px 12px',
                                       cursor: 'pointer', letterSpacing: '0.08em',
                                     }}
                                   >
@@ -843,7 +829,7 @@ export default function MarketOverview() {
                                 )}
                               </>
                             ) : (
-                              <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 14, color: '#3C8F5F', textAlign: 'center', padding: '40px 0' }}>
+                              <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 14, color: '#7A6A8E', textAlign: 'center', padding: '40px 0' }}>
                                 N/A
                               </div>
                             )}
@@ -853,18 +839,18 @@ export default function MarketOverview() {
 
                       if (tileId === 'put_call') return (
                         <Draggable key="put_call" id="put_call" label="CBOE PUT/CALL RATIO" api={sentimentTiles}>
-                          <div style={{ backgroundColor: '#060E18', border, padding: '16px 18px', height: '100%' }}>
-                            <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: '#52A877', letterSpacing: '0.12em', marginBottom: 12 }}>
+                          <div style={{ backgroundColor: '#130B1B', border, padding: '16px 18px', height: '100%' }}>
+                            <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: '#A391B5', letterSpacing: '0.12em', marginBottom: 12 }}>
                               CBOE PUT/CALL RATIO
                             </div>
                             {pc !== null && pcZone ? (
                               <>
                                 <div style={{
-                                  fontFamily: "'JetBrains Mono', monospace", fontSize: 48, fontWeight: 600, color: '#C8FFD4',
-                                  textAlign: 'center', textShadow: '0 0 14px rgba(200,255,212,0.3)', lineHeight: 1, marginBottom: 6,
+                                  fontFamily: "'JetBrains Mono', monospace", fontSize: 48, fontWeight: 600, color: '#FFFFFF',
+                                  textAlign: 'center', textShadow: '0 0 14px rgba(255,255,255,0.3)', lineHeight: 1, marginBottom: 6,
                                 }}>{pc.toFixed(2)}</div>
                                 <div style={{
-                                  fontFamily: "'VT323', monospace", fontSize: 22, color: pcZone.color, textAlign: 'center',
+                                  fontFamily: "'Cinzel', serif", fontWeight: 600, fontSize: 17, color: pcZone.color, textAlign: 'center',
                                   textShadow: `0 0 8px ${pcZone.color}`, marginBottom: 18, letterSpacing: '0.08em',
                                 }}>
                                   {pcZone.label}
@@ -893,7 +879,7 @@ export default function MarketOverview() {
                                     left: `${Math.min(100, Math.max(0, pcPct(pc)))}%`,
                                     top: '50%', transform: 'translate(-50%, -50%)',
                                     width: 3, height: 20,
-                                    backgroundColor: '#C8FFD4',
+                                    backgroundColor: '#FFFFFF',
                                     boxShadow: `0 0 8px ${pcZone.color}`,
                                   }} />
                                 </div>
@@ -902,7 +888,7 @@ export default function MarketOverview() {
                                   {PC_ZONES.map(z => (
                                     <span key={z.id} style={{
                                       fontFamily: "'JetBrains Mono', monospace", fontSize: 12,
-                                      color: z.id === pcZone.id ? z.color : '#52A877',
+                                      color: z.id === pcZone.id ? z.color : '#A391B5',
                                       textShadow: z.id === pcZone.id ? `0 0 6px ${z.color}` : 'none',
                                       width: `${pcPct(z.to) - pcPct(z.from)}%`,
                                       textAlign: 'center',
@@ -910,15 +896,15 @@ export default function MarketOverview() {
                                   ))}
                                 </div>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 6, padding: '0 6px' }}>
-                                  <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: '#3C8F5F' }}>{PC_MIN.toFixed(1)}</span>
-                                  <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: '#3C8F5F' }}>{PC_MAX.toFixed(1)}</span>
+                                  <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: '#7A6A8E' }}>{PC_MIN.toFixed(1)}</span>
+                                  <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: '#7A6A8E' }}>{PC_MAX.toFixed(1)}</span>
                                 </div>
-                                <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: '#3C8F5F', textAlign: 'center', marginTop: 10 }}>
+                                <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: '#7A6A8E', textAlign: 'center', marginTop: 10 }}>
                                   {'< 0.70 BULLISH · > 1.00 BEARISH'}
                                 </div>
                               </>
                             ) : (
-                              <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 14, color: '#3C8F5F', textAlign: 'center', padding: '30px 0' }}>
+                              <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 14, color: '#7A6A8E', textAlign: 'center', padding: '30px 0' }}>
                                 N/A -- source may have changed structure
                               </div>
                             )}
@@ -935,18 +921,18 @@ export default function MarketOverview() {
                   {fgExpanded && sentimentTiles.visible.includes('fear_greed') && fg?.components && fg.components.length > 0 && (
                     <div style={{ marginTop: 14 }}>
                       <div style={{
-                        fontFamily: "'VT323', monospace", fontSize: 18, color: '#00FF88', letterSpacing: '0.1em',
-                        marginBottom: 10, textShadow: '0 0 6px rgba(0,255,136,0.4)',
-                      }}>{'/// FEAR & GREED INDICATORS'}</div>
+                        fontFamily: "'Cinzel', serif", fontWeight: 600, fontSize: 14, color: '#D4AF37', letterSpacing: '0.2em',
+                        marginBottom: 10, textShadow: '0 0 6px rgba(212,175,55,0.4)',
+                      }}>{'◆ FEAR & GREED INDICATORS'}</div>
                       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(340px, 1fr))', gap: 10 }}>
                         {fg.components.map(c => {
                           const band = c.score != null ? fgBand(c.score) : null
-                          const lineColor = band?.color ?? '#4DCC88'
+                          const lineColor = band?.color ?? '#C9B8D9'
                           const fmt = fgUnitFormat(c.unit)
                           return (
-                            <div key={c.key} style={{ backgroundColor: '#060E18', border, padding: '14px 16px' }}>
+                            <div key={c.key} style={{ backgroundColor: '#130B1B', border, padding: '14px 16px' }}>
                               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', gap: 8 }}>
-                                <span style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: 15, color: '#C8FFD4' }}>
+                                <span style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: 15, color: '#FFFFFF' }}>
                                   {c.label}
                                 </span>
                                 <span style={{
@@ -957,7 +943,7 @@ export default function MarketOverview() {
                                 </span>
                               </div>
                               <div style={{
-                                fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: '#52A877',
+                                fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: '#A391B5',
                                 marginTop: 3, marginBottom: 10,
                               }}>
                                 {c.subtitle}
@@ -986,7 +972,7 @@ export default function MarketOverview() {
                         })}
                       </div>
                       <div style={{
-                        marginTop: 8, fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: '#3C8F5F',
+                        marginTop: 8, fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: '#7A6A8E',
                       }}>
                         {'// Each card shows today\'s actual reading; the FEAR/GREED rating beside it is CNN\'s 0-100 normalization of that measure.'}
                       </div>
@@ -1002,20 +988,20 @@ export default function MarketOverview() {
               <Draggable key="macro" id="macro" label="MACRO SENTIMENT" api={sections} variant="section">
                 <div>
                   <div style={{
-                    fontFamily: "'VT323', monospace", fontSize: 20, color: '#00FF88', letterSpacing: '0.1em',
-                    marginBottom: 10, textShadow: '0 0 8px rgba(0,255,136,0.5)',
-                  }}>{'/// MACRO SENTIMENT'}</div>
+                    fontFamily: "'Cinzel', serif", fontWeight: 600, fontSize: 15, color: '#D4AF37', letterSpacing: '0.2em',
+                    marginBottom: 10, textShadow: '0 0 8px rgba(212,175,55,0.5)',
+                  }}>{'◆ MACRO SENTIMENT'}</div>
 
                   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(440px, 1fr))', gap: 20 }}>
                     {macroTiles.visible.map(tileKey => {
                       const cfg = MACRO_CARDS_BY_KEY.get(tileKey)
                       if (!cfg) return null
                       const series = sentiment?.[cfg.key] ?? null
-                      const color = series ? cfg.color(series.value) : '#52A877'
+                      const color = series ? cfg.color(series.value) : '#A391B5'
                       return (
                         <Draggable key={cfg.key} id={cfg.key} label={cfg.title} api={macroTiles}>
-                          <div style={{ backgroundColor: '#060E18', border, padding: '32px', height: '100%' }}>
-                            <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 15, color: '#52A877', letterSpacing: '0.12em', marginBottom: 20 }}>
+                          <div style={{ backgroundColor: '#130B1B', border, padding: '32px', height: '100%' }}>
+                            <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 15, color: '#A391B5', letterSpacing: '0.12em', marginBottom: 20 }}>
                               {cfg.title}
                             </div>
                             {series ? (
@@ -1027,12 +1013,12 @@ export default function MarketOverview() {
                                   {cfg.format(series.value)}
                                 </div>
                                 <SentimentChart points={series.history} color={color} zeroLine={cfg.zeroLine} format={cfg.format} height={90} />
-                                <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 14, color: '#3C8F5F', marginTop: 14 }}>
+                                <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 14, color: '#7A6A8E', marginTop: 14 }}>
                                   LATEST {series.date} · {cfg.source}
                                 </div>
                               </>
                             ) : (
-                              <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 15, color: '#3C8F5F', textAlign: 'center', padding: '40px 0' }}>
+                              <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 15, color: '#7A6A8E', textAlign: 'center', padding: '40px 0' }}>
                                 N/A -- {cfg.source} (missing API key or fetch failed)
                               </div>
                             )}
@@ -1054,10 +1040,10 @@ export default function MarketOverview() {
 
       <div style={{
         marginTop: 12, padding: '9px 12px',
-        backgroundColor: 'rgba(0,255,136,0.02)',
-        border: '1px solid rgba(0,255,136,0.07)',
+        backgroundColor: 'rgba(212,175,55,0.02)',
+        border: '1px solid rgba(212,175,55,0.07)',
         fontFamily: "'JetBrains Mono', monospace",
-        fontSize: 13, color: '#3C8F5F',
+        fontSize: 13, color: '#7A6A8E',
       }}>
         {'// INDICES: yfinance · SENTIMENT: CNN/CBOE scraped endpoints + FRED/CFTC APIs — may show N/A if providers change structure or FRED_API_KEY is unset'}
       </div>

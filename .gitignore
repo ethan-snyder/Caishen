@@ -16,3 +16,7 @@ dist/
 # Editor
 .idea/
 .vscode/
+
+# Trade tab upstream-response cache (see backend/trade.py)
+backend/trade_cache.json
+backend/trade_cache.json.tmp

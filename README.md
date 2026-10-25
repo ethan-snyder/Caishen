@@ -1,10 +1,10 @@
-# Caishen
+# Moneta
 
 An all-in-one investing terminal: stock research, a price projector, market
 overview, portfolio and watchlist tracking, and quick reference data for
 crypto, FX, futures, and bonds. Originally a Python CLI (still available as
 `backend/cli.py`); this is the web version — a Figma Make-designed
-CRT-terminal UI wired to a FastAPI backend built on the same data logic.
+terminal UI (imperial purple + Roman gold) wired to a FastAPI backend built on the same data logic.
 
 ## Quick start
 

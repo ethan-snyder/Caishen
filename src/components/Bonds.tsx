@@ -5,7 +5,7 @@ import { useSortableLayout } from '@/lib/layout'
 import { Draggable, AddWidgetTray, EditHint } from './LayoutKit'
 import { Flag } from './Flag'
 
-const border = '1px solid rgba(0,255,136,0.12)'
+const border = '1px solid rgba(212,175,55,0.12)'
 
 const BOND_SECTIONS = [
   { id: 'curve', label: 'GOVERNMENT YIELD CURVES' },
@@ -15,8 +15,8 @@ const BOND_SECTIONS = [
 function SectionHeading({ children }: { children: React.ReactNode }) {
   return (
     <div style={{
-      fontFamily: "'VT323', monospace", fontSize: 18, color: '#00FF88',
-      letterSpacing: '0.1em', textShadow: '0 0 6px rgba(0,255,136,0.4)', marginBottom: 14,
+      fontFamily: "'Cinzel', serif", fontWeight: 600, fontSize: 14, color: '#D4AF37',
+      letterSpacing: '0.1em', textShadow: '0 0 6px rgba(212,175,55,0.4)', marginBottom: 14,
     }}>
       {children}
     </div>
@@ -24,7 +24,7 @@ function SectionHeading({ children }: { children: React.ReactNode }) {
 }
 
 const changeColor = (v: number | null) =>
-  v === null ? '#3C8F5F' : v >= 0 ? '#00FF88' : '#FF3B3B'
+  v === null ? '#7A6A8E' : v >= 0 ? '#3DDC84' : '#FF4D4D'
 
 /** "+45bp" / "-12bp" between two adjacent yields -- null if either side
  * is missing, so a gap in the curve just shows nothing rather than a
@@ -69,15 +69,15 @@ function GapChip({ bp, height, fontSize = 11 }: { bp: string | null; height: num
       display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
       width: Math.max(30, bpChipWidth(bp, fontSize)), height, flexShrink: 0,
     }}>
-      <div style={{ width: 1, flex: 1, backgroundColor: 'rgba(0,255,136,0.15)' }} />
+      <div style={{ width: 1, flex: 1, backgroundColor: 'rgba(212,175,55,0.15)' }} />
       <div style={{
         fontFamily: "'JetBrains Mono', monospace", fontSize, whiteSpace: 'nowrap',
-        color: rising ? '#4FD98A' : bp === '+0bp' || bp === '0bp' ? '#52A877' : '#D97A7A',
+        color: rising ? '#3DDC84' : bp === '+0bp' || bp === '0bp' ? '#A391B5' : '#D97A7A',
         padding: '2px 0',
       }}>
         {bp}
       </div>
-      <div style={{ width: 1, flex: 1, backgroundColor: 'rgba(0,255,136,0.15)' }} />
+      <div style={{ width: 1, flex: 1, backgroundColor: 'rgba(212,175,55,0.15)' }} />
     </div>
   )
 }
@@ -137,16 +137,16 @@ function CurveTile({ entry }: { entry: CurveEntry }) {
 
   return (
     <div style={{
-      backgroundColor: '#03080F', border, padding: '20px 24px', minHeight: 264,
+      backgroundColor: '#0A0610', border, padding: '20px 24px', minHeight: 264,
       display: 'flex', flexDirection: 'column', flex: '0 0 auto',
     }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', gap: 8, marginBottom: 10 }}>
-        <span style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: 20, color: '#C8FFD4', letterSpacing: '0.04em' }}>
+        <span style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: 20, color: '#FFFFFF', letterSpacing: '0.04em' }}>
           {label}
         </span>
         <span style={{
           display: 'inline-flex', alignItems: 'center', gap: 7,
-          fontFamily: "'JetBrains Mono', monospace", fontSize: 14, color: '#52A877',
+          fontFamily: "'JetBrains Mono', monospace", fontSize: 14, color: '#A391B5',
         }}>
           {country?.label ?? name}
           <Flag code={country?.flag ?? null} size={20} />
@@ -156,8 +156,8 @@ function CurveTile({ entry }: { entry: CurveEntry }) {
       <div style={{ display: 'flex', alignItems: 'baseline', gap: 14, marginBottom: 14 }}>
         <div style={{
           fontFamily: "'JetBrains Mono', monospace", fontSize: 44, fontWeight: 600,
-          color: yieldValue !== null ? '#00FF88' : '#3C8F5F',
-          textShadow: yieldValue !== null ? '0 0 10px rgba(0,255,136,0.4)' : 'none',
+          color: yieldValue !== null ? '#D4AF37' : '#7A6A8E',
+          textShadow: yieldValue !== null ? '0 0 10px rgba(212,175,55,0.4)' : 'none',
           letterSpacing: '-0.02em', lineHeight: 1,
         }}>
           {yieldValue !== null ? `${yieldValue.toFixed(2)}%` : '—'}
@@ -165,14 +165,14 @@ function CurveTile({ entry }: { entry: CurveEntry }) {
         <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 15, color: changeColor(change) }}>
           {change !== null ? `${change >= 0 ? '+' : ''}${change.toFixed(2)}` : '—'}
         </span>
-        <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: '#3C8F5F', marginLeft: 'auto' }}>
+        <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: '#7A6A8E', marginLeft: 'auto' }}>
           {date ?? ''}
         </span>
       </div>
 
       <div style={{ flex: 1, display: 'flex', alignItems: 'flex-end', gap: POINT_GAP, minHeight: 90 }}>
         {points.length === 0 && (
-          <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 13, color: '#3C8F5F' }}>
+          <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 13, color: '#7A6A8E' }}>
             {'// no curve data available'}
           </div>
         )}
@@ -183,27 +183,27 @@ function CurveTile({ entry }: { entry: CurveEntry }) {
               {/* Fixed-height box so every bar's bottom edge sits on the
                   same plane regardless of the value text above it. */}
               <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-end', width: '100%', height: 90 }}>
-                <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 14, color: '#00FF88', textShadow: '0 0 4px #00FF88', marginBottom: 4, whiteSpace: 'nowrap' }}>
+                <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 14, color: '#FFFFFF', textShadow: '0 0 4px rgba(255,255,255,0.22)', marginBottom: 4, whiteSpace: 'nowrap' }}>
                   {p.yield !== null ? `${p.yield.toFixed(2)}%` : '—'}
                 </div>
                 <div style={{
                   width: '100%',
                   height: p.yield !== null ? `${(p.yield / maxYield) * 64}px` : '2px',
-                  backgroundColor: 'rgba(0,255,136,0.15)',
-                  border: '1px solid rgba(0,255,136,0.3)',
-                  boxShadow: 'inset 0 0 6px rgba(0,255,136,0.1)',
+                  backgroundColor: 'rgba(212,175,55,0.15)',
+                  border: '1px solid rgba(212,175,55,0.3)',
+                  boxShadow: 'inset 0 0 6px rgba(212,175,55,0.1)',
                   position: 'relative',
                 }}>
                   {p.yield !== null && (
                     <div style={{
                       position: 'absolute', bottom: 0, left: 0, right: 0,
                       height: `${(p.yield / maxYield) * 64}px`,
-                      background: 'linear-gradient(0deg, rgba(0,255,136,0.25), transparent)',
+                      background: 'linear-gradient(0deg, rgba(212,175,55,0.25), transparent)',
                     }} />
                   )}
                 </div>
               </div>
-              <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: '#52A877', letterSpacing: '0.06em', marginTop: 4, whiteSpace: 'nowrap' }}>{p.tenor}</div>
+              <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: '#A391B5', letterSpacing: '0.06em', marginTop: 4, whiteSpace: 'nowrap' }}>{p.tenor}</div>
             </div>
           </div>
         ))}
@@ -238,7 +238,7 @@ function CurveBars({ curve, barHeight }: { curve: FredYieldRow['curve']; barHeig
                 height: barHeight, flexShrink: 0,
                 width: gap ? Math.max(26, bpChipWidth(gap, 11)) : 26,
               }}>
-                <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 11, color: '#52A877', whiteSpace: 'nowrap' }}>
+                <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 11, color: '#A391B5', whiteSpace: 'nowrap' }}>
                   {gap ?? ''}
                 </span>
               </div>
@@ -249,11 +249,11 @@ function CurveBars({ curve, barHeight }: { curve: FredYieldRow['curve']; barHeig
               <div style={{
                 width: '100%',
                 height: p.yield !== null ? `${(p.yield / maxYield) * (barHeight - 4)}px` : '2px',
-                backgroundColor: 'rgba(0,255,136,0.15)',
-                border: '1px solid rgba(0,255,136,0.3)',
+                backgroundColor: 'rgba(212,175,55,0.15)',
+                border: '1px solid rgba(212,175,55,0.3)',
               }} />
             </div>
-            <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: '#52A877', letterSpacing: '0.02em', marginTop: 3, whiteSpace: 'nowrap' }}>
+            <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: '#A391B5', letterSpacing: '0.02em', marginTop: 3, whiteSpace: 'nowrap' }}>
               {p.tenor}
             </div>
           </div>
@@ -276,18 +276,18 @@ function CurveBars({ curve, barHeight }: { curve: FredYieldRow['curve']; barHeig
 function YieldTile({ row, showDate, square }: { row: FredYieldRow; showDate?: boolean; square?: boolean }) {
   return (
     <div style={{
-      backgroundColor: '#03080F', border, padding: '14px 16px', height: '100%',
+      backgroundColor: '#0A0610', border, padding: '14px 16px', height: '100%',
       ...(square ? { width: 110, aspectRatio: '1', display: 'flex', flexDirection: 'column', justifyContent: 'center' } : {}),
     }}>
       <div style={{ display: 'flex', alignItems: 'baseline', marginBottom: 8 }}>
-        <span style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: 15, color: '#C8FFD4' }}>
+        <span style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: 15, color: '#FFFFFF' }}>
           {row.label}
         </span>
       </div>
       <div style={{
         fontFamily: "'JetBrains Mono', monospace", fontSize: 24, fontWeight: 600,
-        color: row.yield !== null ? '#00FF88' : '#3C8F5F',
-        textShadow: row.yield !== null ? '0 0 8px rgba(0,255,136,0.35)' : 'none',
+        color: row.yield !== null ? '#D4AF37' : '#7A6A8E',
+        textShadow: row.yield !== null ? '0 0 8px rgba(212,175,55,0.35)' : 'none',
         letterSpacing: '-0.02em',
       }}>
         {row.yield !== null ? `${row.yield.toFixed(2)}%` : '—'}
@@ -297,7 +297,7 @@ function YieldTile({ row, showDate, square }: { row: FredYieldRow; showDate?: bo
           {row.change !== null ? `${row.change >= 0 ? '+' : ''}${row.change.toFixed(2)}` : '—'}
         </span>
         {showDate && (
-          <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 11, color: '#3C8F5F' }}>
+          <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 11, color: '#7A6A8E' }}>
             {row.date ?? ''}
           </span>
         )}
@@ -382,7 +382,7 @@ export default function Bonds() {
 
   return (
     <div>
-      <span style={{ fontFamily: "'VT323', monospace", fontSize: 32, color: '#C8FFD4', letterSpacing: '0.04em', textShadow: '0 0 10px rgba(200,255,212,0.3)', display: 'block', marginBottom: 20 }}>
+      <span style={{ fontFamily: "'Cinzel', serif", fontWeight: 600, fontSize: 26, color: '#F4EFE6', letterSpacing: '0.12em', textShadow: '0 0 10px rgba(212,175,55,0.35)', display: 'block', marginBottom: 20 }}>
         BONDS {'&'} FIXED INCOME
       </span>
 
@@ -394,8 +394,8 @@ export default function Bonds() {
       {data && sections.visible.map(sectionId => {
         if (sectionId === 'curve') return (
           <Draggable key="curve" id="curve" label="GOVERNMENT YIELD CURVES" api={sections} variant="section">
-            <div style={{ backgroundColor: '#060E18', border, padding: '18px', marginBottom: 14 }}>
-              <SectionHeading>{'/// GOVERNMENT YIELD CURVES'}</SectionHeading>
+            <div style={{ backgroundColor: '#130B1B', border, padding: '18px', marginBottom: 14 }}>
+              <SectionHeading>{'◆ GOVERNMENT YIELD CURVES'}</SectionHeading>
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10, alignItems: 'stretch' }}>
                 {usEntry && <CurveTile entry={usEntry} />}
                 {visibleSovereignEntries.map(entry => (
@@ -405,7 +405,7 @@ export default function Bonds() {
                 ))}
               </div>
               <AddWidgetTray api={sovereignTiles} title="MORE COUNTRIES" />
-              <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: '#3C8F5F', marginTop: 10 }}>
+              <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: '#7A6A8E', marginTop: 10 }}>
                 {'// US Treasury, JGB, and GILT show by default; other countries are hidden until added above. Tile width is proportional to tenor count. US Treasury (Treasury.gov, daily, 1-MO-30-YR) is widest; JGB (Japan MOF, 1Y/5Y/10Y/30Y) narrower; GILT (3-MO+10-YR) narrower still; BUND/CANGB/ACGB/BRA (mostly 3-MO+10-YR) smallest. All real data — no interpolation, no invented tenors. bp figures between bars are the gap to the next tenor (curve steepness), not day-over-day change.'}
               </div>
             </div>
@@ -414,8 +414,8 @@ export default function Bonds() {
 
         if (sectionId === 'corporate') return (
           <Draggable key="corporate" id="corporate" label="CORPORATE BONDS" api={sections} variant="section">
-            <div style={{ backgroundColor: '#060E18', border, padding: '18px', marginBottom: 14 }}>
-              <SectionHeading>{'/// CORPORATE BONDS'}</SectionHeading>
+            <div style={{ backgroundColor: '#130B1B', border, padding: '18px', marginBottom: 14 }}>
+              <SectionHeading>{'◆ CORPORATE BONDS'}</SectionHeading>
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
                 {corporateTiles.visible.map(key => {
                   const row = corporateByKey.get(key)
@@ -428,7 +428,7 @@ export default function Bonds() {
                 })}
               </div>
               <AddWidgetTray api={corporateTiles} title="HIDDEN RATING TIERS" />
-              <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: '#3C8F5F', marginTop: 10 }}>
+              <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: '#7A6A8E', marginTop: 10 }}>
                 {'// ICE BofA index effective yields by rating tier (daily, via FRED) — investment-grade (AAA-BBB) through high-yield/speculative (BB-CCC-D). Per-issuer bond quotes are subscription-only data, so these are the benchmark curves those issuers actually price against rather than invented per-company yields. CCC-D is the distressed end (ICE BofA folds CCC/CC/C/D into one bucket, no free source publishes D separately) — a widening gap vs. BB is a classic risk-off signal.'}
               </div>
             </div>
@@ -440,7 +440,7 @@ export default function Bonds() {
 
       {data && <AddWidgetTray api={sections} title="HIDDEN SECTIONS" />}
 
-      <div style={{ marginTop: 12, padding: '9px 12px', backgroundColor: 'rgba(0,255,136,0.02)', border: '1px solid rgba(0,255,136,0.07)', fontFamily: "'JetBrains Mono', monospace", fontSize: 13, color: '#3C8F5F' }}>
+      <div style={{ marginTop: 12, padding: '9px 12px', backgroundColor: 'rgba(212,175,55,0.02)', border: '1px solid rgba(212,175,55,0.07)', fontFamily: "'JetBrains Mono', monospace", fontSize: 13, color: '#7A6A8E' }}>
         {'// DATA SOURCES: Treasury.gov (U.S. curve, daily; yfinance fallback) · FRED/OECD (10Y sovereign baseline, monthly) · Japan MOF, Bank of Canada, Bank of England (JGB/CANGB/GILT curves, daily) · FRED/ICE BofA (corporate rating tiers, daily). Corporate + sovereign sections need FRED_API_KEY set.'}
       </div>
     </div>

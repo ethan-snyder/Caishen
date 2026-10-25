@@ -5,10 +5,11 @@ import {
 } from '@/lib/api'
 import { formatMoney, formatNum, formatLargeNum, posNegColor } from '@/lib/format'
 import { Loading, ErrorBlock } from './StatusBlock'
+import Delta from './Delta'
 import { AxisLabels, GridLines } from './ChartGrid'
 import AnalystInsights from './AnalystInsights'
 
-const G = 'rgba(0,255,136,'
+const G = 'rgba(212,175,55,'
 const border = `1px solid ${G}0.12)`
 
 const RANGES: { key: StockRange; label: string }[] = [
@@ -41,7 +42,7 @@ function PriceChart({ points, range, height = 200 }: {
     return (
       <div style={{
         height, display: 'flex', alignItems: 'center', justifyContent: 'center',
-        fontFamily: "'JetBrains Mono', monospace", fontSize: 14, color: '#3C8F5F',
+        fontFamily: "'JetBrains Mono', monospace", fontSize: 14, color: '#7A6A8E',
       }}>
         not enough history for this range
       </div>
@@ -61,7 +62,7 @@ function PriceChart({ points, range, height = 200 }: {
   const coords = points.map((p, i) => `${xAt(i).toFixed(2)},${yAt(p.value).toFixed(2)}`).join(' ')
 
   const up = points[points.length - 1].value >= points[0].value
-  const lineColor = up ? '#00FF88' : '#FF3B3B'
+  const lineColor = up ? '#3DDC84' : '#FF4D4D'
   const fillId = `stock-fill-${up ? 'up' : 'down'}-${range}`
   const fmt = (v: number) => `$${v.toFixed(2)}`
 
@@ -105,7 +106,7 @@ function PriceChart({ points, range, height = 200 }: {
               left: `${(xAt(hover) / w) * 100}%`,
               top: `${(yAt(points[hover].value) / h) * 100}%`,
               width: 7, height: 7, borderRadius: '50%',
-              backgroundColor: lineColor, border: '1px solid #060E18',
+              backgroundColor: lineColor, border: '1px solid #130B1B',
               transform: 'translate(-50%, -50%)', pointerEvents: 'none',
             }} />
           )}
@@ -114,19 +115,19 @@ function PriceChart({ points, range, height = 200 }: {
               position: 'absolute', top: -6,
               left: `${tooltipPct}%`,
               transform: tooltipPct > 65 ? 'translate(-100%, -100%)' : 'translate(0, -100%)',
-              backgroundColor: '#0A1420', border: `1px solid ${lineColor}`, padding: '5px 10px',
-              fontFamily: "'JetBrains Mono', monospace", fontSize: 15, color: '#C8FFD4',
+              backgroundColor: '#1C1226', border: `1px solid ${lineColor}`, padding: '5px 10px',
+              fontFamily: "'JetBrains Mono', monospace", fontSize: 15, color: '#FFFFFF',
               whiteSpace: 'nowrap', pointerEvents: 'none', zIndex: 10,
             }}>
               <div style={{ color: lineColor, fontWeight: 600 }}>{fmt(hoverPoint.value)}</div>
-              <div style={{ fontSize: 13, color: '#4a5a52', marginTop: 1 }}>{formatHistoryDate(hoverPoint.date, range)}</div>
+              <div style={{ fontSize: 13, color: '#8C7A9E', marginTop: 1 }}>{formatHistoryDate(hoverPoint.date, range)}</div>
             </div>
           )}
         </div>
       </div>
       <div style={{
         display: 'flex', justifyContent: 'space-between', marginLeft: 88,
-        fontFamily: "'JetBrains Mono', monospace", fontSize: 13, color: '#3C8F5F', marginTop: 6,
+        fontFamily: "'JetBrains Mono', monospace", fontSize: 13, color: '#7A6A8E', marginTop: 6,
       }}>
         <span>{formatHistoryDate(points[0].date, range)}</span>
         <span>{formatHistoryDate(points[points.length - 1].date, range)}</span>
@@ -153,7 +154,7 @@ function ChartPanel({ ticker }: { ticker: string }) {
   }, [ticker, range])
 
   return (
-    <div style={{ backgroundColor: '#060E18', border, padding: '16px 18px' }}>
+    <div style={{ backgroundColor: '#130B1B', border, padding: '16px 18px' }}>
       <div style={{ display: 'flex', gap: 5, flexWrap: 'wrap', marginBottom: 14 }}>
         {RANGES.map(r => {
           const active = r.key === range
@@ -165,9 +166,9 @@ function ChartPanel({ ticker }: { ticker: string }) {
               style={{
                 fontFamily: "'JetBrains Mono', monospace", fontSize: 12,
                 padding: '4px 10px', cursor: 'pointer', letterSpacing: '0.06em',
-                backgroundColor: active ? 'rgba(0,255,136,0.12)' : 'transparent',
-                border: `1px solid ${active ? 'rgba(0,255,136,0.4)' : 'rgba(0,255,136,0.12)'}`,
-                color: active ? '#00FF88' : '#52A877',
+                backgroundColor: active ? 'rgba(212,175,55,0.12)' : 'transparent',
+                border: `1px solid ${active ? 'rgba(212,175,55,0.4)' : 'rgba(212,175,55,0.12)'}`,
+                color: active ? '#D4AF37' : '#A391B5',
               }}
             >
               {r.label}
@@ -197,39 +198,41 @@ function bigMoney(v: number | null): string {
 function SectionHead({ children }: { children: React.ReactNode }) {
   return (
     <div style={{
-      fontFamily: "'VT323', monospace",
-      fontSize: 20,
-      color: '#00FF88',
-      letterSpacing: '0.1em',
+      fontFamily: "'Cinzel', serif",
+      fontSize: 15,
+      fontWeight: 600,
+      color: '#D4AF37',
+      letterSpacing: '0.2em',
       marginBottom: 10,
-      marginTop: 24,
-      textShadow: '0 0 8px rgba(0,255,136,0.5)',
+      marginTop: 26,
+      textShadow: '0 0 10px rgba(212,175,55,0.35)',
       display: 'flex',
       alignItems: 'center',
-      gap: 8,
+      gap: 10,
     }}>
-      <span style={{ color: '#3C8F5F' }}>{'///'}</span>
+      <span style={{ color: '#9B59B6', fontSize: 11 }}>◆</span>
       {children}
+      <span style={{ flex: 1, height: 1, background: 'linear-gradient(90deg, rgba(212,175,55,0.3), transparent)' }} />
     </div>
   )
 }
 
 function Cell({ label, value, pos, neg }: { label: string; value: string | number; pos?: boolean; neg?: boolean }) {
-  const valColor = pos ? '#00FF88' : neg ? '#FF3B3B' : '#C8FFD4'
+  const valColor = pos ? '#3DDC84' : neg ? '#FF4D4D' : '#FFFFFF'
   return (
     <div style={{
-      backgroundColor: '#060E18',
+      backgroundColor: '#130B1B',
       border,
       padding: '12px 14px',
       transition: 'border-color 0.1s',
     }}
-    onMouseEnter={e => (e.currentTarget.style.borderColor = 'rgba(0,255,136,0.35)')}
-    onMouseLeave={e => (e.currentTarget.style.borderColor = 'rgba(0,255,136,0.12)')}
+    onMouseEnter={e => (e.currentTarget.style.borderColor = 'rgba(212,175,55,0.35)')}
+    onMouseLeave={e => (e.currentTarget.style.borderColor = 'rgba(212,175,55,0.12)')}
     >
       <div style={{
         fontFamily: "'JetBrains Mono', monospace",
         fontSize: 12,
-        color: '#52A877',
+        color: '#A391B5',
         letterSpacing: '0.14em',
         textTransform: 'uppercase',
         marginBottom: 6,
@@ -240,7 +243,7 @@ function Cell({ label, value, pos, neg }: { label: string; value: string | numbe
         fontWeight: 600,
         color: valColor,
         letterSpacing: '-0.01em',
-        textShadow: pos || neg ? `0 0 8px ${valColor}` : `0 0 6px rgba(200,255,212,0.3)`,
+        textShadow: pos || neg ? `0 0 8px ${valColor}` : `0 0 6px rgba(255,255,255,0.3)`,
       }}>{value}</div>
     </div>
   )
@@ -273,7 +276,7 @@ export default function StockInfo() {
         <div style={{ position: 'relative', flex: 1 }}>
           <span style={{
             position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)',
-            fontFamily: "'JetBrains Mono', monospace", fontSize: 15, color: '#52A877',
+            fontFamily: "'JetBrains Mono', monospace", fontSize: 15, color: '#A391B5',
           }}>$</span>
           <input
             value={inputVal}
@@ -281,23 +284,23 @@ export default function StockInfo() {
             placeholder="TICKER"
             style={{
               width: '100%',
-              backgroundColor: '#060E18',
+              backgroundColor: '#130B1B',
               border,
               padding: '9px 12px 9px 28px',
               fontFamily: "'JetBrains Mono', monospace",
               fontSize: 16,
-              color: '#00FF88',
+              color: '#FFFFFF',
               letterSpacing: '0.08em',
               outline: 'none',
-              caretColor: '#00FF88',
+              caretColor: '#D4AF37',
             }}
-            onFocus={e => (e.currentTarget.style.borderColor = 'rgba(0,255,136,0.4)')}
-            onBlur={e => (e.currentTarget.style.borderColor = 'rgba(0,255,136,0.12)')}
+            onFocus={e => (e.currentTarget.style.borderColor = 'rgba(212,175,55,0.4)')}
+            onBlur={e => (e.currentTarget.style.borderColor = 'rgba(212,175,55,0.12)')}
           />
         </div>
         <button type="submit" style={{
-          backgroundColor: '#00FF88',
-          color: '#03080F',
+          backgroundColor: '#D4AF37',
+          color: '#0A0610',
           fontFamily: "'Share Tech Mono', monospace",
           fontSize: 15,
           fontWeight: 700,
@@ -308,15 +311,15 @@ export default function StockInfo() {
           textShadow: 'none',
           transition: 'background-color 0.1s',
         }}
-        onMouseEnter={e => (e.currentTarget.style.backgroundColor = '#4DFF9A')}
-        onMouseLeave={e => (e.currentTarget.style.backgroundColor = '#00FF88')}
+        onMouseEnter={e => (e.currentTarget.style.backgroundColor = '#E8C65A')}
+        onMouseLeave={e => (e.currentTarget.style.backgroundColor = '#D4AF37')}
         >
           FETCH
         </button>
       </form>
 
       {ticker === null && (
-        <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 15, color: '#52A877' }}>
+        <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 15, color: '#A391B5' }}>
           Enter a ticker and hit FETCH to pull live metrics.
         </div>
       )}
@@ -330,16 +333,16 @@ export default function StockInfo() {
           <div style={{ marginBottom: 4 }}>
             <div style={{ display: 'flex', alignItems: 'baseline', gap: 14, flexWrap: 'wrap' }}>
               <span style={{
-                fontFamily: "'VT323', monospace",
-                fontSize: 40,
-                color: '#C8FFD4',
-                letterSpacing: '0.02em',
-                textShadow: '0 0 14px rgba(200,255,212,0.3)',
+                fontFamily: "'Cinzel', serif", fontWeight: 600,
+                fontSize: 32,
+                color: '#F4EFE6',
+                letterSpacing: '0.12em',
+                textShadow: '0 0 10px rgba(212,175,55,0.35)',
               }}>{d.name}</span>
               <span style={{
                 fontFamily: "'JetBrains Mono', monospace",
                 fontSize: 15,
-                color: '#52A877',
+                color: '#A391B5',
                 letterSpacing: '0.1em',
               }}>{d.ticker}</span>
             </div>
@@ -348,21 +351,17 @@ export default function StockInfo() {
                 fontFamily: "'JetBrains Mono', monospace",
                 fontSize: 30,
                 fontWeight: 600,
-                color: '#00FF88',
+                color: '#FFFFFF',
                 letterSpacing: '-0.02em',
-                textShadow: '0 0 12px rgba(0,255,136,0.6)',
+                textShadow: '0 0 12px rgba(255,255,255,0.22)',
               }}>{formatMoney(d.price)}</span>
               {d.change !== null && d.changePct !== null && (
-                <span style={{
-                  fontFamily: "'JetBrains Mono', monospace",
-                  fontSize: 16,
-                  color: posNegColor(d.change),
-                  textShadow: `0 0 8px ${posNegColor(d.change)}`,
-                }}>
-                  {d.change >= 0 ? '+' : ''}{d.change.toFixed(2)} ({d.changePct.toFixed(2)}%)
+                <span style={{ display: 'inline-flex', gap: 10, alignItems: 'center' }}>
+                  <Delta value={d.change} format={v => v.toFixed(2)} size={16} />
+                  <Delta value={d.changePct} format={v => `${v.toFixed(2)}%`} size={16} badge />
                 </span>
               )}
-              <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 14, color: '#52A877' }}>
+              <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 14, color: '#A391B5' }}>
                 MKT CAP {d.marketCap}
               </span>
             </div>
@@ -397,8 +396,8 @@ export default function StockInfo() {
             <Cell label="DIVIDEND" value={d.dividend !== null ? `$${d.dividend.toFixed(2)}` : '—'} />
             <Cell label="DIV YIELD" value={d.dividendYield} />
             <Cell label="CASH/SHARE" value={d.cashPerShare !== null ? `$${d.cashPerShare.toFixed(2)}` : '—'} />
-            <Cell label="52-WK HIGH" value={d.week52High !== null ? `$${d.week52High.toFixed(2)}` : '—'} pos />
-            <Cell label="52-WK LOW" value={d.week52Low !== null ? `$${d.week52Low.toFixed(2)}` : '—'} neg />
+            <Cell label="52-WK HIGH" value={d.week52High !== null ? `$${d.week52High.toFixed(2)}` : '—'} />
+            <Cell label="52-WK LOW" value={d.week52Low !== null ? `$${d.week52Low.toFixed(2)}` : '—'} />
           </div>
 
           <SectionHead>PROFITABILITY</SectionHead>
@@ -434,46 +433,46 @@ export default function StockInfo() {
 
           {/* 52-week range */}
           {d.week52High !== null && d.week52Low !== null && (
-            <div style={{ marginTop: 8, backgroundColor: '#060E18', border, padding: '14px 16px' }}>
+            <div style={{ marginTop: 8, backgroundColor: '#130B1B', border, padding: '14px 16px' }}>
               <div style={{
-                fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: '#52A877',
+                fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: '#A391B5',
                 letterSpacing: '0.14em', textTransform: 'uppercase', marginBottom: 10,
               }}>52-WEEK RANGE</div>
-              <div style={{ position: 'relative', height: 4, backgroundColor: 'rgba(0,255,136,0.06)' }}>
+              <div style={{ position: 'relative', height: 4, backgroundColor: 'rgba(212,175,55,0.06)' }}>
                 {(() => {
                   const pct = ((d.price - d.week52Low!) / (d.week52High! - d.week52Low!)) * 100
                   return (
                     <>
                       <div style={{
                         position: 'absolute', left: 0, width: `${pct}%`, height: '100%',
-                        background: 'linear-gradient(90deg, rgba(0,255,136,0.2), #00FF88)',
+                        background: 'linear-gradient(90deg, rgba(212,175,55,0.2), #D4AF37)',
                       }} />
                       <div style={{
                         position: 'absolute', left: `${pct}%`, top: '50%',
                         transform: 'translate(-50%, -50%)',
                         width: 8, height: 8,
-                        backgroundColor: '#00FF88',
-                        border: '2px solid #03080F',
-                        boxShadow: '0 0 8px #00FF88',
+                        backgroundColor: '#D4AF37',
+                        border: '2px solid #0A0610',
+                        boxShadow: '0 0 8px #D4AF37',
                       }} />
                     </>
                   )
                 })()}
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 8 }}>
-                <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 14, color: '#FF3B3B' }}>${d.week52Low.toFixed(2)}</span>
-                <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 14, color: '#00FF88', textShadow: '0 0 6px #00FF88' }}>${d.price.toFixed(2)}</span>
-                <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 14, color: '#00FF88' }}>${d.week52High.toFixed(2)}</span>
+                <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 14, color: '#FF4D4D' }}>${d.week52Low.toFixed(2)}</span>
+                <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 14, color: '#D4AF37', textShadow: '0 0 6px #D4AF37' }}>${d.price.toFixed(2)}</span>
+                <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 14, color: '#D4AF37' }}>${d.week52High.toFixed(2)}</span>
               </div>
             </div>
           )}
 
           <div style={{
             marginTop: 12, padding: '9px 12px',
-            backgroundColor: 'rgba(0,255,136,0.03)',
-            border: '1px solid rgba(0,255,136,0.08)',
+            backgroundColor: 'rgba(212,175,55,0.03)',
+            border: '1px solid rgba(212,175,55,0.08)',
             fontFamily: "'JetBrains Mono', monospace",
-            fontSize: 13, color: '#3C8F5F',
+            fontSize: 13, color: '#7A6A8E',
           }}>
             {'// DATA: yfinance · CAPM: Rf + β×ERP · WACC: manual · ERP default 5.5%'}
           </div>

@@ -5,6 +5,7 @@ import {
 } from '@/lib/api'
 import { posNegColor } from '@/lib/format'
 import { Loading, ErrorBlock } from './StatusBlock'
+import PriceChart, { chartRowProps, type ChartTarget } from './PriceChart'
 import { useSortableLayout } from '@/lib/layout'
 import { Draggable, EditHint } from './LayoutKit'
 import {
@@ -13,7 +14,7 @@ import {
   type MetricDef,
 } from './TrackingKit'
 
-const border = '1px solid rgba(0,255,136,0.12)'
+const border = '1px solid rgba(212,175,55,0.12)'
 
 /** Watchlists hold any yfinance-resolvable symbol (stocks, FX, futures,
  * indexes, crypto), so price formatting scales to the magnitude rather
@@ -46,6 +47,7 @@ export default function Watchlist() {
   const [data, setData] = useState<WatchlistsData | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [active, setActive] = useState<string | null>(null)
+  const [chart, setChart] = useState<ChartTarget | null>(null)
   const [newListName, setNewListName] = useState('')
   const [newTicker, setNewTicker] = useState('')
 
@@ -114,7 +116,7 @@ export default function Watchlist() {
   return (
     <div>
       <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', marginBottom: 16, flexWrap: 'wrap', gap: 10 }}>
-        <span style={{ fontFamily: "'VT323', monospace", fontSize: 32, color: '#C8FFD4', letterSpacing: '0.04em', textShadow: '0 0 10px rgba(200,255,212,0.3)' }}>
+        <span style={{ fontFamily: "'Cinzel', serif", fontWeight: 600, fontSize: 26, color: '#F4EFE6', letterSpacing: '0.12em', textShadow: '0 0 10px rgba(212,175,55,0.35)' }}>
           WATCHLIST
         </span>
         <form onSubmit={handleCreateList} style={{ display: 'flex', gap: 6 }}>
@@ -123,15 +125,15 @@ export default function Watchlist() {
             onChange={e => setNewListName(e.target.value)}
             placeholder="NEW LIST NAME"
             style={{
-              backgroundColor: '#060E18', border, padding: '7px 12px',
-              fontFamily: "'JetBrains Mono', monospace", fontSize: 15, color: '#C8FFD4',
-              letterSpacing: '0.06em', outline: 'none', width: 150, caretColor: '#00FF88',
+              backgroundColor: '#130B1B', border, padding: '7px 12px',
+              fontFamily: "'JetBrains Mono', monospace", fontSize: 15, color: '#FFFFFF',
+              letterSpacing: '0.06em', outline: 'none', width: 150, caretColor: '#D4AF37',
             }}
           />
           <button type="submit" style={{
-            backgroundColor: 'rgba(0,255,136,0.1)', color: '#00FF88',
+            backgroundColor: 'rgba(212,175,55,0.1)', color: '#D4AF37',
             fontFamily: "'Share Tech Mono', monospace", fontSize: 14,
-            border: '1px solid rgba(0,255,136,0.3)', padding: '7px 14px',
+            border: '1px solid rgba(212,175,55,0.3)', padding: '7px 14px',
             cursor: 'pointer', letterSpacing: '0.06em',
           }}>+ NEW LIST</button>
         </form>
@@ -140,7 +142,7 @@ export default function Watchlist() {
       {error && <div style={{ marginBottom: 12 }}><ErrorBlock message={error} /></div>}
 
       {listNames.length === 0 ? (
-        <div style={{ backgroundColor: '#060E18', border, padding: '30px', textAlign: 'center', fontFamily: "'JetBrains Mono', monospace", fontSize: 15, color: '#52A877' }}>
+        <div style={{ backgroundColor: '#130B1B', border, padding: '30px', textAlign: 'center', fontFamily: "'JetBrains Mono', monospace", fontSize: 15, color: '#A391B5' }}>
           No watchlists yet — create one above.
         </div>
       ) : (
@@ -149,12 +151,12 @@ export default function Watchlist() {
             {listNames.map(name => (
               <button key={name} type="button" onClick={() => setActive(name)} style={{
                 fontFamily: "'Share Tech Mono', monospace", fontSize: 15,
-                color: active === name ? '#00FF88' : '#52A877',
-                background: active === name ? 'rgba(0,255,136,0.08)' : 'transparent',
-                border: `1px solid ${active === name ? 'rgba(0,255,136,0.3)' : 'rgba(0,255,136,0.1)'}`,
+                color: active === name ? '#D4AF37' : '#A391B5',
+                background: active === name ? 'rgba(107,42,122,0.35)' : 'transparent',
+                border: `1px solid ${active === name ? 'rgba(212,175,55,0.3)' : 'rgba(212,175,55,0.1)'}`,
                 padding: '5px 12px', cursor: 'pointer', letterSpacing: '0.06em',
-                textShadow: active === name ? '0 0 6px #00FF88' : 'none',
-              }}>{name} <span style={{ color: '#3C8F5F', marginLeft: 4 }}>{(data[name] ?? []).length}</span></button>
+                textShadow: active === name ? '0 0 6px #D4AF37' : 'none',
+              }}>{name} <span style={{ color: '#7A6A8E', marginLeft: 4 }}>{(data[name] ?? []).length}</span></button>
             ))}
           </div>
 
@@ -164,43 +166,43 @@ export default function Watchlist() {
               onChange={e => setNewTicker(e.target.value.toUpperCase())}
               placeholder="ADD TICKER"
               style={{
-                backgroundColor: '#060E18', border, padding: '7px 12px',
-                fontFamily: "'JetBrains Mono', monospace", fontSize: 15, color: '#00FF88',
-                letterSpacing: '0.08em', outline: 'none', width: 140, caretColor: '#00FF88',
+                backgroundColor: '#130B1B', border, padding: '7px 12px',
+                fontFamily: "'JetBrains Mono', monospace", fontSize: 15, color: '#D4AF37',
+                letterSpacing: '0.08em', outline: 'none', width: 140, caretColor: '#D4AF37',
               }}
             />
             <button type="submit" style={{
-              backgroundColor: 'rgba(0,255,136,0.1)', color: '#00FF88',
+              backgroundColor: 'rgba(212,175,55,0.1)', color: '#D4AF37',
               fontFamily: "'Share Tech Mono', monospace", fontSize: 14,
-              border: '1px solid rgba(0,255,136,0.3)', padding: '7px 14px',
+              border: '1px solid rgba(212,175,55,0.3)', padding: '7px 14px',
               cursor: 'pointer', letterSpacing: '0.06em',
             }}>ADD</button>
           </form>
 
           {items.length === 0 ? (
-            <div style={{ backgroundColor: '#060E18', border, padding: '24px', textAlign: 'center', fontFamily: "'JetBrains Mono', monospace", fontSize: 15, color: '#52A877' }}>
+            <div style={{ backgroundColor: '#130B1B', border, padding: '24px', textAlign: 'center', fontFamily: "'JetBrains Mono', monospace", fontSize: 15, color: '#A391B5' }}>
               This list is empty — add a ticker above. Works with stocks, indexes (^GSPC), FX (EURUSD=X), futures (GC=F), Treasury yields (^TNX), or crypto (BTC-USD).
             </div>
           ) : (
             <>
               {avgYield !== null && (
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(170px, 1fr))', gap: 6, marginBottom: 14 }}>
-                  <div style={{ backgroundColor: '#060E18', border, padding: '12px 14px' }}>
-                    <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: '#52A877', letterSpacing: '0.12em', marginBottom: 5 }}>AVG DIV YIELD</div>
-                    <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 18, fontWeight: 600, color: '#FFD700', textShadow: '0 0 8px rgba(255,215,0,0.35)' }}>
+                  <div style={{ backgroundColor: '#130B1B', border, padding: '12px 14px' }}>
+                    <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: '#A391B5', letterSpacing: '0.12em', marginBottom: 5 }}>AVG DIV YIELD</div>
+                    <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 18, fontWeight: 600, color: '#F2C94C', textShadow: '0 0 8px rgba(242,201,76,0.35)' }}>
                       {fmtPct(avgYield)}
                     </div>
                   </div>
-                  <div style={{ backgroundColor: '#060E18', border, padding: '12px 14px' }}>
-                    <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: '#52A877', letterSpacing: '0.12em', marginBottom: 5 }}>DIV / SHARE / YR (SUM)</div>
-                    <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 18, fontWeight: 600, color: '#FFD700', textShadow: '0 0 8px rgba(255,215,0,0.35)' }}>
+                  <div style={{ backgroundColor: '#130B1B', border, padding: '12px 14px' }}>
+                    <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: '#A391B5', letterSpacing: '0.12em', marginBottom: 5 }}>DIV / SHARE / YR (SUM)</div>
+                    <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 18, fontWeight: 600, color: '#F2C94C', textShadow: '0 0 8px rgba(242,201,76,0.35)' }}>
                       {fmtMoney(totalDivPerShare)}
                     </div>
                   </div>
-                  <div style={{ backgroundColor: '#060E18', border, padding: '12px 14px' }}>
-                    <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: '#52A877', letterSpacing: '0.12em', marginBottom: 5 }}>PAYERS</div>
-                    <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 18, fontWeight: 600, color: '#C8FFD4' }}>
-                      {withYield.length}<span style={{ fontSize: 15, color: '#52A877' }}> / {items.length}</span>
+                  <div style={{ backgroundColor: '#130B1B', border, padding: '12px 14px' }}>
+                    <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: '#A391B5', letterSpacing: '0.12em', marginBottom: 5 }}>PAYERS</div>
+                    <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 18, fontWeight: 600, color: '#FFFFFF' }}>
+                      {withYield.length}<span style={{ fontSize: 15, color: '#A391B5' }}> / {items.length}</span>
                     </div>
                   </div>
                 </div>
@@ -218,10 +220,10 @@ export default function Watchlist() {
               <div style={{ overflowX: 'auto' }}>
                 <div style={{ minWidth: 'min-content' }}>
                   <div style={{ display: 'grid', gridTemplateColumns: gridCols, gap: 6, padding: '0 14px 8px' }}>
-                    <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: '#3C8F5F', letterSpacing: '0.1em' }}>TICKER</div>
-                    <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: '#3C8F5F', letterSpacing: '0.1em' }}>NAME</div>
+                    <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: '#7A6A8E', letterSpacing: '0.1em' }}>TICKER</div>
+                    <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: '#7A6A8E', letterSpacing: '0.1em' }}>NAME</div>
                     {metricCfg.active.map(m => (
-                      <div key={m.id} style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: '#3C8F5F', letterSpacing: '0.1em' }}>{m.short}</div>
+                      <div key={m.id} style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: '#7A6A8E', letterSpacing: '0.1em' }}>{m.short}</div>
                     ))}
                     <div />
                   </div>
@@ -232,28 +234,28 @@ export default function Watchlist() {
                       if (!item) return null
                       return (
                         <Draggable key={item.ticker} id={item.ticker} label={item.ticker} api={rows} allowHide={false}>
-                          <div style={{
-                            display: 'grid', gridTemplateColumns: gridCols, gap: 6,
-                            alignItems: 'center', backgroundColor: '#060E18', border, padding: '12px 14px', transition: 'border-color 0.1s',
+                          <div {...chartRowProps(() => setChart({ kind: 'stock', id: item.ticker, sub: item.name ?? undefined }))} style={{
+                            cursor: 'pointer', display: 'grid', gridTemplateColumns: gridCols, gap: 6,
+                            alignItems: 'center', backgroundColor: '#130B1B', border, padding: '12px 14px', transition: 'border-color 0.1s',
                           }}
-                            onMouseEnter={e => (e.currentTarget.style.borderColor = 'rgba(0,255,136,0.3)')}
-                            onMouseLeave={e => (e.currentTarget.style.borderColor = 'rgba(0,255,136,0.12)')}
+                            onMouseEnter={e => (e.currentTarget.style.borderColor = 'rgba(212,175,55,0.3)')}
+                            onMouseLeave={e => (e.currentTarget.style.borderColor = 'rgba(212,175,55,0.12)')}
                           >
-                            <div style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: 16, color: '#00FF88', textShadow: '0 0 6px rgba(0,255,136,0.4)' }}>{item.ticker}</div>
-                            <div style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: 14, color: '#4DCC88', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={item.name ?? ''}>{item.name ?? '—'}</div>
+                            <div style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: 16, color: '#D4AF37', textShadow: '0 0 6px rgba(212,175,55,0.4)' }}>{item.ticker}</div>
+                            <div style={{ fontFamily: "'Share Tech Mono', monospace", fontSize: 14, color: '#C9B8D9', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={item.name ?? ''}>{item.name ?? '—'}</div>
                             {metricCfg.active.map(m => {
                               const raw = m.get(item)
                               return (
                                 <div key={m.id} style={{
                                   fontFamily: "'JetBrains Mono', monospace", fontSize: 15,
-                                  color: m.signed ? posNegColor(raw) : '#C8FFD4',
+                                  color: m.signed ? posNegColor(raw) : '#FFFFFF',
                                   overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
                                 }}>
                                   {m.format(raw, item)}
                                 </div>
                               )
                             })}
-                            <ConfirmRemove onConfirm={() => handleRemove(item.ticker)} title={item.ticker} />
+                            <span onClick={e => e.stopPropagation()} onKeyDown={e => e.stopPropagation()}><ConfirmRemove onConfirm={() => handleRemove(item.ticker)} title={item.ticker} /></span>
                           </div>
                         </Draggable>
                       )
@@ -266,9 +268,11 @@ export default function Watchlist() {
         </>
       )}
 
-      <div style={{ marginTop: 12, padding: '9px 12px', backgroundColor: 'rgba(0,255,136,0.02)', border: '1px solid rgba(0,255,136,0.07)', fontFamily: "'JetBrains Mono', monospace", fontSize: 13, color: '#3C8F5F' }}>
+      <div style={{ marginTop: 12, padding: '9px 12px', backgroundColor: 'rgba(212,175,55,0.02)', border: '1px solid rgba(212,175,55,0.07)', fontFamily: "'JetBrains Mono', monospace", fontSize: 13, color: '#7A6A8E' }}>
         {'// DATA SOURCE: yfinance · saved to watchlists.txt on the backend · ratios/dividends only apply to individual stocks, so FX/futures/index rows show "—" · metric columns are saved in this browser · avg yield is an unweighted average (a watchlist has no share counts to weight by)'}
       </div>
+
+      {chart && <PriceChart target={chart} onClose={() => setChart(null)} />}
     </div>
   )
 }

@@ -37,14 +37,14 @@ type ScenarioKey = 'bear' | 'base' | 'bull'
 const KEYS: ScenarioKey[] = ['bear', 'base', 'bull']
 
 const SCENARIO_META: Record<ScenarioKey, { label: string; color: string; bg: string }> = {
-  bear: { label: 'BEAR', color: '#FF3B3B', bg: 'rgba(255,59,59,0.05)' },
-  base: { label: 'BASE', color: '#FFD700', bg: 'rgba(255,215,0,0.05)' },
-  bull: { label: 'BULL', color: '#00FF88', bg: 'rgba(0,255,136,0.05)' },
+  bear: { label: 'BEAR', color: '#FF4D4D', bg: 'rgba(255,77,77,0.05)' },
+  base: { label: 'BASE', color: '#F2C94C', bg: 'rgba(242,201,76,0.05)' },
+  bull: { label: 'BULL', color: '#D4AF37', bg: 'rgba(212,175,55,0.05)' },
 }
 
 const YEARS = 3
 const CURRENT_YEAR = new Date().getFullYear()
-const border = '1px solid rgba(0,255,136,0.12)'
+const border = '1px solid rgba(212,175,55,0.12)'
 
 const DEFAULT_EPS: Record<ScenarioKey, EpsYear[]> = {
   bear: [{ epsGrowth: '3', pe: '24' }, { epsGrowth: '2', pe: '22' }, { epsGrowth: '2', pe: '20' }],
@@ -98,7 +98,7 @@ function StepArrow({ dir, color, onClick }: {
         border: 'none',
         borderLeft: `2px solid ${color}55`,
         borderBottom: dir === 'up' ? `1px solid ${color}33` : 'none',
-        color: hot ? color : '#4DCC88',
+        color: hot ? color : '#C9B8D9',
         fontSize: 10, lineHeight: 1,
         textShadow: hot ? `0 0 6px ${color}` : 'none',
         transition: 'background 0.1s, color 0.1s',
@@ -136,13 +136,13 @@ function NumberField({ label, value, color, step = 1, min, onChange }: {
     <div style={{ flex: '1 1 96px', minWidth: 96 }}>
       <div style={{
         fontFamily: "'JetBrains Mono', monospace", fontSize: 11,
-        color: '#52A877', letterSpacing: '0.08em', marginBottom: 4, whiteSpace: 'nowrap',
+        color: '#A391B5', letterSpacing: '0.08em', marginBottom: 4, whiteSpace: 'nowrap',
       }}>
         {label}
       </div>
       <div style={{
         display: 'flex', alignItems: 'stretch',
-        backgroundColor: '#03080F', border: `2px solid ${color}44`,
+        backgroundColor: '#0A0610', border: `2px solid ${color}44`,
         transition: 'border-color 0.1s',
       }}
         onFocus={e => (e.currentTarget.style.borderColor = color)}
@@ -156,7 +156,7 @@ function NumberField({ label, value, color, step = 1, min, onChange }: {
           style={{
             flex: 1, minWidth: 0, background: 'transparent', border: 'none',
             padding: '7px 8px', fontFamily: "'JetBrains Mono', monospace",
-            fontSize: 16, color: '#C8FFD4', outline: 'none', caretColor: color,
+            fontSize: 16, color: '#FFFFFF', outline: 'none', caretColor: color,
           }}
         />
         <div style={{ display: 'flex', flexDirection: 'column', flexShrink: 0 }}>
@@ -238,7 +238,7 @@ function ProjectionChart({ series, currentPrice, height = 230 }: {
             {hasToday && (
               <line
                 x1={0} y1={yAt(currentPrice as number)} x2={w} y2={yAt(currentPrice as number)}
-                stroke="#C8FFD4" strokeWidth={1} strokeDasharray="6,5" opacity={0.35}
+                stroke="#FFFFFF" strokeWidth={1} strokeDasharray="6,5" opacity={0.35}
                 vectorEffect="non-scaling-stroke"
               />
             )}
@@ -256,7 +256,7 @@ function ProjectionChart({ series, currentPrice, height = 230 }: {
             {hover !== null && (
               <line
                 x1={xAt(hover)} y1={0} x2={xAt(hover)} y2={h}
-                stroke="#C8FFD4" strokeWidth={0.75} strokeDasharray="2,2" opacity={0.5}
+                stroke="#FFFFFF" strokeWidth={0.75} strokeDasharray="2,2" opacity={0.5}
                 vectorEffect="non-scaling-stroke"
               />
             )}
@@ -274,7 +274,7 @@ function ProjectionChart({ series, currentPrice, height = 230 }: {
                   top: `${(yAt(v) / h) * 100}%`,
                   width: hover === i ? 10 : 7, height: hover === i ? 10 : 7,
                   borderRadius: '50%', backgroundColor: l.color,
-                  border: '1px solid #060E18',
+                  border: '1px solid #130B1B',
                   boxShadow: hover === i ? `0 0 8px ${l.color}` : 'none',
                   transform: 'translate(-50%, -50%)', pointerEvents: 'none',
                   transition: 'width 0.1s, height 0.1s',
@@ -288,12 +288,12 @@ function ProjectionChart({ series, currentPrice, height = 230 }: {
               position: 'absolute', top: -6,
               left: `${tooltipPct}%`,
               transform: tooltipPct > 60 ? 'translate(-100%, -100%)' : 'translate(0, -100%)',
-              backgroundColor: '#0A1420', border: '1px solid rgba(0,255,136,0.35)',
+              backgroundColor: '#1C1226', border: '1px solid rgba(212,175,55,0.35)',
               padding: '6px 10px', fontFamily: "'JetBrains Mono', monospace",
-              fontSize: 14, color: '#C8FFD4', whiteSpace: 'nowrap',
+              fontSize: 14, color: '#FFFFFF', whiteSpace: 'nowrap',
               pointerEvents: 'none', zIndex: 10,
             }}>
-              <div style={{ color: '#52A877', fontSize: 12, marginBottom: 3 }}>{xLabels[hover]}</div>
+              <div style={{ color: '#A391B5', fontSize: 12, marginBottom: 3 }}>{xLabels[hover]}</div>
               {lines.map(l => (
                 <div key={l.key} style={{ display: 'flex', gap: 12, justifyContent: 'space-between' }}>
                   <span style={{ color: l.color }}>{l.label}</span>
@@ -309,7 +309,7 @@ function ProjectionChart({ series, currentPrice, height = 230 }: {
 
       <div style={{
         display: 'flex', justifyContent: 'space-between', marginLeft: 80,
-        fontFamily: "'JetBrains Mono', monospace", fontSize: 13, color: '#3C8F5F', marginTop: 6,
+        fontFamily: "'JetBrains Mono', monospace", fontSize: 13, color: '#7A6A8E', marginTop: 6,
       }}>
         {xLabels.map(l => <span key={l}>{l}</span>)}
       </div>
@@ -329,7 +329,7 @@ function ScenarioShell({ sk, headerRight, children }: {
   const meta = SCENARIO_META[sk]
   return (
     <div style={{
-      backgroundColor: '#060E18',
+      backgroundColor: '#130B1B',
       border: `2px solid ${meta.color}66`,
       boxShadow: `0 0 14px ${meta.color}1A, inset 0 0 24px ${meta.color}0D`,
       overflow: 'hidden',
@@ -340,7 +340,7 @@ function ScenarioShell({ sk, headerRight, children }: {
         display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 8,
       }}>
         <span style={{
-          fontFamily: "'VT323', monospace", fontSize: 22, color: meta.color,
+          fontFamily: "'Cinzel', serif", fontWeight: 600, fontSize: 17, color: meta.color,
           letterSpacing: '0.1em', textShadow: `0 0 8px ${meta.color}`,
         }}>
           {meta.label} CASE
@@ -354,12 +354,12 @@ function ScenarioShell({ sk, headerRight, children }: {
 
 function ReturnBadge({ value }: { value: number | null }) {
   if (value === null) {
-    return <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 14, color: '#3C8F5F' }}>—</span>
+    return <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 14, color: '#7A6A8E' }}>—</span>
   }
   return (
     <span style={{
       fontFamily: "'JetBrains Mono', monospace", fontSize: 14,
-      color: value >= 0 ? '#00FF88' : '#FF3B3B',
+      color: value >= 0 ? '#3DDC84' : '#FF4D4D',
     }}>
       {value >= 0 ? '+' : ''}{value.toFixed(0)}% / {YEARS}YR
     </span>
@@ -370,9 +370,9 @@ function PriceRow({ label, value, color }: { label: string; value: string; color
   return (
     <div style={{
       display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-      backgroundColor: '#03080F', border: `2px solid ${color}44`, padding: '6px 9px',
+      backgroundColor: '#0A0610', border: `2px solid ${color}44`, padding: '6px 9px',
     }}>
-      <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: '#52A877', letterSpacing: '0.1em' }}>
+      <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: '#A391B5', letterSpacing: '0.1em' }}>
         {label}
       </span>
       <span style={{
@@ -401,7 +401,7 @@ function big(v: number | null): string {
 function YearLabel({ i }: { i: number }) {
   return (
     <div style={{
-      fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: '#52A877',
+      fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: '#A391B5',
       letterSpacing: '0.12em', marginBottom: 7,
     }}>
       YEAR {i + 1} — {CURRENT_YEAR + i + 1}
@@ -414,10 +414,10 @@ function Note({ children, tone = 'dim' }: { children: React.ReactNode; tone?: 'd
   return (
     <div style={{
       padding: '9px 12px',
-      backgroundColor: warn ? 'rgba(255,138,61,0.05)' : 'rgba(0,255,136,0.02)',
-      border: `1px solid ${warn ? 'rgba(255,138,61,0.25)' : 'rgba(0,255,136,0.07)'}`,
+      backgroundColor: warn ? 'rgba(255,138,61,0.05)' : 'rgba(212,175,55,0.02)',
+      border: `1px solid ${warn ? 'rgba(255,138,61,0.25)' : 'rgba(212,175,55,0.07)'}`,
       fontFamily: "'JetBrains Mono', monospace", fontSize: 13,
-      color: warn ? '#FF8A3D' : '#3C8F5F',
+      color: warn ? '#FF8A3D' : '#7A6A8E',
     }}>
       {children}
     </div>
@@ -539,8 +539,8 @@ export default function Projector() {
     <div>
       <div style={{ marginBottom: 20 }}>
         <div style={{
-          fontFamily: "'VT323', monospace", fontSize: 32, color: '#C8FFD4',
-          letterSpacing: '0.04em', textShadow: '0 0 10px rgba(200,255,212,0.3)',
+          fontFamily: "'Cinzel', serif", fontWeight: 600, fontSize: 26, color: '#F4EFE6',
+          letterSpacing: '0.12em', textShadow: '0 0 10px rgba(212,175,55,0.35)',
         }}>
           {YEARS}-YEAR PRICE PROJECTOR
         </div>
@@ -554,13 +554,13 @@ export default function Projector() {
             onChange={e => setInputVal(e.target.value.toUpperCase())}
             placeholder="TICKER"
             style={{
-              flex: 1, backgroundColor: '#060E18', border, padding: '8px 12px',
-              fontFamily: "'JetBrains Mono', monospace", fontSize: 15, color: '#00FF88',
-              letterSpacing: '0.08em', outline: 'none', caretColor: '#00FF88',
+              flex: 1, backgroundColor: '#130B1B', border, padding: '8px 12px',
+              fontFamily: "'JetBrains Mono', monospace", fontSize: 15, color: '#D4AF37',
+              letterSpacing: '0.08em', outline: 'none', caretColor: '#D4AF37',
             }}
           />
           <button type="submit" style={{
-            backgroundColor: '#00FF88', color: '#03080F', fontFamily: "'Share Tech Mono', monospace",
+            backgroundColor: '#D4AF37', color: '#0A0610', fontFamily: "'Share Tech Mono', monospace",
             fontSize: 15, fontWeight: 700, border: 'none', padding: '8px 16px',
             cursor: 'pointer', letterSpacing: '0.08em',
           }}>LOAD BASE</button>
@@ -569,7 +569,7 @@ export default function Projector() {
         {loading && <div style={{ marginTop: 12 }}><Loading label={`FETCHING ${ticker}`} /></div>}
         {error && <div style={{ marginTop: 12 }}><ErrorBlock message={error} onRetry={() => ticker && load(ticker)} /></div>}
         {!quote && !loading && !error && (
-          <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 14, color: '#52A877', marginTop: 12 }}>
+          <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 14, color: '#A391B5', marginTop: 12 }}>
             Load a ticker to seed every model with live figures.
           </div>
         )}
@@ -590,10 +590,10 @@ export default function Projector() {
                   style={{
                     fontFamily: "'Share Tech Mono', monospace", fontSize: 14,
                     padding: '6px 13px', cursor: 'pointer', letterSpacing: '0.06em',
-                    backgroundColor: on ? 'rgba(0,255,136,0.14)' : 'transparent',
-                    border: `2px solid ${on ? 'rgba(0,255,136,0.5)' : 'rgba(0,255,136,0.12)'}`,
-                    color: on ? '#00FF88' : '#52A877',
-                    textShadow: on ? '0 0 8px rgba(0,255,136,0.6)' : 'none',
+                    backgroundColor: on ? 'rgba(212,175,55,0.14)' : 'transparent',
+                    border: `2px solid ${on ? 'rgba(212,175,55,0.5)' : 'rgba(212,175,55,0.12)'}`,
+                    color: on ? '#D4AF37' : '#A391B5',
+                    textShadow: on ? '0 0 8px rgba(212,175,55,0.6)' : 'none',
                   }}
                 >
                   {m.label}
@@ -604,11 +604,11 @@ export default function Projector() {
 
           {/* Live inputs the active model consumes, all editable. */}
           <div style={{
-            backgroundColor: '#060E18', border, padding: '12px 15px', marginBottom: 14,
+            backgroundColor: '#130B1B', border, padding: '12px 15px', marginBottom: 14,
             display: 'flex', gap: 18, flexWrap: 'wrap', alignItems: 'center',
           }}>
-            <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 14, color: '#52A877' }}>
-              CURRENT: <span style={{ color: '#C8FFD4' }}>{money(currentPrice)}</span>
+            <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 14, color: '#A391B5' }}>
+              CURRENT: <span style={{ color: '#FFFFFF' }}>{money(currentPrice)}</span>
             </span>
 
             {(model === 'epspe' || model === 'reverse') && (
@@ -637,7 +637,7 @@ export default function Projector() {
               <Seed label="DIVIDEND / SHARE" value={manualDividend} onChange={setManualDividend} width={84} />
             )}
 
-            <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 13, color: '#3C8F5F' }}>
+            <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 13, color: '#7A6A8E' }}>
               {activeModel.formula}
             </span>
           </div>
@@ -710,7 +710,7 @@ export default function Projector() {
                           {driver && (
                             <div style={{
                               fontFamily: "'JetBrains Mono', monospace", fontSize: 11,
-                              color: '#3C8F5F', marginBottom: 5, display: 'flex',
+                              color: '#7A6A8E', marginBottom: 5, display: 'flex',
                               justifyContent: 'space-between', gap: 6, flexWrap: 'wrap',
                             }}>
                               <span>rev {big(driver[i].revenue)}</span>
@@ -721,7 +721,7 @@ export default function Projector() {
                           {ev && (
                             <div style={{
                               fontFamily: "'JetBrains Mono', monospace", fontSize: 11,
-                              color: '#3C8F5F', marginBottom: 5, display: 'flex',
+                              color: '#7A6A8E', marginBottom: 5, display: 'flex',
                               justifyContent: 'space-between', gap: 6, flexWrap: 'wrap',
                             }}>
                               <span>EBITDA {big(ev[i].ebitda)}</span>
@@ -740,7 +740,7 @@ export default function Projector() {
                             </div>
                           )}
                           {i < YEARS - 1 && (
-                            <div style={{ height: 1, backgroundColor: 'rgba(0,255,136,0.05)', marginTop: 14 }} />
+                            <div style={{ height: 1, backgroundColor: 'rgba(212,175,55,0.05)', marginTop: 14 }} />
                           )}
                         </div>
                       ))}
@@ -749,14 +749,14 @@ export default function Projector() {
                 })}
               </div>
 
-              <div style={{ marginTop: 14, backgroundColor: '#060E18', border, padding: '16px 18px' }}>
+              <div style={{ marginTop: 14, backgroundColor: '#130B1B', border, padding: '16px 18px' }}>
                 <div style={{
                   display: 'flex', justifyContent: 'space-between', alignItems: 'baseline',
                   flexWrap: 'wrap', gap: 10, marginBottom: 14,
                 }}>
                   <span style={{
-                    fontFamily: "'VT323', monospace", fontSize: 18, color: '#00FF88',
-                    letterSpacing: '0.1em', textShadow: '0 0 6px rgba(0,255,136,0.4)',
+                    fontFamily: "'Cinzel', serif", fontWeight: 600, fontSize: 14, color: '#D4AF37',
+                    letterSpacing: '0.1em', textShadow: '0 0 6px rgba(212,175,55,0.4)',
                   }}>
                     PROJECTED PRICE BY YEAR
                   </span>
@@ -768,7 +768,7 @@ export default function Projector() {
                           backgroundColor: SCENARIO_META[sk].color, display: 'inline-block',
                           boxShadow: `0 0 6px ${SCENARIO_META[sk].color}`,
                         }} />
-                        <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: '#4DCC88' }}>
+                        <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: '#C9B8D9' }}>
                           {SCENARIO_META[sk].label}
                         </span>
                       </span>
@@ -798,9 +798,9 @@ export default function Projector() {
                   const res = projectLynch(baseEps, g, num(lynchYield), currentPrice)
                   // PEG 1.0 is Lynch's anchor: below it the stock is
                   // cheap relative to its growth, above it expensive.
-                  const pegColor = res.peg === null ? '#C8FFD4'
-                    : res.peg < 1 ? '#00FF88'
-                      : res.peg <= 1.5 ? '#FFD700' : '#FF3B3B'
+                  const pegColor = res.peg === null ? '#FFFFFF'
+                    : res.peg < 1 ? '#D4AF37'
+                      : res.peg <= 1.5 ? '#F2C94C' : '#FF4D4D'
                   return (
                     <ScenarioShell
                       key={sk}
@@ -814,7 +814,7 @@ export default function Projector() {
 
                       <div style={{
                         fontFamily: "'JetBrains Mono', monospace", fontSize: 11,
-                        color: '#3C8F5F', margin: '10px 0 5px',
+                        color: '#7A6A8E', margin: '10px 0 5px',
                         display: 'flex', justifyContent: 'space-between', gap: 6, flexWrap: 'wrap',
                       }}>
                         <span>fair P/E {res.fairPe === null ? '—' : res.fairPe.toFixed(1)}</span>
@@ -829,11 +829,11 @@ export default function Projector() {
                       <div style={{ marginTop: 8 }}>
                         <div style={{
                           display: 'flex', justifyContent: 'space-between', alignItems: 'baseline',
-                          backgroundColor: '#03080F', border: `2px solid ${pegColor}44`, padding: '6px 9px',
+                          backgroundColor: '#0A0610', border: `2px solid ${pegColor}44`, padding: '6px 9px',
                         }}>
                           <span style={{
                             fontFamily: "'JetBrains Mono', monospace", fontSize: 12,
-                            color: '#52A877', letterSpacing: '0.1em',
+                            color: '#A391B5', letterSpacing: '0.1em',
                           }}>
                             PEG
                           </span>
@@ -903,7 +903,7 @@ export default function Projector() {
                       {g !== null && yourBase !== null && (
                         <div style={{
                           fontFamily: "'JetBrains Mono', monospace", fontSize: 12,
-                          color: g > yourBase ? '#FF8A3D' : '#00FF88', marginTop: 8, lineHeight: 1.4,
+                          color: g > yourBase ? '#FF8A3D' : '#D4AF37', marginTop: 8, lineHeight: 1.4,
                         }}>
                           {g > yourBase
                             ? `market expects MORE than your ${yourBase}% base case`
@@ -958,7 +958,7 @@ export default function Projector() {
 
                       <div style={{
                         fontFamily: "'JetBrains Mono', monospace", fontSize: 11,
-                        color: '#3C8F5F', marginBottom: 5,
+                        color: '#7A6A8E', marginBottom: 5,
                       }}>
                         D₁ {money(res.d1)}{g !== null && r !== null ? ` · spread ${(r - g).toFixed(1)}pp` : ''}
                       </div>
@@ -978,10 +978,10 @@ export default function Projector() {
                           swing across a 4pp band communicates it far
                           better than a caveat sentence would. */}
                       {sens.length > 0 && (
-                        <div style={{ marginTop: 12, paddingTop: 10, borderTop: '1px solid rgba(0,255,136,0.08)' }}>
+                        <div style={{ marginTop: 12, paddingTop: 10, borderTop: '1px solid rgba(212,175,55,0.08)' }}>
                           <div style={{
                             fontFamily: "'JetBrains Mono', monospace", fontSize: 11,
-                            color: '#52A877', letterSpacing: '0.1em', marginBottom: 6,
+                            color: '#A391B5', letterSpacing: '0.1em', marginBottom: 6,
                           }}>
                             SENSITIVITY TO g
                           </div>
@@ -989,7 +989,7 @@ export default function Projector() {
                             <div key={row.growth} style={{
                               display: 'flex', justifyContent: 'space-between',
                               fontFamily: "'JetBrains Mono', monospace", fontSize: 12,
-                              color: row.growth === g ? '#C8FFD4' : '#4DCC88', marginBottom: 3,
+                              color: row.growth === g ? '#FFFFFF' : '#C9B8D9', marginBottom: 3,
                             }}>
                               <span>g = {row.growth.toFixed(1)}%</span>
                               <span>{row.price === null ? 'unstable' : money(row.price)}</span>
@@ -1030,20 +1030,20 @@ function Seed({ label, value, onChange, width, hint }: {
 }) {
   return (
     <span style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-      <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 14, color: '#52A877' }}>
+      <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 14, color: '#A391B5' }}>
         {label}:
       </span>
       <input
         value={value}
         onChange={e => onChange(e.target.value)}
         style={{
-          width, backgroundColor: '#03080F', border: '1px solid rgba(0,255,136,0.15)',
+          width, backgroundColor: '#0A0610', border: '1px solid rgba(212,175,55,0.15)',
           padding: '3px 6px', fontFamily: "'JetBrains Mono', monospace", fontSize: 15,
-          color: '#00FF88', outline: 'none',
+          color: '#D4AF37', outline: 'none',
         }}
       />
       {hint && (
-        <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: '#3C8F5F' }}>
+        <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: '#7A6A8E' }}>
           {hint}
         </span>
       )}

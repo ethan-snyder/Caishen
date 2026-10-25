@@ -1,5 +1,5 @@
 """
-logger.py — logging for Caishen.
+logger.py — logging for Moneta.
 
 Two logs, written next to the script:
   - input_log.txt  : every prompt shown to the user and what they typed in
@@ -46,7 +46,7 @@ def setup_logging():
 
     builtins.input = _logged_input
 
-    _event_logger = logging.getLogger("caishen.events")
+    _event_logger = logging.getLogger("moneta.events")
     _event_logger.setLevel(logging.DEBUG)
     if not _event_logger.handlers:
         handler = logging.FileHandler(EVENTS_LOG_FILE, encoding="utf-8")
