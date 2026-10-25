@@ -1282,3 +1282,14 @@
 2026-10-24 21:21:47.140 [INFO] Fetching history BTC-USD 1Y
 2026-10-24 21:21:52.880 [INFO] Fetching history ^IRX 1Y
 2026-10-24 21:22:39.073 [INFO] Fetching history GBPUSD=X 1Y
+2026-10-25 11:54:15.184 [INFO] Session started
+2026-10-25 11:54:27.081 [INFO] tape: Yahoo live feed connected
+2026-10-25 11:54:28.067 [INFO] tape: Yahoo live feed connected
+2026-10-25 11:54:33.020 [INFO] tape: Yahoo live feed connected
+2026-10-25 12:40:21.776 [WARNING] tape: live feed unavailable ([Errno 11001] getaddrinfo failed); polling only, retry in 10s
+2026-10-25 12:40:24.309 [INFO] tape: Yahoo live feed connected
+2026-10-25 12:40:31.904 [INFO] tape: Yahoo live feed connected
+2026-10-25 12:40:34.104 [INFO] tape: Yahoo live feed connected
+2026-10-25 12:40:38.841 [INFO] tape: Yahoo live feed connected
+2026-10-25 12:40:51.066 [INFO] tape: Yahoo live feed connected
+2026-10-25 12:40:55.943 [INFO] tape: Yahoo live feed connected
